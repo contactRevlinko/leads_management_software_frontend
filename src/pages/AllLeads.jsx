@@ -3,7 +3,7 @@ import { Search, Shovel } from "lucide-react";
 import AddFollowUps from "../componenets/AddFollowUps";
 import CustomDropDown from "../componenets/CustomDropDown";
 import CustomPopupDelete from "../componenets/CustomPopupDelete";
-const BASE_URL = "https://leads-management-software-backend.vercel.app";
+import { BASE_URL } from "../config/config"
 
 const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
   const [showFollowUps, setShowFollowUps] = useState(false);
@@ -25,7 +25,7 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
   const handleDelete = async (id) => {
     // console.log(id, "user id to delete");
 
-    const res = await fetch(`${BASE_URL}/api/leads/${id}`, {
+    const res = await fetch(`${BASE_URL}/leads/${id}`, {
       method: "DELETE",
     });
     // console.log(res, "delete lead response");
@@ -42,7 +42,7 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
     try {
       console.log(id);
       console.log(newStatus);
-      const res = await fetch(`${BASE_URL}/api/leads/${id}/status`, {
+      const res = await fetch(`${BASE_URL}/leads/${id}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,7 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
     }
   };
 
-  if ( !allLeads|| !allLeads.length) return;
+  if (!allLeads || !allLeads.length) return;
 
   return (
     <div className=" md:p-4 lg:p-0  m-2 md:mt-6 md:rounded-2xl ">

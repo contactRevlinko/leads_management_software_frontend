@@ -81,7 +81,7 @@ import React, { useEffect, useState } from "react";
 import AddFollowUps from "../componenets/AddFollowUps";
 import CustomPopupDelete from "../componenets/CustomPopupDelete";
 
-const BASE_URL = "https://leads-management-software-backend.vercel.app";
+import {BASE_URL}from "../config/config"
 
 const Reminders = () => {
   const [data, setData] = useState([]);
@@ -91,7 +91,7 @@ const Reminders = () => {
   const [selectedId, setSelectedId] = useState(null);
   const fetchTodaysFo = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/today`);
+      const res = await fetch(`${BASE_URL}/followups/today`);
       const result = await res.json();
       setData(result.data || []);
     } catch (err) {
@@ -105,7 +105,7 @@ const Reminders = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure do you want to delete this followup?")) {
-      const res = await fetch(`${BASE_URL}/delete/${id}`, {
+      const res = await fetch(`${BASE_URL}/followups/delete/${id}`, {
         method: "DELETE",
       });
 

@@ -6,7 +6,6 @@ const Analytics = () => {
   return (
     <div>
      Analytics
-     <CustomPopupDelete/>
     </div>
   )
 }

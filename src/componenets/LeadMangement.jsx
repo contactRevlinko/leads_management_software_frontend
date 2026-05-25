@@ -4,9 +4,9 @@ import { useNavigate } from "react-router";
 import TypeOfCard from "./TypeOfCard";
 import LeadManageRow from "./LeadManageRow";
 import AllLeads from "../pages/AllLeads";
-const BASE_URL = "https://leads-management-software-backend.vercel.app";
 import * as XLSX from "xlsx";
 import AddLead from "../pages/AddLead";
+import { BASE_URL } from "../config/config";
 
 const LeadMangement = ({ }) => {
   const [filter, setFilter] = useState("All");
@@ -25,9 +25,10 @@ const LeadMangement = ({ }) => {
   const navigate = useNavigate();
 
   const fetchAllLead = async () => {
-    try{
+    try {
       const token = localStorage.getItem("token")
-      const res = await fetch(`${BASE_URL}/api/leads`, {
+      const res = await fetch(`${BASE_URL}/leads/get-leads`, {
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -39,10 +40,10 @@ const LeadMangement = ({ }) => {
       } else {
         setAllLeads([]);
       }
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
-    }
+  }
 
   const filtered = allLeads.filter((lead) => {
     const matchSearch =
@@ -84,7 +85,7 @@ const LeadMangement = ({ }) => {
     const formData = new FormData(); // create a object in form of html
     // console.log(formData);
     formData.append("file", file); // add file into form { file : selected file}
-    const res = await fetch(`${BASE_URL}/api/leads/upload`, {
+    const res = await fetch(`${BASE_URL}/leads/upload`, {
       method: "post",
       body: formData,
     });
@@ -106,36 +107,66 @@ const LeadMangement = ({ }) => {
   });
 
   const totalLead = async () => {
-    const res = await fetch(`${BASE_URL}/api/leads/count`);
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${BASE_URL}/leads/count`, {
+      method: "POST", headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const data = await res.json();
     // console.log(data.totalLead);
     setTotalLeads(data.totalLead);
   };
 
   const newStatusLead = async () => {
-    const res = await fetch(`${BASE_URL}/api/leads/new`);
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${BASE_URL}/leads/new`, {
+      method: "POST", headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const data = await res.json();
     setNewStatus(data.newStatus);
   };
   const inteStatusLead = async () => {
-    const res = await fetch(`${BASE_URL}/api/leads/interested`);
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${BASE_URL}/leads/interested`, {
+      method: "POST", headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const data = await res.json();
     setInteStatus(data.interested);
   };
 
   const contactedStatus = async () => {
-    const res = await fetch(`${BASE_URL}/api/leads/contacted`);
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${BASE_URL}/leads/contacted`, {
+      method: "POST", headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const data = await res.json();
     setContactStatus(data.contacted);
   };
 
   const ClosedWonStatus = async () => {
-    const res = await fetch(`${BASE_URL}/api/leads/won`);
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${BASE_URL}/leads/won`, {
+      method: "POST", headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const data = await res.json();
     setWonStatus(data.won);
   };
   const ClosedLostStatus = async () => {
-    const res = await fetch(`${BASE_URL}/api/leads/lost`);
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${BASE_URL}/leads/lost`, {
+      method: "POST", headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const data = await res.json();
     setLostStatus(data.lost);
   };

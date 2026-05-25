@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import CustomDropDown from "../componenets/CustomDropDown";
 import axios from "axios";
-const BASE_URL = "https://leads-management-software-backend.vercel.app";
+import {BASE_URL} from "../config/config"
 
 const AddLead = ({ setAddLeadModal, addLeadModal }) => {
 
@@ -31,7 +31,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
     try {
       const token = localStorage.getItem("token");
       console.log(form, "form");
-      const res = await axios.post(`${BASE_URL}/api/leads`, form, {
+      const res = await axios.post(`${BASE_URL}/leads/create-lead`, form, {
         headers: {
           Authorization: `Bearer ${token}`,
         }

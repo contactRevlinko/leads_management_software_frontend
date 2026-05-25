@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useUser } from "./UserContext";
-const BASE_URL = "https://leads-management-software-backend.vercel.app/api/auth";
+const BASE_URL = "http://localhost:5000/api/auth";
 
 const Login = () => {
   const { user, setUser } = useUser();

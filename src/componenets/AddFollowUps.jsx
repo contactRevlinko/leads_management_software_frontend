@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Phone, Mail, UsersRound, MessageSquareText } from "lucide-react";
-const BASE_URL = "https://leads-management-software-backend.vercel.app/api/followups";
+import { BASE_URL } from "../config/config"
 
 const AddFollowUps = ({ lead, setShowFollowUps }) => {
   const [selectedtype, setSelectedType] = useState("");
@@ -28,16 +28,16 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
   };
 
   const handleSubmit = async () => {
-    if (!form.followUpType || !form.followUpDate || !form.followUpTime){
+    if (!form.followUpType || !form.followUpDate || !form.followUpTime) {
       alert("please fill all required fields");
       return;
     }
     try {
       const token = localStorage.getItem("token")
       const finalData = { ...form, leadId: lead._id };
-      const res = await fetch(BASE_URL, {
+      const res = await fetch(`${BASE_URL}/followups/creat-followups`, {
         method: "POST",
-       
+
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
       alert("Error adding follow up");
     }
   };
- 
+
   return (
     <div className="lg:w-1/2 w-[95%] md:m-auto  bg-white border-2 rounded-4xl  border-gray-200 ">
       <div className="flex  justify-between m-5">
@@ -145,7 +145,7 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
           <input
             value={form.nextFollowupDate}
             onChange={handleChange}
-           
+
             name="nextFollowupDate"
             type="date"
             className="bg-white text-gray-700 p-2  md:text-sm text-xs rounded border border-gray-300 w-full "
@@ -164,7 +164,7 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
         </div>
       </div>
       <div className="py-4 px-8  m-4 flex  justify-evenly  border-t-0 border-gray-200 ">
-        
+
         <button
           onClick={handleSubmit}
           className="bg-white text-black border-2 border-gray-300 w-1/2 text-sm   py-1 px-2 cursor-pointer  rounded  hover:bg-indigo-700  hover:text-white  "

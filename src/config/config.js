@@ -1,0 +1,1 @@
+export const BASE_URL = "https://leads-management-software-backend.vercel.app/api"

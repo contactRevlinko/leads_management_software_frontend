@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
 import CustomPopupDelete from "./CustomPopupDelete";
-const BASE_URL = "https://leads-management-software-backend.vercel.app/api/followups";
+import {BASE_URL} from "../config/config"
 
 const FollowupsList = () => {
   const [data, setData] = useState([]);
@@ -12,7 +12,8 @@ const FollowupsList = () => {
   const fetchAllFollowUp = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await fetch(`${BASE_URL}`, {
+      const res = await fetch(`${BASE_URL}/followups/get-followups`, {
+        method:"POST",
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
