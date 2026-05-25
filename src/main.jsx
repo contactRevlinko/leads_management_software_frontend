@@ -4,14 +4,14 @@ import { BrowserRouter } from "react-router";
 import ReactDom from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
-import { UserProvider } from "./componenets/userContext.jsx";
+import { UserProvider } from "./componenets/UserContext.jsx";
 
 
 
 createRoot(document.getElementById("root")).render(
   <UserProvider>
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </UserProvider>
 );
