@@ -45,7 +45,7 @@ const LeadMangement = ({ }) => {
     }
   }
 
-  const filtered = allLeads.filter((lead) => {
+  const filtered = allLeads?.filter((lead) => {
     const matchSearch =
       lead.name?.toLowerCase().includes(search.toLowerCase()) ||
       lead.phone.includes(search);
@@ -63,7 +63,7 @@ const LeadMangement = ({ }) => {
 
   const handleExportExcel = () => {
     console.log("exported")
-    const exportData = filtered.map((lead) => ({
+    const exportData = (filtered || []).map((lead) => ({
       name: lead.name,
       phone: lead.phone,
       email: lead.email,
@@ -107,68 +107,126 @@ const LeadMangement = ({ }) => {
   });
 
   const totalLead = async () => {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`${BASE_URL}/leads/count`, {
-      method: "POST", headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    const data = await res.json();
-    // console.log(data.totalLead);
-    setTotalLeads(data.totalLead);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/leads/count`, {
+        method: "POST", headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      // console.log(data.totalLead);
+      setTotalLeads(data.totalLead);
+    } catch (err) {
+      console.log(err)
+      res.json({
+        success: false,
+        message: "server error"
+      })
+    }
   };
 
   const newStatusLead = async () => {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`${BASE_URL}/leads/new`, {
-      method: "POST", headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    const data = await res.json();
-    setNewStatus(data.newStatus);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/leads/new`, {
+        method: "POST", headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      setNewStatus(data.newStatus);
+    } catch (err) {
+      console.log(err)
+      res.json({
+        success: false,
+        message: "server error"
+      })
+    }
   };
+
+
   const inteStatusLead = async () => {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`${BASE_URL}/leads/interested`, {
-      method: "POST", headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    const data = await res.json();
-    setInteStatus(data.interested);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/leads/interested`, {
+        method: "POST", headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      setInteStatus(data.interested);
+    }
+    catch (err) {
+      console.log(err)
+      res.json({
+        success: false,
+        message: "server error"
+      })
+    }
   };
 
   const contactedStatus = async () => {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`${BASE_URL}/leads/contacted`, {
-      method: "POST", headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    const data = await res.json();
-    setContactStatus(data.contacted);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/leads/contacted`, {
+        method: "POST", headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      setContactStatus(data.contacted);
+    }
+    catch (err) {
+      console.log(err)
+      res.json({
+        success: false,
+        message: "server error"
+      })
+    }
   };
 
   const ClosedWonStatus = async () => {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`${BASE_URL}/leads/won`, {
-      method: "POST", headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    const data = await res.json();
-    setWonStatus(data.won);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/leads/won`, {
+        method: "POST", headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      setWonStatus(data.won);
+    }
+    catch (err) {
+      console.log(err)
+      res.json({
+        success: false,
+        message: "server error"
+      })
+    }
   };
+
+
   const ClosedLostStatus = async () => {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`${BASE_URL}/leads/lost`, {
-      method: "POST", headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    const data = await res.json();
-    setLostStatus(data.lost);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/leads/lost`, {
+        method: "POST", headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      setLostStatus(data.lost);
+    }
+    catch (err) {
+      console.log("contacted error:", err);
+      res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
+
   };
 
   const handleAddLead = async () => {
