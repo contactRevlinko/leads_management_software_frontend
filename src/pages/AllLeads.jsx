@@ -3,7 +3,7 @@ import { Search, Shovel } from "lucide-react";
 import AddFollowUps from "../componenets/AddFollowUps";
 import CustomDropDown from "../componenets/CustomDropDown";
 import CustomPopupDelete from "../componenets/CustomPopupDelete";
-import { BASE_URL } from "../config/config"
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
   const [showFollowUps, setShowFollowUps] = useState(false);

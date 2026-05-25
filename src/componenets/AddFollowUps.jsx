@@ -58,6 +58,7 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
       });
 
       setSelectedType("");
+      setShowFollowUps(false)
     } catch (err) {
       console.log(err);
       alert("Error adding follow up");

@@ -48,6 +48,8 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
         notes: "",
         followUpDate: "",
       });
+      setAddLeadModal(false)
+
     } catch (err) {
       alert("Error: " + err.response?.data?.message);
       console.log(err.response?.data);
