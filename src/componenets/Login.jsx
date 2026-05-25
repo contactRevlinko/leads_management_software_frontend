@@ -1,14 +1,14 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { useUser } from "./userContext";
+import { useUser } from "./UserContext";
 const BASE_URL = "http://localhost:5000/api/auth";
 
 const Login = () => {
- const {user , setUser} = useUser();
+  const { user, setUser } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,19 +17,19 @@ const navigate = useNavigate();
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({
-         
+
           email,
           password,
         }),
       });
       const result = await res.json();
       console.log("login user", result);
-      if(res.ok){
-        localStorage.setItem("token" , result.token);
+      if (res.ok) {
+        localStorage.setItem("token", result.token);
         setUser(result.user)
         navigate("/")
       }
-      else{
+      else {
         navigate("/login")
       }
     } catch (err) {
@@ -44,7 +44,7 @@ const navigate = useNavigate();
           log In
         </h1>
         <div className="flex flex-col items-start px-8 gap-5 ">
-  
+
           <div className="w-full ">
             <h1 className="font-medium mb-1  text-gray-700">email</h1>
             <input
@@ -71,7 +71,7 @@ const navigate = useNavigate();
             className="bg-indigo-700 text-white px-4 py-2 rounded w-full"
             onClick={handleLogin}
           >
-           log In
+            log In
           </button>
         </div>
       </div>
