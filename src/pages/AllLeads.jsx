@@ -3,7 +3,7 @@ import { Search, Shovel } from "lucide-react";
 import AddFollowUps from "../componenets/AddFollowUps";
 import CustomDropDown from "../componenets/CustomDropDown";
 import CustomPopupDelete from "../componenets/CustomPopupDelete";
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://leads-management-software-backend.vercel.app";
 
 const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
   const [showFollowUps, setShowFollowUps] = useState(false);

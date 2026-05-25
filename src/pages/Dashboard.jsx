@@ -1,7 +1,7 @@
   import React, { useEffect, useState } from 'react'
   import { PieChart, Pie, Tooltip, Legend, Cell, } from 'recharts';
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF4842'];
-  const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://leads-management-software-backend.vercel.app";
   
   const Dashboard = () => {
     const [data, setData] = useState([]);

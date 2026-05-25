@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
 import CustomPopupDelete from "./CustomPopupDelete";
-const BASE_URL = "http://localhost:5000/api/followups";
+const BASE_URL = "https://leads-management-software-backend.vercel.app/api/followups";
 
 const FollowupsList = () => {
   const [data, setData] = useState([]);

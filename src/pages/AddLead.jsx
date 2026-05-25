@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import CustomDropDown from "../componenets/CustomDropDown";
 import axios from "axios";
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://leads-management-software-backend.vercel.app";
 
 const AddLead = ({ setAddLeadModal, addLeadModal }) => {
 

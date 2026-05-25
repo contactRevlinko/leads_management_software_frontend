@@ -81,14 +81,14 @@ import React, { useEffect, useState } from "react";
 import AddFollowUps from "../componenets/AddFollowUps";
 import CustomPopupDelete from "../componenets/CustomPopupDelete";
 
-const BASE_URL = "http://localhost:5000/api/followups";
+const BASE_URL = "https://leads-management-software-backend.vercel.app";
 
 const Reminders = () => {
   const [data, setData] = useState([]);
   const [selectedLead, setSelectedLead] = useState(null);
   const [showFollowUps, setShowFollowUps] = useState(false);
-const [deletePopup , setDeletePopup] = useState(false);
-  const [selectedId , setSelectedId] = useState(null);
+  const [deletePopup, setDeletePopup] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
   const fetchTodaysFo = async () => {
     try {
       const res = await fetch(`${BASE_URL}/today`);
@@ -135,7 +135,7 @@ const [deletePopup , setDeletePopup] = useState(false);
           return <div className="border-2 md:w-1/2 bg-indigo-50 rounded border-gray-300 mb-3 p-2" key={follow._id}>
             <div className="flex text-sm gap-13 ">
 
-               
+
               <p className="text-indigo-700 text-lg font-medium  flex gap-2"> ({++index}) {follow.leadId?.name} </p>
             </div>
             <div className="flex text-sm gap-13">
@@ -154,16 +154,16 @@ const [deletePopup , setDeletePopup] = useState(false);
               <p className="text-gray-600">Next Follow Up Date</p>
               <p className="text-gray-700" >{follow.nextFollowupDate ? follow.nextFollowupDate.split("T")[0] : "No Date"}</p>
             </div>
-            <div className="flex w-full mt-2 gap-4"> 
+            <div className="flex w-full mt-2 gap-4">
               <button
-              onClick={() => {
-                setSelectedId(follow._id);
-                setDeletePopup(true);
-              }}
-              className=" w-1/2 px-2 rounded text-sm bg-red-700 text-white py-0.5    "
-            >
-              Delete
-            </button>
+                onClick={() => {
+                  setSelectedId(follow._id);
+                  setDeletePopup(true);
+                }}
+                className=" w-1/2 px-2 rounded text-sm bg-red-700 text-white py-0.5    "
+              >
+                Delete
+              </button>
               {deletePopup && (
                 <CustomPopupDelete
                   onClose={() => setDeletePopup(false)}
@@ -241,7 +241,8 @@ const [deletePopup , setDeletePopup] = useState(false);
                       <button
                         onClick={() => {
                           setSelectedId(followUp._id);
-                          setDeletePopup(true)}}
+                          setDeletePopup(true)
+                        }}
                         className="bg-red-600 text-white px-4 py-1 hover:ring-2 hover:ring-offset-2  hover:ring-red-700 rounded  hover:text-white  "
                       >
                         Delete

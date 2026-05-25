@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import TypeOfCard from "./TypeOfCard";
 import LeadManageRow from "./LeadManageRow";
 import AllLeads from "../pages/AllLeads";
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://leads-management-software-backend.vercel.app";
 import * as XLSX from "xlsx";
 import AddLead from "../pages/AddLead";
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Phone, Mail, UsersRound, MessageSquareText } from "lucide-react";
-const BASE_URL = "http://localhost:5000/api/followups";
+const BASE_URL = "https://leads-management-software-backend.vercel.app/api/followups";
 
 const AddFollowUps = ({ lead, setShowFollowUps }) => {
   const [selectedtype, setSelectedType] = useState("");
