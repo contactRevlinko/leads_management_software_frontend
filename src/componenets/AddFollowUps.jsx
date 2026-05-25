@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Phone, Mail, UsersRound, MessageSquareText } from "lucide-react";
-import { BASE_URL } from "../config/config"
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const AddFollowUps = ({ lead, setShowFollowUps }) => {
   const [selectedtype, setSelectedType] = useState("");

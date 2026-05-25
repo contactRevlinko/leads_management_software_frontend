@@ -6,7 +6,7 @@ import LeadManageRow from "./LeadManageRow";
 import AllLeads from "../pages/AllLeads";
 import * as XLSX from "xlsx";
 import AddLead from "../pages/AddLead";
-import { BASE_URL } from "../config/config";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const LeadMangement = ({ }) => {
   const [filter, setFilter] = useState("All");

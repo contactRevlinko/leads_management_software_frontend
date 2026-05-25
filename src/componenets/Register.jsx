@@ -1,7 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-const BASE_URL = "http://localhost:5000/api/auth";
+// const BASE_URL = "http://localhost:5000/api/auth";
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+console.log(BASE_URL, "BASE_URL")
 
 const Register = () => {
   const [name, setName] = useState("");

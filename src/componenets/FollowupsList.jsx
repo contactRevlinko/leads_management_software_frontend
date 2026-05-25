@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
 import CustomPopupDelete from "./CustomPopupDelete";
-import {BASE_URL} from "../config/config"
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const FollowupsList = () => {
   const [data, setData] = useState([]);
@@ -13,7 +13,7 @@ const FollowupsList = () => {
     try {
       const token = localStorage.getItem("token")
       const res = await fetch(`${BASE_URL}/followups/get-followups`, {
-        method:"POST",
+        method: "POST",
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();

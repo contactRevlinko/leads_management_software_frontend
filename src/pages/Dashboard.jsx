@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { PieChart, Pie, Tooltip, Legend, Cell, } from 'recharts';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF4842'];
-import { BASE_URL } from "../config/config";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
