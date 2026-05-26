@@ -11,13 +11,19 @@ const Dashboard = () => {
   const fetchStatusCount = async () => {
     try {
       const token = localStorage.getItem("token")
-      console.log(token , "token")
+      console.log(token, "token")
       const res = await fetch(`${BASE_URL}/leads/analytics`, {
         headers: {
           Authorization: `Bearer ${token}`,
         }
       });
       const result = await res.json();
+
+          result.byStatus.map((s) => ({
+        name: s._id || "No Status",
+        count: s.count,
+      }))
+
 
       if (res.ok && result.success) {
         setData(
@@ -28,7 +34,9 @@ const Dashboard = () => {
         );
         setTotal(result.total);
       }
-      console.log(result.total)
+      console.log(result)
+      console.log(result.byStatus, "bystatus", result.total , "total")
+
     } catch (err) {
       console.log("Dashboard API error:", err);
     }
