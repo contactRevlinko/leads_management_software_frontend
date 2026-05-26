@@ -30,6 +30,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
+      
       console.log(form, "form");
       const res = await axios.post(`${BASE_URL}/leads/create-lead`, form, {
         headers: {

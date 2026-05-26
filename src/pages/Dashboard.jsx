@@ -11,6 +11,7 @@ const Dashboard = () => {
   const fetchStatusCount = async () => {
     try {
       const token = localStorage.getItem("token")
+      console.log(token , "token")
       const res = await fetch(`${BASE_URL}/leads/analytics`, {
         headers: {
           Authorization: `Bearer ${token}`,
