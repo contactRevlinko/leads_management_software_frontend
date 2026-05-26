@@ -76,8 +76,8 @@ const LeadMangement = () => {
       }));
 
       if (res.ok && result.success) {
-        const total = res.data.total || 0;
-        const byStatus = res.data.byStatus || [];
+        const total = result.total || 0;
+        const byStatus = result.byStatus || [];
 
         setTotalLeads(total);
         setNewStatus(byStatus.find((s) => s._id === "New")?.count || 0)
