@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 // const BASE_URL = "http://localhost:5000/api/auth";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-console.log(BASE_URL, "BASE_URL")
+console.log(BASE_URL, "BASE_URL");
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -30,11 +30,9 @@ const Register = () => {
       const result = await res.json();
       console.log("register user", result);
       if (res.ok) {
-        navigate("/login")
-
-      }
-      else {
-        navigate("/register")
+        navigate("/login");
+      } else {
+        navigate("/register");
       }
     } catch (err) {
       console.log(err);
@@ -96,6 +94,12 @@ const Register = () => {
           >
             Sign Up
           </button>
+          <p
+            className="cursor-pointer text-blue-700 mt-2 font-medium hover:underline"
+            onClick={() => navigate("/login")}
+          >
+            click here for login{" "}
+          </p>
         </div>
       </div>
     </div>

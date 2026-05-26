@@ -73,6 +73,8 @@ const Login = () => {
           >
             log In
           </button>
+          <p className="cursor-pointer text-blue-700 mt-2 font-medium hover:underline"
+           onClick={() => navigate("/register")}>click here for register </p>
         </div>
       </div>
     </div>
