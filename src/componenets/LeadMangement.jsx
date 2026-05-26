@@ -1,14 +1,15 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import TypeOfCard from "./TypeOfCard";
 import LeadManageRow from "./LeadManageRow";
 import AllLeads from "../pages/AllLeads";
 import * as XLSX from "xlsx";
 import AddLead from "../pages/AddLead";
+import axios from "axios";
+
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-const LeadMangement = ({ }) => {
+const LeadMangement = () => {
   const [filter, setFilter] = useState("All");
   const [selectDate, setSelectDate] = useState("");
   const [search, setSearch] = useState("");
@@ -24,45 +25,191 @@ const LeadMangement = ({ }) => {
 
   const navigate = useNavigate();
 
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+
+    return {
+      Authorization: `Bearer ${token}`,
+    };
+  };
+
+  const handleApiError = (err, name) => {
+    console.log(`${name} error:`, err.response?.data || err.message);
+  };
+
   const fetchAllLead = async () => {
     try {
-      const token = localStorage.getItem("token")
-      const res = await fetch(`${BASE_URL}/leads/get-leads`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
+      const res = await axios.post(
+        `${BASE_URL}/leads/get-leads`,
+        {},
+        {
+          headers: getAuthHeaders(),
         }
-      });
-      const data = await res.json();
-      // console.log(data.data, "db Leads");
-      if (res.ok && data.success) {
-        setAllLeads(data.data || []);
+      );
+
+      if (res.data?.success) {
+        setAllLeads(res.data.data || []);
       } else {
         setAllLeads([]);
       }
     } catch (err) {
-      console.log(err);
+      handleApiError(err, "fetchAllLead");
+      setAllLeads([]);
     }
-  }
+  };
 
-  const filtered = allLeads?.filter((lead) => {
+  const totalLead = async () => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/leads/count`,
+        {},
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+
+      setTotalLeads(res.data?.totalLead || 0);
+    } catch (err) {
+      handleApiError(err, "totalLead");
+      setTotalLeads(0);
+    }
+  };
+
+  const newStatusLead = async () => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/leads/new`,
+        {},
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+
+      setNewStatus(res.data?.newStatus || 0);
+    } catch (err) {
+      handleApiError(err, "newStatusLead");
+      setNewStatus(0);
+    }
+  };
+
+  const inteStatusLead = async () => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/leads/interested`,
+        {},
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+
+      setInteStatus(res.data?.interested || 0);
+    } catch (err) {
+      handleApiError(err, "inteStatusLead");
+      setInteStatus(0);
+    }
+  };
+
+  const contactedStatus = async () => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/leads/contacted`,
+        {},
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+
+      setContactStatus(res.data?.contacted || 0);
+    } catch (err) {
+      handleApiError(err, "contactedStatus");
+      setContactStatus(0);
+    }
+  };
+
+  const ClosedWonStatus = async () => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/leads/won`,
+        {},
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+
+      setWonStatus(res.data?.won || 0);
+    } catch (err) {
+      handleApiError(err, "ClosedWonStatus");
+      setWonStatus(0);
+    }
+  };
+
+  const ClosedLostStatus = async () => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/leads/lost`,
+        {},
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+
+      setLostStatus(res.data?.lost || 0);
+    } catch (err) {
+      handleApiError(err, "ClosedLostStatus");
+      setLostStatus(0);
+    }
+  };
+
+  const handleUploadFile = async (e) => {
+    try {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await axios.post(`${BASE_URL}/leads/upload`, formData, {
+        headers: {
+          ...getAuthHeaders(),
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert(res.data?.message || "File uploaded successfully");
+      fetchAllLead();
+      e.target.value = "";
+    } catch (err) {
+      handleApiError(err, "handleUploadFile");
+      alert(err.response?.data?.message || "File upload failed");
+    }
+  };
+
+  const filtered = (allLeads || []).filter((lead) => {
     const matchSearch =
       lead.name?.toLowerCase().includes(search.toLowerCase()) ||
-      lead.phone.includes(search);
+      lead.phone?.includes(search);
 
     const matchStatus = filter === "All" || lead.status === filter;
-    // console.log(matchSearch);
-    // console.log(matchStatus)
 
     const leadDate = lead.followUpDate ? lead.followUpDate.split("T")[0] : "";
     const matchDate = !selectDate || selectDate === leadDate;
-    // console.log("select date", selectDate, "leadDate", leadDate);
 
     return matchSearch && matchStatus && matchDate;
   });
 
+  const sortedLead = [...filtered].sort((a, b) => {
+    if (sortOrder === "asc") {
+      return a.name?.localeCompare(b.name);
+    }
+
+    if (sortOrder === "desc") {
+      return b.name?.localeCompare(a.name);
+    }
+
+    return 0;
+  });
+
   const handleExportExcel = () => {
-    console.log("exported")
     const exportData = (filtered || []).map((lead) => ({
       name: lead.name,
       phone: lead.phone,
@@ -72,164 +219,15 @@ const LeadMangement = ({ }) => {
         ? lead.followUpDate.split("T")[0]
         : "no date",
     }));
-    const workSheet = XLSX.utils.json_to_sheet(exportData); // create empty excel file
-    const workbook = XLSX.utils.book_new(); //add sheet inside excel file
-    XLSX.utils.book_append_sheet(workbook, workSheet, "lead"); //add worksheet into workbook
-    XLSX.writeFile(workbook, "all-leads.xlsx"); // download excel file
+
+    const workSheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, workSheet, "lead");
+    XLSX.writeFile(workbook, "all-leads.xlsx");
   };
 
-  const handleUploadFile = async (e) => {
-    // console.log(e);
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData(); // create a object in form of html
-    // console.log(formData);
-    formData.append("file", file); // add file into form { file : selected file}
-    const res = await fetch(`${BASE_URL}/leads/upload`, {
-      method: "post",
-      body: formData,
-    });
-    const data = await res.json();
-    alert(data.message);
-    fetchAllLead();
-    e.target.value = "";
-  };
-
-  const sortedLead = [...filtered].sort((a, b) => {
-    if (sortOrder === "asc") {
-      // console.log(a.name, b.name, a.name.localeCompare(b.name))
-      return a.name.localeCompare(b.name);
-    }
-    if (sortOrder === "desc") {
-      return b.name.localeCompare(a.name);
-    }
-    return 0;
-  });
-
-  const totalLead = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/leads/count`, {
-        method: "POST", headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-      // console.log(data.totalLead);
-      setTotalLeads(data.totalLead);
-    } catch (err) {
-      console.log(err)
-      res.json({
-        success: false,
-        message: "server error"
-      })
-    }
-  };
-
-  const newStatusLead = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/leads/new`, {
-        method: "POST", headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-      setNewStatus(data.newStatus);
-    } catch (err) {
-      console.log(err)
-      res.json({
-        success: false,
-        message: "server error"
-      })
-    }
-  };
-
-
-  const inteStatusLead = async () => {
-
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/leads/interested`, {
-        method: "POST", headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-      setInteStatus(data.interested);
-    }
-    catch (err) {
-      console.log(err)
-      res.json({
-        success: false,
-        message: "server error"
-      })
-    }
-  };
-
-  const contactedStatus = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/leads/contacted`, {
-        method: "POST", headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-      setContactStatus(data.contacted);
-    }
-    catch (err) {
-      console.log(err)
-      res.json({
-        success: false,
-        message: "server error"
-      })
-    }
-  };
-
-  const ClosedWonStatus = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/leads/won`, {
-        method: "POST", headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-      setWonStatus(data.won);
-    }
-    catch (err) {
-      console.log(err)
-      res.json({
-        success: false,
-        message: "server error"
-      })
-    }
-  };
-
-
-  const ClosedLostStatus = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/leads/lost`, {
-        method: "POST", headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-      setLostStatus(data.lost);
-    }
-    catch (err) {
-      console.log("contacted error:", err);
-      res.status(500).json({
-        success: false,
-        message: err.message,
-      });
-    }
-
-  };
-
-  const handleAddLead = async () => {
+  const handleAddLead = () => {
     setAddLeadModal(true);
   };
 
@@ -243,58 +241,60 @@ const LeadMangement = ({ }) => {
     ClosedWonStatus();
   }, []);
 
-
-
-  if (!allLeads) return;
   return (
-    <div >
-      <div className="md:flex md:justify-between md:items-center ">
+    <div>
+      <div className="md:flex md:justify-between md:items-center">
         <div>
-          <h1 className="md:text-5xl  text-3xl  font-medium">Leads Management</h1>
-          <p className="md:py-3 text-sm md:text-xl  py-2 text-gray-600 ">
+          <h1 className="md:text-5xl text-3xl font-medium">
+            Leads Management
+          </h1>
+          <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
             manage and track your sales pipeline across all channels.
           </p>
         </div>
 
         <button
-          className="bg-indigo-700 text-white w-full md:w-auto mt-4 px-2 py-2  rounded"
-          onClick={() => handleAddLead()}
+          className="bg-indigo-700 text-white w-full md:w-auto mt-4 px-2 py-2 rounded"
+          onClick={handleAddLead}
         >
           + Add Leads
         </button>
+      </div>
 
+      <div className="md:my-0 lg:gap-3 gap-5 my-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <TypeOfCard name="TOTAL LEADS" leads={totalLeads || 0} />
+        <TypeOfCard name="NEW" leads={newStatus || 0} />
+        <TypeOfCard name="INTERESTED" leads={inteStatus || 0} />
+        <TypeOfCard name="CONTACTED" leads={contactStatus || 0} />
+        <TypeOfCard name="CLOSED WON" leads={wonStatus || 0} />
+        <TypeOfCard name="CLOSED LOST" leads={lostStatus || 0} />
       </div>
-      <div className="md:my-0 lg:gap-3 gap-5 my-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5   ">
-        <TypeOfCard name={"TOTAL LEADS"} leads={totalLeads || 0} />
-        <TypeOfCard name={"NEW "} leads={newStatus || 0} />
-        <TypeOfCard name={"INTERESTED"} leads={inteStatus || 0} />
-        <TypeOfCard name={"CONTACTED"} leads={contactStatus || 0} />
-        <TypeOfCard name={"ClOSED WON"} leads={wonStatus || 0} />
-        <TypeOfCard name={"ClOSED LOST"} leads={lostStatus || 0} />
-      </div>
-      <div>
-        <LeadManageRow
-          filter={filter}
-          setFilter={setFilter}
-          filtered={sortedLead}
-          selectDate={selectDate}
-          setSelectDate={setSelectDate}
-          handleExportExcel={handleExportExcel}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          handleUploadFile={handleUploadFile}
-        />
-      </div>
+
+      <LeadManageRow
+        filter={filter}
+        setFilter={setFilter}
+        filtered={sortedLead}
+        selectDate={selectDate}
+        setSelectDate={setSelectDate}
+        handleExportExcel={handleExportExcel}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        handleUploadFile={handleUploadFile}
+      />
+
       <AllLeads
         setSearch={setSearch}
         setAllLeads={setAllLeads}
         filtered={sortedLead}
         allLeads={allLeads}
       />
-      {addLeadModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm  z-50 flex items-center justify-center ">
 
-          <AddLead setAddLeadModal={setAddLeadModal} addLeadModal={addLeadModal} />
+      {addLeadModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <AddLead
+            setAddLeadModal={setAddLeadModal}
+            addLeadModal={addLeadModal}
+          />
         </div>
       )}
     </div>
