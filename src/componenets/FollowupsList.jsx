@@ -42,12 +42,12 @@ const FollowupsList = () => {
   return (
     <div className="w-full sm:w-auto mt-10 h-screen overflow-x-scroll ">
       {/* mobile */}
-      <div className="lg:hidden sm:block md:flex md:gap-3 md:flex-nowrap " >
+      <div className="lg:hidden sm:block md:flex md:gap-3 md:flex-nowrap bg-white" >
         {data.map((follow, index) => {
           return <div className="border-2 md:w-1/2   rounded border-gray-300 mb-3 p-2" key={follow._id}>
-            <div className="flex text-sm gap-13 ">
+            <div className="flex text-sm gap-13 bg-indigo-100 p-2 rounded-2xl mb-4 ">
 
-              <p className="text-indigo-700 text-lg"> ({++index}) {follow.leadId?.name}</p>
+              <p className="text-indigo-700 text-lg font-medium ml-2">  {follow.leadId?.name}</p>
             </div>
             <div className="flex text-sm gap-13">
               <p className="text-gray-600">Follow Up Type</p>
@@ -70,7 +70,7 @@ const FollowupsList = () => {
                 setSelectedId(follow._id);
                 setDeletePopup(true);
               }}
-              className=" px-2 rounded text-sm bg-red-700 text-white py-0.5  mt-2  "
+              className=" px-2 rounded text-md w-1/2 ml-20  bg-indigo-700  text-white py-2  my-4  "
             >
               Delete
             </button>
@@ -133,7 +133,7 @@ const FollowupsList = () => {
                       setSelectedId(followUp._id);
                       setDeletePopup(true);
                     }}
-                    className="hover:ring 2  hover:ring-offset-2 hover:ring-red-700  px-2 rounded bg-red-700 text-white   "
+                    className="bg-indigo-700 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-indigo-700 rounded  hover:text-white  "
                   >
                     Delete
                   </button>

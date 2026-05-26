@@ -1,16 +1,38 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import CustomDropDown from "./CustomDropDown";
+
+
+
 // const BASE_URL = "http://localhost:5000/api/auth";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 console.log(BASE_URL, "BASE_URL");
+const businessTypes = [
+  "Wholesaler",
+  "Retailer",
+  "Distributor",
+  "Manufacturer",
+  "Supplier",
+  "Trader",
+  "Importer",
+  "Exporter",
+  "Dealer",
+  "Service Provider",
+  "Agency",
+  "Franchise",
+  "Consultant",
+  "Freelancer",
+  "Startup",
+];
 
 const Register = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [businessType, setBusinessType] = useState("")
   const navigate = useNavigate();
   const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -24,6 +46,7 @@ const Register = () => {
           name,
           phone,
           email,
+          businessType,
           password,
         }),
       });
@@ -75,6 +98,14 @@ const Register = () => {
               type="email"
               placeholder="username123@gamil.com"
             />
+          </div>
+          <div className="w-full ">
+            <h1 className="font-medium mb-1  text-gray-700">business Type</h1>
+
+            <div className="outline-none border-2  border-gray-300  hover:border-gray-400  rounded px-2 py-2 w-full">
+              <CustomDropDown value={businessType} options={businessTypes}
+                onChange={setBusinessType} />
+            </div>
           </div>
           <div className="w-full ">
             <h1 className="font-medium mb-1  text-gray-700">password</h1>

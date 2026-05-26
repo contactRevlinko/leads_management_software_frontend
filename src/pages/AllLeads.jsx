@@ -128,7 +128,7 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                     setSelectedId(lead._id);
                     setDeletePopup(true);
                   }}
-                  className="bg-red-600 w-full text-sm  text-white  px-2 py-1 focus:ring-2 focus:ring-offset-2  focus:ring-red-700   focus:text-white hover:ring-2 hover:ring-offset-2  hover:ring-red-700 rounded  hover:text-white  "
+                  className="bg-indigo-700 w-full text-sm  text-white  px-2 py-1 focus:ring-2 focus:ring-offset-2  focus:ring-indigo-700   focus:text-white hover:ring-2 hover:ring-offset-2  hover:ring-indigo -700 rounded  hover:text-white  "
                 >
                   Delete
                 </button>
@@ -206,7 +206,7 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                         setSelectedId(lead._id);
                         setDeletePopup(true);
                       }}
-                      className="bg-red-600 text-white px-4 py-1 hover:ring-2 hover:ring-offset-2  hover:ring-red-700 rounded  hover:text-white  "
+                      className="bg-indigo-700 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-indigo-700 rounded  hover:text-white  "
                     >
                       Delete
                     </button>

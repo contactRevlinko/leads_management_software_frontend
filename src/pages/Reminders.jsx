@@ -160,7 +160,7 @@ const Reminders = () => {
                   setSelectedId(follow._id);
                   setDeletePopup(true);
                 }}
-                className=" w-1/2 px-2 rounded text-sm bg-red-700 text-white py-0.5    "
+                className=" w-1/2 px-2 rounded text-sm bg-indigo-700 text-white py-2     "
               >
                 Delete
               </button>
@@ -172,7 +172,7 @@ const Reminders = () => {
               )}
               <button
                 onClick={() => openFollowup(follow.leadId)}
-                className=" w-1/2 bg-white text-sm px-2 py-0.5 rounded whitespace-nowrap hover:bg-indigo-100 hover:ring-2 hover:ring-indigo-200 hover:ring-offset-2"
+                className=" w-1/2 bg-white text-sm px-2 py-0.5 border-2 border-gray-200 rounded whitespace-nowrap hover:bg-indigo-100 hover:ring-2 hover:ring-indigo-200 hover:ring-offset-2"
               >
                 + followups
               </button> </div>
@@ -243,8 +243,7 @@ const Reminders = () => {
                           setSelectedId(followUp._id);
                           setDeletePopup(true)
                         }}
-                        className="bg-red-600 text-white px-4 py-1 hover:ring-2 hover:ring-offset-2  hover:ring-red-700 rounded  hover:text-white  "
-                      >
+                        className="bg-indigo-700 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-indigo-700 rounded  hover:text-white  ">
                         Delete
                       </button>
                       {deletePopup && (
