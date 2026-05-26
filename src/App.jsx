@@ -18,8 +18,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/register" element={<Register/>} />
-        <Route path="/login" element={<Login/>} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
 
         //layout route
         <Route path="/" element={<Layout />}>
@@ -32,7 +32,7 @@ function App() {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/team" element={<Team />} />
           <Route path="/settings" element={<Setting />} />
-          <Route path="/addfollowups" element={<AddFollowUps />}/>
+          <Route path="/addfollowups" element={<AddFollowUps />} />
         </Route>
       </Routes>
     </>

@@ -64,7 +64,10 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
 
   if (!allLeads || !allLeads.length) return;
 
+  console.log("filtered leads", filtered);
+  console.log("all leads", allLeads);
   return (
+
     <div className=" md:p-4 lg:p-0  m-2 md:mt-6 md:rounded-2xl ">
       <div className="flex justify-between pb-5 ">
         <div className="flex mt-3 w-full bg-white p-2 rounded-xl md:w-1/2 gap-2">
@@ -82,7 +85,7 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
           return (
             <div
               className="border-2  bg-white rounded-2xl border-gray-400 p-4 "
-              key={lead._id}
+              key={lead._id || lead.id}
             >
               <h1 className="font-bold text-xl text-indigo-700">
                 {" "}
