@@ -7,6 +7,7 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#FF4842"];
 const Dashboard = () => {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
+  const [byStatus , setByStatus] = useState([]);
 
   const fetchStatusCount = async () => {
     try {
@@ -33,6 +34,7 @@ const Dashboard = () => {
           }))
         );
         setTotal(result.total);
+        setByStatus(result.byStatus);
       }
       console.log(result)
       console.log(result.byStatus, "bystatus", result.total , "total")
