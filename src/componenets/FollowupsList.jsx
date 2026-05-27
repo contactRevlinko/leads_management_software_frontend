@@ -42,26 +42,26 @@ const FollowupsList = () => {
   return (
     <div className="w-full sm:w-auto mt-10 h-screen overflow-x-scroll ">
       {/* mobile */}
-      <div className="lg:hidden sm:block md:flex md:gap-3 md:flex-nowrap bg-white" >
+      <div className="lg:hidden sm:block md:flex md:gap-3 md:flex-nowrap " >
         {data.map((follow, index) => {
-          return <div className="border-2 md:w-1/2   rounded border-gray-300 mb-3 p-2" key={follow._id}>
+          return <div className="border-2 md:w-1/2 bg-white  rounded-lg border-indigo-300 mb-3 p-4" key={follow._id}>
             <div className="flex text-sm gap-13 bg-indigo-100 p-2 rounded-2xl mb-4 ">
 
               <p className="text-indigo-700 text-lg font-medium ml-2">  {follow.leadId?.name}</p>
             </div>
-            <div className="flex text-sm gap-13">
+            <div className="flex text-sm gap-13 mb-1">
               <p className="text-gray-600">Follow Up Type</p>
               <p className="text-gray-700">{follow.followUpType}</p>
             </div>
-            <div className="flex text-sm gap-13">
+            <div className="flex text-sm gap-13 mb-1">
               <p className="text-gray-600">Follow Up Date</p>
               <p className="text-gray-700">{follow.followUpDate ? follow.followUpDate.split("T")[0] : "No Date"}</p>
             </div>
-            <div className="flex text-sm gap-13">
+            <div className="flex text-sm gap-13 mb-1">
               <p className="text-gray-600">Follow Up Time</p>
               <p className="text-gray-700">{follow.followUpTime}</p>
             </div>
-            <div className="flex text-sm gap-5 ">
+            <div className="flex text-sm gap-5 mb-1">
               <p className="text-gray-600">Next Follow Up Date</p>
               <p className="text-gray-700" >{follow.nextFollowupDate ? follow.nextFollowupDate.split("T")[0] : "No Date"}</p>
             </div>
@@ -70,7 +70,7 @@ const FollowupsList = () => {
                 setSelectedId(follow._id);
                 setDeletePopup(true);
               }}
-              className=" px-2 rounded text-md w-1/2 ml-20  bg-indigo-700  text-white py-2  my-4  "
+              className=" px-2 rounded text-md w-full  mt-3  bg-red-400  text-white py-2  mb-4  "
             >
               Delete
             </button>
@@ -133,7 +133,7 @@ const FollowupsList = () => {
                       setSelectedId(followUp._id);
                       setDeletePopup(true);
                     }}
-                    className="bg-indigo-700 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-indigo-700 rounded  hover:text-white  "
+                    className="bg-red-500 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-red-400 rounded  hover:text-white  "
                   >
                     Delete
                   </button>

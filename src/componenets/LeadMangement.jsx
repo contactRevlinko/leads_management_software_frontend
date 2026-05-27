@@ -18,6 +18,10 @@ const LeadMangement = () => {
   const [totalLeads, setTotalLeads] = useState(0);
 
   const [newStatus, setNewStatus] = useState(0);
+  const [hot, setHot] = useState(0);
+  const [cold, setCold] = useState(0);
+  const [warm, setWarm] = useState(0);
+
   const [inteStatus, setInteStatus] = useState(0);
   const [contactStatus, setContactStatus] = useState(0);
   const [wonStatus, setWonStatus] = useState(0);
@@ -78,7 +82,7 @@ const LeadMangement = () => {
       if (res.ok && result.success) {
         const total = result.total || 0;
         const byStatus = result.byStatus || [];
-       console.log(total , byStatus)
+        console.log(total, byStatus)
         setTotalLeads(total);
         setNewStatus(byStatus.find((s) => s._id === "New")?.count || 0)
         setInteStatus(byStatus.find((s) => s._id === "Interested")?.count || 0)
@@ -191,6 +195,9 @@ const LeadMangement = () => {
       <div className="md:my-0 lg:gap-3 gap-5 my-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <TypeOfCard name="TOTAL LEADS" leads={totalLeads} />
         <TypeOfCard name="NEW" leads={newStatus} />
+        <TypeOfCard name="HOT" leads={hot} />
+        <TypeOfCard name="WARM" leads={warm} />
+        <TypeOfCard name="COLD" leads={cold} />
         <TypeOfCard name="INTERESTED" leads={inteStatus} />
         <TypeOfCard name="CONTACTED" leads={contactStatus} />
         <TypeOfCard name="CLOSED WON" leads={wonStatus} />

@@ -25,6 +25,7 @@ const businessTypes = [
   "Consultant",
   "Freelancer",
   "Startup",
+  "other",
 ];
 
 const Register = () => {

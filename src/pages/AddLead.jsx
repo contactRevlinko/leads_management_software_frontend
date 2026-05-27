@@ -13,12 +13,12 @@ import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const AddLead = ({ setAddLeadModal, addLeadModal }) => {
-
   const [form, setForm] = useState({
     name: "",
     phone: "",
     email: "",
     status: "",
+    source: "",
     notes: "",
     followUpDate: "",
   });
@@ -30,15 +30,15 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
-      
+
       console.log(form, "form");
       const res = await axios.post(`${BASE_URL}/leads/create-lead`, form, {
         headers: {
           Authorization: `Bearer ${token}`,
-        }
-      })
+        },
+      });
 
-      console.log(res, "res");
+      console.log("add lead response", res );
 
       alert("lead added successfully ");
       setForm({
@@ -46,11 +46,11 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
         phone: "",
         email: "",
         status: "New",
+        source: "whatsapp",
         notes: "",
         followUpDate: "",
       });
-      setAddLeadModal(false)
-
+      setAddLeadModal(false);
     } catch (err) {
       alert("Error: " + err.response?.data?.message);
       console.log(err.response?.data);
@@ -136,21 +136,42 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
             />
           </div>
         </div>
+        <div className="flex gap-30" >
 
-        <div className="lg:my-5 md:text-lg   my-3">
-          <p className="text-sm mb-1 font-medium">Status : </p>
-          <div className="flex border border-gray-300 gap-2 p-2 rounded-md">
-            <CirclePlus size={17} className="mt-2" />
-
+          <div >
+            <p className="text-sm mb-1 font-medium">Status : </p>
             <CustomDropDown
               value={form.status}
               onChange={(value) => setForm({ ...form, status: value })}
               options={[
                 "New",
+                "Hot",
+                "Warm",
+                "Cold",
                 "Contacted",
                 "Interested",
                 "Closed Won",
                 "Closed Lost",
+              ]}
+            />
+          </div>
+          <div >
+            <p className="text-sm mb-1 font-medium">source: </p>
+            <CustomDropDown
+              value={form.source}
+              onChange={(value) => setForm({ ...form, source: value })}
+              options={[
+                "Whatsapp",
+                "Instagram",
+                "Referral",
+                "Website",
+                "Facebook",
+                "Call",
+                "Email",
+                "Telegram",
+                "Friend",
+               "Other",
+              
               ]}
             />
           </div>

@@ -36,6 +36,7 @@ const LeadManageRow = ({
                 options={[
                   "All",
                   "New",
+                  "Hot", "Warm", "Cold",
                   "Contacted",
                   "Interested",
                   "Closed Won",
@@ -47,7 +48,7 @@ const LeadManageRow = ({
             </div>
           </div>
 
-          <div className="mt-2 ">
+          <div className="mt-2  ">
             <CustomDropDown
               options={["High", "Medium", "Low"]}
               value={value}

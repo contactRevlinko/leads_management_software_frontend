@@ -132,35 +132,35 @@ const Reminders = () => {
 
       <div className="lg:hidden sm:block md:flex md:gap-3 md:flex-nowrap" >
         {data.map((follow, index) => {
-          return <div className="border-2 md:w-1/2 bg-indigo-50 rounded border-gray-300 mb-3 p-2" key={follow._id}>
-            <div className="flex text-sm gap-13 ">
+          return <div className="border-2 md:w-1/2  rounded-lg bg-white border-indigo-200 mb-3 p-4" key={follow._id}>
+       
+ <div className="flex text-sm gap-13 bg-indigo-100 p-2 rounded-2xl mb-4 ">
 
-
-              <p className="text-indigo-700 text-lg font-medium  flex gap-2"> ({++index}) {follow.leadId?.name} </p>
+              <p className="text-indigo-500 text-lg font-medium  flex gap-2"> {follow.leadId?.name} </p>
             </div>
-            <div className="flex text-sm gap-13">
+            <div className="flex text-sm gap-13 mb-1">
               <p className="text-gray-600">Follow Up Type</p>
               <p className="text-gray-700">{follow.followUpType}</p>
             </div>
-            <div className="flex text-sm gap-13">
+            <div className="flex text-sm gap-13  mb-1">
               <p className="text-gray-600">Follow Up Date</p>
               <p className="text-gray-700">{follow.followUpDate ? follow.followUpDate.split("T")[0] : "No Date"}</p>
             </div>
-            <div className="flex text-sm gap-13">
+            <div className="flex text-sm gap-13  mb-1">
               <p className="text-gray-600">Follow Up Time</p>
               <p className="text-gray-700">{follow.followUpTime}</p>
             </div>
-            <div className="flex text-sm gap-5 ">
+            <div className="flex text-sm gap-5  mb-1 ">
               <p className="text-gray-600">Next Follow Up Date</p>
               <p className="text-gray-700" >{follow.nextFollowupDate ? follow.nextFollowupDate.split("T")[0] : "No Date"}</p>
             </div>
-            <div className="flex w-full mt-2 gap-4">
+            <div className="flex w-full mt-4 gap-4">
               <button
                 onClick={() => {
                   setSelectedId(follow._id);
                   setDeletePopup(true);
                 }}
-                className=" w-1/2 px-2 rounded text-sm bg-indigo-700 text-white py-2     "
+                className=" w-1/2 px-2 rounded text-sm bg-red-400 text-white py-2     "
               >
                 Delete
               </button>
@@ -243,7 +243,7 @@ const Reminders = () => {
                           setSelectedId(followUp._id);
                           setDeletePopup(true)
                         }}
-                        className="bg-indigo-700 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-indigo-700 rounded  hover:text-white  ">
+                        className="bg-red-500 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-red-400 rounded  hover:text-white  ">
                         Delete
                       </button>
                       {deletePopup && (

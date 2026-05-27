@@ -29,8 +29,8 @@ const Topbar = ({ handleSideBar }) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      console.log(event)
-      console.log(boxRef.current)
+      // console.log(event)
+      // console.log(boxRef.current)
       if (boxRef.current && !boxRef.current.contains(event.target)) {
         setOpen(false)
       }

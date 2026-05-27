@@ -67,7 +67,6 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
   console.log("filtered leads", filtered);
   console.log("all leads", allLeads);
   return (
-
     <div className=" md:p-4 lg:p-0  m-2 md:mt-6 md:rounded-2xl ">
       <div className="flex justify-between pb-5 ">
         <div className="flex mt-3 w-full bg-white p-2 rounded-xl md:w-1/2 gap-2">
@@ -84,22 +83,26 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
         {filtered.map((lead, i) => {
           return (
             <div
-              className="border-2  bg-white rounded-2xl border-gray-400 p-4 "
+              className="border-2  bg-white rounded-2xl border-gray-400 p-4  "
               key={lead._id || lead.id}
             >
-              <h1 className="font-bold text-xl text-indigo-700">
+              <h1 className="font-bold text-xl text-indigo-500">
                 {" "}
                 {lead.name}
               </h1>
-              <div className="flex gap-20  text-sm">
+              <div className="flex gap-20  text-sm mt-2 mb-1">
                 <p className="text-gray-500 ">mobile </p>
                 <p className="text-gray-700">{lead.phone} </p>
               </div>
-              <div className="flex gap-20 text-sm">
+              <div className="flex gap-20 text-sm mb-1">
                 <p className="text-gray-500">Email </p>
                 <p className="text-gray-700">{lead.email} </p>
               </div>
-              <div className="flex gap-10 text-sm">
+              <div className="flex gap-20 text-sm mb-1">
+                <p className="text-gray-500">Source </p>
+                <p className="text-gray-700">{lead.source} </p>
+              </div>
+              <div className="flex gap-10 text-sm mb-2 mb-1">
                 <p className="text-gray-600"> follow up date </p>
                 <p className="text-gray-700">
                   {lead.followUpDate
@@ -108,19 +111,24 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                 </p>
               </div>
 
-              <CustomDropDown
-                value={lead.status}
-                onChange={(selectedLead) =>
-                  handleStatusChange(lead._id, selectedLead)
-                }
-                options={[
-                  "New",
-                  "Contacted",
-                  "Interested",
-                  "Closed Won",
-                  "Closed Lost",
-                ]}
-              />
+    
+                <CustomDropDown
+                  value={lead.status}
+                  onChange={(selectedLead) =>
+                    handleStatusChange(lead._id, selectedLead)
+                  }
+                  options={[
+                    "New",
+                    "Hot",
+                    "Warm",
+                    "Cold",
+                    "Contacted",
+                    "Interested",
+                    "Closed Won",
+                    "Closed Lost",
+                  ]}
+              /> 
+          
 
               <div className="flex justify-between gap-5 mt-3 ">
                 <button
@@ -128,7 +136,7 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                     setSelectedId(lead._id);
                     setDeletePopup(true);
                   }}
-                  className="bg-indigo-700 w-full text-sm  text-white  px-2 py-1 focus:ring-2 focus:ring-offset-2  focus:ring-indigo-700   focus:text-white hover:ring-2 hover:ring-offset-2  hover:ring-indigo -700 rounded  hover:text-white  "
+                  className="bg-red-500 w-full text-sm  text-white  px-2 py-1 focus:ring-2 focus:ring-offset-2  focus:ring-red-400   focus:text-white hover:ring-2 hover:ring-offset-2  hover:ring-indigo -700 rounded  hover:text-white  "
                 >
                   Delete
                 </button>
@@ -151,8 +159,8 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
       </div>
 
       {/* // desktop  */}
-      <div className=" hidden lg:block bg-white rounded-2xl border border-gray-200  overflow-hidden ">
-        <table className=" w-full ">
+      <div className=" hidden h-screen lg:block bg-white rounded-2xl border border-gray-200  overflow-visible   ">
+        <table className=" w-full">
           <thead className="bg-indigo-100">
             <tr className="  text-gray-500  text-left   ">
               <th className="px-6 py-5 "> SR NO. </th>
@@ -161,6 +169,8 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
               <th className="px-6 py-5">PHONE</th>
               <th className="px-6 py-5 ">EMAIL</th>
               <th className="px-6 py-5">STATUS</th>
+              <th className="px-6 py-5">SOURCE</th>
+
               <th className="px-6 py-5">FOLLOW UP DATE</th>
               <th className="px-6 py-5"></th>
 
@@ -188,6 +198,9 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                       }
                       options={[
                         "New",
+                        "Hot",
+                        "Warm",
+                        "Cold",
                         "Contacted",
                         "Interested",
                         "Closed Won",
@@ -195,6 +208,8 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                       ]}
                     />
                   </td>
+                  <td className="px-2 py-3"> {lead.source} </td>
+
                   <td className="px-2 py-3">
                     {lead.followUpDate
                       ? lead.followUpDate.split("T")[0]
@@ -206,7 +221,7 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                         setSelectedId(lead._id);
                         setDeletePopup(true);
                       }}
-                      className="bg-indigo-700 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-indigo-700 rounded  hover:text-white  "
+                      className="bg-red-500 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-red-400 rounded  hover:text-white  "
                     >
                       Delete
                     </button>
