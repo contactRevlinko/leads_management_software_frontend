@@ -12,16 +12,40 @@ import CustomDropDown from "../componenets/CustomDropDown";
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-const AddLead = ({ setAddLeadModal, addLeadModal }) => {
+
+
+
+
+const AddLead = ({ setAddLeadModal, addLeadModal , }) => {
+  const [teamList , setTeamList] = useState([])
   const [form, setForm] = useState({
     name: "",
     phone: "",
     email: "",
     status: "",
     source: "",
+    assignedTo:"",
     notes: "",
     followUpDate: "",
   });
+
+  const fetchTeamList = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/team/all-team`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+      const result = await res.json();
+      setTeamList(result.data);
+      // console.log("All team member data",result );
+      // console.log("All team member", result.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleChange = (e) => {
     // console.log(e.target.value);
     // console.log(e)
@@ -47,6 +71,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
         email: "",
         status: "New",
         source: "whatsapp",
+        assignedTo: "",
         notes: "",
         followUpDate: "",
       });
@@ -58,6 +83,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
   };
 
   useEffect(() => {
+    fetchTeamList()
     if (addLeadModal) {
       document.body.style.overflow = "hidden";
     } else {
@@ -70,7 +96,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
   }, [addLeadModal]);
 
   return (
-    <div className="lg:w-1/2  w-[90%]  m-auto  ">
+    <div className="  lg:w-1/2  w-[90%]  m-auto  ">
       <div className="lg:p-10 md:p-8 p-5 bg-white rounded">
         <div className="flex justify-between border-b border-gray-300 md:pb-8 lg:pb-4 pb-2">
           <div>
@@ -136,7 +162,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
             />
           </div>
         </div>
-        <div className="flex gap-30" >
+        <div className="flex gap-25" >
 
           <div >
             <p className="text-sm mb-1 font-medium">Status : </p>
@@ -153,6 +179,15 @@ const AddLead = ({ setAddLeadModal, addLeadModal }) => {
                 "Closed Won",
                 "Closed Lost",
               ]}
+            />
+          </div>
+
+          <div >
+            <p className="text-sm mb-1 font-medium">assignedTo : </p>
+            <CustomDropDown
+              value={form.assignedTo}
+              onChange={(value) => setForm({ ...form, assignedTo: value })}
+              options={teamList.map((teamMem) => teamMem.name)}
             />
           </div>
           <div >

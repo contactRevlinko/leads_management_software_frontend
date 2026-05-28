@@ -82,15 +82,17 @@ const LeadMangement = () => {
       if (res.ok && result.success) {
         const total = result.total || 0;
         const byStatus = result.byStatus || [];
-        console.log(total, byStatus)
+        console.log(total, byStatus);
         setTotalLeads(total);
-        setNewStatus(byStatus.find((s) => s._id === "New")?.count || 0)
-        setInteStatus(byStatus.find((s) => s._id === "Interested")?.count || 0)
-        setContactStatus(byStatus.find((s) => s._id === "Contacted")?.count || 0)
-        setWonStatus(byStatus.find((s) => s._id === "Closed Won")?.count || 0)
-        setLostStatus(byStatus.find((s) => s._id === "Closed Lost")?.count || 0)
-
-
+        setNewStatus(byStatus.find((s) => s._id === "New")?.count || 0);
+        setInteStatus(byStatus.find((s) => s._id === "Interested")?.count || 0);
+        setContactStatus(
+          byStatus.find((s) => s._id === "Contacted")?.count || 0,
+        );
+        setWonStatus(byStatus.find((s) => s._id === "Closed Won")?.count || 0);
+        setLostStatus(
+          byStatus.find((s) => s._id === "Closed Lost")?.count || 0,
+        );
       }
     } catch (err) {
       console.log("Dashboard API error:", err);
@@ -124,6 +126,7 @@ const LeadMangement = () => {
   const filtered = (allLeads || []).filter((lead) => {
     const matchSearch =
       lead.name?.toLowerCase().includes(search.toLowerCase()) ||
+      lead.assignedTo?.name?.toLowerCase().includes(search.toLowerCase()) ||
       lead.phone?.includes(search);
 
     const matchStatus = filter === "All" || lead.status === filter;
@@ -171,7 +174,6 @@ const LeadMangement = () => {
   useEffect(() => {
     fetchAllLead();
     fetchStatusCount();
-
   }, []);
 
   return (

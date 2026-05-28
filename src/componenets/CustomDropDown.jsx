@@ -26,7 +26,7 @@ const CustomDropDown = ({ value, options, onChange }) => {
         <div ref={dropdownRef} className="relative overflow-visible ">
             <button
                 type="button"
-                className="border sm:text-sm lg:text-md border-indigo-200 rounded-lg min-w-24 lg:min-w-36 py-1  bg-white"
+                className="border sm:text-sm lg:text-md border-indigo-200 rounded-lg min-w-24 lg:min-w-36  lg:py-1 py-0  bg-white"
                 onClick={() => setShowOptions(!showOptions)}
             >
                 {value || "Select"}

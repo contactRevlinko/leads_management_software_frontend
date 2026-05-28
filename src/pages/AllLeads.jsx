@@ -7,20 +7,9 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
   const [showFollowUps, setShowFollowUps] = useState(false);
-  const [selectedLead, setSelectedLead] = useState(null);
   const [deletePopup, setDeletePopup] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-
-  useEffect(() => {
-    if (showFollowUps) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [showFollowUps]);
+  const [teamList, setTeamList] = useState([]);
 
   const handleDelete = async (id) => {
     // console.log(id, "user id to delete");
@@ -40,11 +29,13 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
+      const token = localStorage.getItem("token")
       console.log(id);
-      console.log(newStatus);
+      console.log("newStatus", newStatus);
       const res = await fetch(`${BASE_URL}/leads/${id}/status`, {
         method: "PATCH",
         headers: {
+          authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ status: newStatus }),
@@ -61,7 +52,63 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
       console.log(err);
     }
   };
+  
+  const fetchTeamList = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/team/all-team`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+      const result = await res.json();
+      setTeamList(result.data);
+      // console.log("All team member data",result );
+      // console.log("All team member", result.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+  const handleAssignedToChange = async (id, newAssignedTo) => {
+    try {
+      console.log(id);
+      console.log("newAssignTo", newAssignedTo);
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/leads/${id}/assign-lead`, {
+        method: "PUT",
+
+        headers: {
+          authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ assignedTo: newAssignedTo }),
+      });
+      const data = await res.json();
+      setAllLeads((prev) =>
+        prev.map((lead) =>
+          lead._id === id
+            ? { ...lead, assignedTo: newAssignedTo }
+            : lead,
+        ),
+      );
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeamList();
+    if (showFollowUps) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showFollowUps]);
   if (!allLeads || !allLeads.length) return;
 
   console.log("filtered leads", filtered);
@@ -101,17 +148,22 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
               <div className="flex gap-20 text-sm mb-1">
                 <p className="text-gray-500">Source </p>
                 <p className="text-gray-700">{lead.source} </p>
-              </div>
-              <div className="flex gap-10 text-sm mb-2 mb-1">
-                <p className="text-gray-600"> follow up date </p>
-                <p className="text-gray-700">
-                  {lead.followUpDate
-                    ? lead.followUpDate.split("T")[0]
-                    : "No Date"}
-                </p>
-              </div>
 
-    
+
+              </div>
+              <div className="flex gap-12 text-sm mb-1">
+                <p className="text-gray-500">assignedTo </p>
+
+                <CustomDropDown
+                  value={lead.assignedTo}
+                  onChange={(selectedAssignedTo) =>
+                    handleAssignedToChange(lead._id, selectedAssignedTo)
+                  }
+                  options={teamList.map((teamMem) => teamMem.name)}
+                />
+              </div>
+              <div className="flex gap-20 text-sm mb-1">
+                <p className="text-gray-500">status </p>
                 <CustomDropDown
                   value={lead.status}
                   onChange={(selectedLead) =>
@@ -127,8 +179,17 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                     "Closed Won",
                     "Closed Lost",
                   ]}
-              /> 
-          
+                />
+              </div>
+              <div className="flex gap-10 text-sm mb-1">
+                <p className="text-gray-600"> follow up date </p>
+                <p className="text-gray-700">
+                  {lead.followUpDate
+                    ? lead.followUpDate.split("T")[0]
+                    : "No Date"}
+                </p>
+              </div>
+
 
               <div className="flex justify-between gap-5 mt-3 ">
                 <button
@@ -169,8 +230,9 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
               <th className="px-6 py-5">PHONE</th>
               <th className="px-6 py-5 ">EMAIL</th>
               <th className="px-6 py-5">STATUS</th>
-              <th className="px-6 py-5">SOURCE</th>
 
+              <th className="px-6 py-5">ASSIGNEDTO</th>
+              <th className="px-6 py-5">SOURCE</th>
               <th className="px-6 py-5">FOLLOW UP DATE</th>
               <th className="px-6 py-5"></th>
 
@@ -193,8 +255,8 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                   <td className="px-2 py-3">
                     <CustomDropDown
                       value={lead.status}
-                      onChange={(selectedLead) =>
-                        handleStatusChange(lead._id, selectedLead)
+                      onChange={(selectedStatus) =>
+                        handleStatusChange(lead._id, selectedStatus)
                       }
                       options={[
                         "New",
@@ -208,7 +270,18 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
                       ]}
                     />
                   </td>
+                  <td>
+                    <CustomDropDown
+                      value={lead.assignedTo}
+                      onChange={(selectedAssignedTo) =>
+                        handleAssignedToChange(lead._id, selectedAssignedTo)
+                      }
+                      options={teamList.map((teamMem) => teamMem.name)}
+                    />
+                  </td>
+
                   <td className="px-2 py-3"> {lead.source} </td>
+
 
                   <td className="px-2 py-3">
                     {lead.followUpDate

@@ -16,7 +16,7 @@ const FollowupsList = () => {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` }
       });
-      const data = await res.json();
+    const data = await res.json();
       setData(data.data);
       // console.log(data.data);
     } catch (err) {
@@ -29,7 +29,7 @@ const FollowupsList = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete this followup?")) {
-      const res = await fetch(`${BASE_URL}/delete/${id}`, {
+      const res = await fetch(`${BASE_URL}/followups/delete/${id}`, {
         method: "DELETE",
       });
 
@@ -38,6 +38,7 @@ const FollowupsList = () => {
       }
     }
   };
+
   if (data.length === 0) return;
   return (
     <div className="w-full sm:w-auto mt-10 h-screen overflow-x-scroll ">
