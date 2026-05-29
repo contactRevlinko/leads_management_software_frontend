@@ -28,7 +28,7 @@ const FollowupsList = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure to delete this followup?")) {
+
       const res = await fetch(`${BASE_URL}/followups/delete/${id}`, {
         method: "DELETE",
       });
@@ -36,7 +36,7 @@ const FollowupsList = () => {
       if (res.ok) {
         setData((prev) => prev.filter((item) => item._id !== id));
       }
-    }
+    
   };
 
   if (data.length === 0) return;

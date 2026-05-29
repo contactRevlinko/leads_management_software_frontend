@@ -67,7 +67,7 @@ const Topbar = ({ handleSideBar }) => {
                 <h1 className=" text-md mb-1">{user?.businessType}</h1>
                 <p className="text-sm mb-2">{user?.email}</p>
               </div>
-                          <button className="bg-red-700 w-full flex text-white gap-5 pl-2 py-1  rounded mt-2" onClick={handleLogout}>
+                          <button className="bg-red-700 w-full flex text-white gap-5 py-1 px-3   rounded mt-2" onClick={handleLogout}>
                 <Power className="mt-1" size={17}/>
                 LogOut
               </button>

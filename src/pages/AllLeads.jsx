@@ -3,13 +3,18 @@ import { Search, Shovel } from "lucide-react";
 import AddFollowUps from "../componenets/AddFollowUps";
 import CustomDropDown from "../componenets/CustomDropDown";
 import CustomPopupDelete from "../componenets/CustomPopupDelete";
+import { useDispatch, useSelector } from "react-redux";
+import {fetchTeamList} from "../redux/teamSlice"
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
+  const dispatch = useDispatch();
+  const {teamList} = useSelector((state) => state.team)
   const [showFollowUps, setShowFollowUps] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [teamList, setTeamList] = useState([]);
+  const [selectedLead, setSelectedLead] = useState("");
+
 
   const handleDelete = async (id) => {
     // console.log(id, "user id to delete");
@@ -52,23 +57,7 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
       console.log(err);
     }
   };
-  
-  const fetchTeamList = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/team/all-team`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-      const result = await res.json();
-      setTeamList(result.data);
-      // console.log("All team member data",result );
-      // console.log("All team member", result.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+
 
   const handleAssignedToChange = async (id, newAssignedTo) => {
     try {
@@ -97,6 +86,10 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
       console.log(err);
     }
   };
+
+useEffect(() => {
+  dispatch(fetchTeamList());
+}, [dispatch])
 
   useEffect(() => {
     fetchTeamList();

@@ -3,14 +3,22 @@ import { useEffect } from "react";
 import { useState } from "react";
 import AddTeam from "./AddTeam";
 import CustomPopupDelete from "./CustomPopupDelete";
-
+import { fetchTeamList , removeteamMember } from "../redux/teamSlice";
+import { useDispatch, useSelector } from "react-redux";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Team = () => {
+
+  const dispatch = useDispatch();
+  const {teamList} = useSelector((state) => state.team);
+  console.log("teamList" , teamList)
   const [openAddTeam, setOpenAddTeam] = useState(false);
-  const [teamList, setTeamList] = useState([]);
   const [deletePopup, setDeletePopup] = useState(false);
   const [selectedId, setSelectedId] = useState("");
+
+useEffect(() => {
+dispatch(fetchTeamList());
+} , [dispatch])
 
   useEffect(() => {
     if (openAddTeam) {
@@ -23,23 +31,6 @@ const Team = () => {
     };
   }, [openAddTeam]);
 
-  const fetchTeamList = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/team/all-team`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-      const result = await res.json();
-      setTeamList(result.data);
-      // console.log("All team member data",result );
-      // console.log("All team member", result.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  console.log("team List", teamList);
 
   const handleDelete = async (id) => {
     try {
@@ -55,7 +46,8 @@ const Team = () => {
       const result = await res.json();
 
       if (res.ok && result.success) {
-        setTeamList((prev) => prev.filter((member) => member._id !== id));
+        // setTeamList((prev) => prev.filter((member) => member._id !== id));
+        dispatch(removeTeamMember(id));
         setDeletePopup(false);
         setSelectedId("");
       } else {
@@ -67,9 +59,7 @@ const Team = () => {
     }
   };
 
-  useEffect(() => {
-    fetchTeamList();
-  }, []);
+  
   return (
     <div>
       <div className="lg:flex md:flex md:justify-between md:items-center lg:justify-between lg:items-center mb-10">
@@ -88,9 +78,9 @@ const Team = () => {
         </button>
       </div>
 {/* //mobile */}
-
-      <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-5 lg:hidden  ">
-        {teamList.map((teamMem, i) => {
+  
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-5 lg:hidden  ">
+        {teamList?.map((teamMem, i) => {
           return (
             <div
               className="border-2  bg-white rounded-2xl border-gray-400 p-4  "
@@ -155,7 +145,7 @@ const Team = () => {
             </tr>
           </thead>
           <tbody>
-            {teamList.map((teamMem) => {
+            {teamList?.map((teamMem) => {
               return (
                 <tr
                   key={teamMem._id}
