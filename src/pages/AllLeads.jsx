@@ -4,28 +4,49 @@ import AddFollowUps from "../componenets/AddFollowUps";
 import CustomDropDown from "../componenets/CustomDropDown";
 import CustomPopupDelete from "../componenets/CustomPopupDelete";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchTeamList} from "../redux/teamSlice"
+import { fetchTeamList } from "../redux/teamSlice"
+import { fetchAllLead, removeLead } from "../redux/allLeadSlice";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
+
+const AllLeads = ({ setSearch, filtered }) => {
+
   const dispatch = useDispatch();
-  const {teamList} = useSelector((state) => state.team)
+  const { teamList } = useSelector((state) => state.team)
+  const { allLeads } = useSelector((state) => state.lead)
+
   const [showFollowUps, setShowFollowUps] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedLead, setSelectedLead] = useState("");
 
 
-  const handleDelete = async (id) => {
-    // console.log(id, "user id to delete");
+
+
+
+ const handleDelete = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
 
     const res = await fetch(`${BASE_URL}/leads/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    // console.log(res, "delete lead response");
-    setAllLeads(allLeads.filter((l) => l._id !== id));
-  };
-  // console.log(allLeads, "All Leads");
+
+    const data = await res.json();
+
+    if (res.ok) {
+      dispatch(removeLead(id));
+      setDeletePopup(false);
+    } else {
+      console.log(data.message);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   const openFollowup = (lead) => {
     setSelectedLead(lead);
@@ -87,9 +108,13 @@ const AllLeads = ({ setSearch, filtered, allLeads, setAllLeads }) => {
     }
   };
 
-useEffect(() => {
-  dispatch(fetchTeamList());
-}, [dispatch])
+  useEffect(() => {
+    dispatch(fetchAllLead());
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(fetchTeamList());
+  }, [dispatch])
 
   useEffect(() => {
     fetchTeamList();
@@ -107,7 +132,7 @@ useEffect(() => {
   console.log("filtered leads", filtered);
   console.log("all leads", allLeads);
   return (
-    <div className=" md:p-4 lg:p-0  m-2 md:mt-6 md:rounded-2xl ">
+    <div className=" md:p-4 lg:p-0  m-2 md:mt-6 md:rounded-2xl overflow-x-scroll ">
       <div className="flex justify-between pb-5 ">
         <div className="flex mt-3 w-full bg-white p-2 rounded-xl md:w-1/2 gap-2">
           <Search />

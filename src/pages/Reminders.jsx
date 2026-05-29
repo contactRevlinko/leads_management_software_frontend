@@ -104,14 +104,14 @@ const Reminders = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure do you want to delete this followup?")) {
+    setShowFollowUps(false)
       const res = await fetch(`${BASE_URL}/followups/delete/${id}`, {
         method: "DELETE",
       });
 
       if (res.ok) {
         setData((prev) => prev.filter((item) => item._id !== id));
-      }
+      
     }
   };
 

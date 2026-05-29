@@ -46,7 +46,7 @@ dispatch(fetchTeamList());
       const result = await res.json();
 
       if (res.ok && result.success) {
-        // setTeamList((prev) => prev.filter((member) => member._id !== id));
+        
         dispatch(removeTeamMember(id));
         setDeletePopup(false);
         setSelectedId("");

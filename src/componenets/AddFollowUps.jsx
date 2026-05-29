@@ -28,6 +28,8 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
   };
 
   const handleSubmit = async () => {
+
+
     if (!form.followUpType || !form.followUpDate || !form.followUpTime) {
       alert("please fill all required fields");
       return;
@@ -46,7 +48,11 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
       });
       const data = await res.json();
       console.log(data);
-      alert("Follow up added successfully");
+      
+      if (res.ok) {
+        setShowFollowUps(false);
+        alert("Lead added successfully");
+      }
 
       setForm({
         leadId: lead.id || "",
@@ -58,7 +64,7 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
       });
 
       setSelectedType("");
-      setShowFollowUps(false)
+     
     } catch (err) {
       console.log(err);
       alert("Error adding follow up");

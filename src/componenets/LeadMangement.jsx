@@ -6,14 +6,23 @@ import AllLeads from "../pages/AllLeads";
 import * as XLSX from "xlsx";
 import AddLead from "../pages/AddLead";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllLead } from "../redux/allLeadSlice";
+
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const LeadMangement = () => {
+  const dispatch = useDispatch()
+  const { allLeads, loading, error } = useSelector((state) => state.lead)
+
+  useEffect(() => {
+    dispatch(fetchAllLead());
+  }, [dispatch])
+
   const [filter, setFilter] = useState("All");
   const [selectDate, setSelectDate] = useState("");
   const [search, setSearch] = useState("");
-  const [allLeads, setAllLeads] = useState([]);
   const [sortOrder, setSortOrder] = useState("");
   const [totalLeads, setTotalLeads] = useState(0);
 
@@ -21,7 +30,6 @@ const LeadMangement = () => {
   const [hot, setHot] = useState(0);
   const [cold, setCold] = useState(0);
   const [warm, setWarm] = useState(0);
-
   const [inteStatus, setInteStatus] = useState(0);
   const [contactStatus, setContactStatus] = useState(0);
   const [wonStatus, setWonStatus] = useState(0);
@@ -30,38 +38,11 @@ const LeadMangement = () => {
 
   const navigate = useNavigate();
 
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem("token");
-
-    return {
-      Authorization: `Bearer ${token}`,
-    };
-  };
 
   const handleApiError = (err, name) => {
     console.log(`${name} error:`, err.response?.data || err.message);
   };
 
-  const fetchAllLead = async () => {
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/leads/get-leads`,
-        {},
-        {
-          headers: getAuthHeaders(),
-        },
-      );
-
-      if (res.data?.success) {
-        setAllLeads(res.data.data || []);
-      } else {
-        setAllLeads([]);
-      }
-    } catch (err) {
-      handleApiError(err, "fetchAllLead");
-      setAllLeads([]);
-    }
-  };
 
   const fetchStatusCount = async () => {
     try {
@@ -172,7 +153,7 @@ const LeadMangement = () => {
   };
 
   useEffect(() => {
-    fetchAllLead();
+
     fetchStatusCount();
   }, []);
 
@@ -220,9 +201,8 @@ const LeadMangement = () => {
 
       <AllLeads
         setSearch={setSearch}
-        setAllLeads={setAllLeads}
         filtered={sortedLead}
-        allLeads={allLeads}
+
       />
 
       {addLeadModal && (
