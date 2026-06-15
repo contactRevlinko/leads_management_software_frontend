@@ -1,12 +1,21 @@
-
-
-
-
 import React, { useEffect, useRef, useState } from "react";
 
 const CustomDropDown = ({ value, options, onChange }) => {
     const [showOptions, setShowOptions] = useState(false);
+    const [openUpward, setOpenUpward] = useState(false);
     const dropdownRef = useRef(null);
+
+    const handleDropdownToggle = () => {
+        if (dropdownRef.current) {
+            const rect = dropdownRef.current.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const dropdownHeight = Math.min(options.length * 40, 208);
+
+            setOpenUpward(spaceBelow < dropdownHeight);
+        }
+
+        setShowOptions(!showOptions);
+    };
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -17,23 +26,32 @@ const CustomDropDown = ({ value, options, onChange }) => {
 
         document.addEventListener("mousedown", handleClickOutside);
 
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     return (
-        <div ref={dropdownRef} className="relative overflow-visible ">
+        <div ref={dropdownRef} className="relative overflow-visible">
             <button
                 type="button"
-                className="border sm:text-sm lg:text-md border-indigo-200 rounded-lg min-w-24 lg:min-w-36  lg:py-1 py-0  bg-white"
-                onClick={() => setShowOptions(!showOptions)}
+                className={`
+          ${value ? "bg-indigo-50" : "bg-white"}
+          border sm:text-sm lg:text-md border-gray-300
+          rounded-md min-w-24 lg:min-w-36 lg:py-2 py-1
+        `}
+                onClick={handleDropdownToggle}
             >
                 {value || "Select"}
             </button>
 
             {showOptions && (
-                <div className="absolute overflow-y-scroll left-0 top-full mt-2  min-w-24  md:min-w-36 bg-white rounded-xl shadow-lg border border-gray-200 z-[9999]">
+                <div
+                    className={`
+            absolute left-0 min-w-24 md:min-w-36
+            bg-white rounded-xl shadow-lg border border-gray-200
+            z-40 max-h-52 overflow-y-auto
+            ${openUpward ? "bottom-full mb-2" : "top-full mt-2"}
+          `}
+                >
                     {options.map((item, i) => (
                         <div
                             key={i}

@@ -1,25 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SideBar from "./SideBar";
 import Topbar from "./Topbar";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, Navigate } from "react-router-dom";
 
 const Layout = () => {
   const [showSideBar, setShowSideBar] = useState(false);
-  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+
   const handleSideBar = () => {
     setShowSideBar((prev) => !prev);
   };
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    }
-  }, []);
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
-    <div className="bg-indigo-50 min-h-screen overflow-x-hidden">
+    <div className="bg-indigo-50/50 min-h-screen overflow-x-hidden">
       {showSideBar && (
-        <div className="fixed backdrop-blur-sm inset-0 bg-black/40 " />
+        <div className="fixed inset-0 z-10 bg-black/40 backdrop-blur-sm" />
       )}
+
       <SideBar
         handleSideBar={handleSideBar}
         showSideBar={showSideBar}
@@ -29,7 +31,7 @@ const Layout = () => {
       <div className="lg:ml-72 min-h-screen">
         <Topbar handleSideBar={handleSideBar} />
 
-        <main className="mt-24  mx-5   overflow-x-hidden">
+        <main className="pt-24 mx-5 overflow-x-hidden">
           <Outlet />
         </main>
       </div>

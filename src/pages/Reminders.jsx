@@ -1,97 +1,39 @@
-// import React from "react";
-// import { useState, useEffect } from "react";
-// const BASE_URL = "http://localhost:5000";
-// const Reminders = () => {
-//   const [reminders, setReminders] = useState([]);
-
-//   const fetchAllReminders = async () => {
-//     const res = await fetch(`${BASE_URL}/api/leads/reminders/today`);
-//     const data = await res.json();
-//     console.log(data.data, "leads data");
-//     setReminders(data.data);
-//   };
-
-//   useEffect(() => {
-//     fetchAllReminders();
-//   }, []);
-
-//   // const isOverdue = (date) => new Date(date) < new Date();
-
-//   const isOverdue = (date) => {
-//     const today = new Date().toISOString().split("T")[0];
-//     // console.log(today);
-//     // console.log(date)
-//     const followDate = date.split("T")[0];
-//     // console.log(today, followDate, "dates")
-
-//     if (today > followDate) {
-//       // console.log("OVERDUE");
-//       return true;
-//     } else {
-//       // console.log("NOT OVERDUE");
-//       return false;
-//     }
-//   };
-
-//   if (!reminders) return;
-//   return (
-//     <div className="h-screen px-5 py-10">
-//       <div className="flex gap-4"><h1 className="font-bold text-2xl"> Follow Up Reminders </h1>
-//         <p className="bg-gray-100 px-1 rounded border-2 border-gray-300"> reminders :  {reminders.length}</p> </div>
-//       {reminders.map((lead) => {
-//         return (
-//           <div
-//             className="bg-gray-300 p-5 gap-2 m-5 rounded w-1/4"
-//             key={lead._id}
-//           >
-//             <div className="flex">
-//               <h3 className="pr-1"> name :  </h3>
-//               <h3>{lead.name}</h3>
-//             </div>
-
-//             <div className="flex">
-//               <p className="pr-1">Phone Number : </p>
-//               <p>{lead.phone}</p>
-//             </div>
-//             <p >
-//               followUpDate :
-//               <span
-//                 className={
-//                   isOverdue(lead.followUpDate)
-//                     ? "text-red-600"
-//                     : "text-green-600"
-//                 }
-//               >
-//                 {lead.followUpDate.split("T")[0]}
-//               </span>
-//             </p>
-//             {isOverdue(lead.followUpDate) && <p>OVERDUE</p>}
-//           </div>
-//         );
-//       })}
-//     </div>
-//   );
-// };
-
-// export default Reminders;
-
-
-
 import React, { useEffect, useState } from "react";
 import AddFollowUps from "../componenets/AddFollowUps";
 import CustomPopupDelete from "../componenets/CustomPopupDelete";
+import { Bell, ChevronsUpDown, Info, Plus, Trash2, Users } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllLead } from "../redux/allLeadSlice";
+import FollowupsList from "../componenets/FollowupsList";
+import CustomDropDown from "../componenets/CustomDropDown";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
+
+
 const Reminders = () => {
+  const dispatch = useDispatch();
+  const { allLeads } = useSelector((state) => state.lead);
+
   const [data, setData] = useState([]);
   const [selectedLead, setSelectedLead] = useState(null);
   const [showFollowUps, setShowFollowUps] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [notePopup, setNotePopup] = useState(false);
+  const [selectedNote, setSelectedNote] = useState("");
+
   const fetchTodaysFo = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/followups/today`);
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${BASE_URL}/followups/today`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       const result = await res.json();
       setData(result.data || []);
     } catch (err) {
@@ -101,17 +43,47 @@ const Reminders = () => {
 
   useEffect(() => {
     fetchTodaysFo();
-  }, []);
+    dispatch(fetchAllLead());
+  }, [dispatch]);
+
+  const getTeamMemberName = (follow) => {
+    const followLeadId = follow.leadId?._id || follow.leadId;
+
+    const matchedLead = allLeads.find(
+      (lead) => String(lead._id) === String(followLeadId)
+    );
+
+    if (!matchedLead?.assignedTo) {
+      return "No Team Member";
+    }
+
+    if (typeof matchedLead.assignedTo === "string") {
+      return matchedLead.assignedTo;
+    }
+
+    return matchedLead.assignedTo.name || "No Team Member";
+  };
 
   const handleDelete = async (id) => {
-    setShowFollowUps(false)
+    try {
+      const token = localStorage.getItem("token");
+
+      setShowFollowUps(false);
+
       const res = await fetch(`${BASE_URL}/followups/delete/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (res.ok) {
         setData((prev) => prev.filter((item) => item._id !== id));
-      
+        setDeletePopup(false);
+        setSelectedId(null);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -125,96 +97,245 @@ const Reminders = () => {
     setShowFollowUps(true);
   };
 
+  const formatTime = (time) => {
+    if (!time) return "No Time";
+
+    return new Date(`1970-01-01T${time}`).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const sortedFollowups = [...data].sort((a, b) => {
+    if (sortOrder === "asc") {
+      return a.followupNo - b.followupNo;
+    }
+
+    return b.followupNo - a.followupNo;
+  });
+
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${BASE_URL}/leads/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+
+        dispatch(fetchAllLead());
+        fetchTodaysFo();
+      } else {
+        toast.error(result.message || "Status update failed");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
   return (
     <div className="h-screen px-5 py-10">
-      <h1 className="text-2xl font-semibold mb-5">Today's Reminders</h1>
+      <div className="mb-10">
+        <h1 className="md:text-5xl text-3xl font-medium">
+          Today's Reminder
+        </h1>
 
-
-      <div className="lg:hidden sm:block md:flex md:gap-3 md:flex-nowrap" >
-        {data.map((follow, index) => {
-          return <div className="border-2 md:w-1/2  rounded-lg bg-white border-indigo-200 mb-3 p-4" key={follow._id}>
-       
- <div className="flex text-sm gap-13 bg-indigo-100 p-2 rounded-2xl mb-4 ">
-
-              <p className="text-indigo-500 text-lg font-medium  flex gap-2"> {follow.leadId?.name} </p>
-            </div>
-            <div className="flex text-sm gap-13 mb-1">
-              <p className="text-gray-600">Follow Up Type</p>
-              <p className="text-gray-700">{follow.followUpType}</p>
-            </div>
-            <div className="flex text-sm gap-13  mb-1">
-              <p className="text-gray-600">Follow Up Date</p>
-              <p className="text-gray-700">{follow.followUpDate ? follow.followUpDate.split("T")[0] : "No Date"}</p>
-            </div>
-            <div className="flex text-sm gap-13  mb-1">
-              <p className="text-gray-600">Follow Up Time</p>
-              <p className="text-gray-700">{follow.followUpTime}</p>
-            </div>
-            <div className="flex text-sm gap-5  mb-1 ">
-              <p className="text-gray-600">Next Follow Up Date</p>
-              <p className="text-gray-700" >{follow.nextFollowupDate ? follow.nextFollowupDate.split("T")[0] : "No Date"}</p>
-            </div>
-            <div className="flex w-full mt-4 gap-4">
-              <button
-                onClick={() => {
-                  setSelectedId(follow._id);
-                  setDeletePopup(true);
-                }}
-                className=" w-1/2 px-2 rounded text-sm bg-red-400 text-white py-2     "
-              >
-                Delete
-              </button>
-              {deletePopup && (
-                <CustomPopupDelete
-                  onClose={() => setDeletePopup(false)}
-                  onDelete={() => handleDelete(selectedId)}
-                />
-              )}
-              <button
-                onClick={() => openFollowup(follow.leadId)}
-                className=" w-1/2 bg-white text-sm px-2 py-0.5 border-2 border-gray-200 rounded whitespace-nowrap hover:bg-indigo-100 hover:ring-2 hover:ring-indigo-200 hover:ring-offset-2"
-              >
-                + followups
-              </button> </div>
-          </div>
-        })}
-
+        <p className="text-gray-500 mt-2">
+          Stay organized with upcoming tasks and follow-up reminders.
+        </p>
       </div>
 
+      {/* mobile */}
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-5 lg:hidden p-5">
+        {data.length === 0 ? (
+          <div className="lg:hidden sm:block col-span-full bg-white rounded-2xl border border-gray-200 p-10 text-center">
+            <Users className="mx-auto mb-3 w-12 h-12 text-gray-400" />
+            <h3 className="text-xl font-semibold text-gray-700">
+              No reminder Found
+            </h3>
+            <p className="text-gray-500 mt-2">
+              You don't have any reminders scheduled today.
+            </p>
+          </div>
+        ) : (
+          data.map((follow) => (
+            <div
+              key={follow._id}
+              className="bg-white rounded-2xl border border-gray-100 shadow-[0_12px_35px_rgba(15,23,42,0.10)] p-4"
+            >
+              <div className="mb-4">
+                <h1 className="text-lg font-bold text-gray-900 capitalize">
+                  {follow.leadId?.name}
+                </h1>
+                <p className="text-xs font-semibold text-gray-400 mt-1">
+                  Lead Details
+                </p>
+              </div>
 
-      <div className="hidden lg:block bg-white  rounded-2xl border border-gray-200 overflow-hidden">
+              <div className="space-y-3 text-sm">
+                <div className="grid grid-cols-[150px_1fr] items-center gap-3">
+                  <p className="text-gray-500">Team Member</p>
+                  <p className="text-gray-800 font-medium">
+                    {getTeamMemberName(follow)}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-[150px_1fr] items-center gap-3">
+                  <p className="text-gray-500">Follow Up Type</p>
+                  <p className="text-gray-800 font-medium">
+                    {follow.followUpType}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-[150px_1fr] items-center gap-3">
+                  <p className="text-gray-500">Follow Up Date</p>
+                  <p className="text-gray-800 font-medium">
+                    {follow.followUpDate
+                      ? follow.followUpDate.split("T")[0]
+                      : "No Date"}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-[150px_1fr] items-center gap-3">
+                  <p className="text-gray-500">Follow Up Time</p>
+                  <p className="text-gray-800 font-medium">
+                    {formatTime(follow.followUpTime)}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-[150px_1fr] items-center gap-3">
+                  <p className="text-gray-500">Next Follow Up Date</p>
+                  <p className="text-gray-800 font-medium">
+                    {follow.nextFollowupDate
+                      ? follow.nextFollowupDate.split("T")[0]
+                      : "No Date"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-full mt-4"> <CustomDropDown
+                value={follow.leadId.status}
+                onChange={(selectedStatus) =>
+                  handleStatusChange(follow.leadId._id, selectedStatus)
+                }
+                options={[
+                  "New",
+                  "Hot",
+                  "Warm",
+                  "Cold",
+                  "Contacted",
+                  "Interested",
+                  "Closed Won",
+                  "Closed Lost",
+                ]}
+              /></div>
+               {follow.notes && (
+                                <button
+                                  onClick={() => {
+                                    setSelectedNote(follow.notes);
+                                    setNotePopup(true);
+                                  }}
+                                  className="mt-4 w-1/2 flex justify-center items-center gap-2 h-10 rounded-xl text-sm font-semibold text-indigo-600 bg-indigo-50 border border-indigo-200"
+                                >
+                                  <Info  size={17} />
+                                  View Note
+                                </button>
+                              )} 
+
+              <div className="flex w-full mt-4 gap-4">
+                <button
+                  onClick={() => {
+                    setSelectedId(follow._id);
+                    setDeletePopup(true);
+                  }}
+                  className="w-1/2 outline-none py-2 rounded-lg text-sm font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 active:scale-[0.98] transition"
+                >
+                  Delete
+                </button>
+
+                <button
+                  onClick={() => openFollowup(follow.leadId)}
+                  className="w-1/2 rounded-lg text-sm font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 active:scale-[0.98] transition whitespace-nowrap"
+                >
+                  + followups
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* desktop */}
+      <div className="hidden lg:block bg-white rounded-2xl border border-gray-200 overflow-visible">
         <table className="w-full">
-          <thead>
-            <tr className="bg-indigo-100 text-left">
-              <th className="px-6 py-5">SR NO</th>
-              <th className="px-6 py-5">NAME</th>
-              <th className="px-6 py-5">FOLLOW UP TYPE</th>
-              <th className="px-6 py-5">FOLLOWUP DATE</th>
-              <th className="px-6 py-5">FOLLOW UP TIME</th>
-              <th className="px-6 py-5">NEXT FOLLOW UP DATE</th>
-              <th className="px-6 py-5">ACTIONS</th>
-
-
+          <thead className="bg-indigo-50 border-b border-gray-200">
+            <tr className="bg-indigo-50/50 text-left text-gray-500 text-sm">
+              <th className="px-6 py-5 font-semibold">
+                <button
+                  onClick={() =>
+                    setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                  }
+                  className="flex items-center gap-2"
+                >
+                  SR NO
+                  <ChevronsUpDown size={16} />
+                </button>
+              </th>
+              <th className="px-6 py-5 font-semibold">NAME</th>
+              <th className="px-6 py-5 font-semibold">TEAM MEMBER</th>
+              <th className="px-6 py-5 font-semibold">FOLLOW UP TYPE</th>
+              <th className="px-6 py-5 font-semibold">FOLLOWUP DATE</th>
+              <th className="px-6 py-5 font-semibold">FOLLOW UP TIME</th>
+              <th className="px-6 py-5 font-semibold">
+                NEXT FOLLOW UP DATE
+              </th>
+              <th className="px-6 py-5 font-semibold">
+                STATUS
+              </th>
+              <th className="px-6 py-5 font-semibold">
+        NOTES
+              </th>
+              <th className="px-6 py-5 font-semibold">ACTIONS</th>
             </tr>
           </thead>
 
           <tbody>
-            {data.length === 0 ? (
+            {sortedFollowups.length === 0 ? (
               <tr>
-                <td className="px-6 py-8 text-center text-gray-500">
-                  No reminders found today
+                <td colSpan="8" className="text-center py-16 text-gray-500">
+                  <Bell className="mx-auto mb-3 w-12 h-12 text-gray-400" />
+                  <h3 className="text-xl font-semibold text-gray-700">
+                    No reminder Found
+                  </h3>
+                  <p className="mt-2">
+                    You don't have any reminders scheduled today.
+                  </p>
                 </td>
               </tr>
             ) : (
-              data.map((followUp, i) => (
+              sortedFollowups.map((followUp, i) => (
                 <tr
                   key={followUp._id}
                   className="border-b-2 border-gray-200 text-left"
                 >
-                  <td className="px-6 py-5">{i + 1}</td>
+                  <td className="px-6 py-5" >{followUp.followupNo}</td>
 
                   <td className="px-6 py-5">
                     {followUp.leadId?.name || "No Name"}
+                  </td>
+
+                  <td className="px-6 py-5">
+                    {getTeamMemberName(followUp)}
                   </td>
 
                   <td className="px-6 py-5">{followUp.followUpType}</td>
@@ -226,7 +347,7 @@ const Reminders = () => {
                   </td>
 
                   <td className="px-6 py-5">
-                    {followUp.followUpTime || "-"}
+                    {formatTime(followUp.followUpTime)}
                   </td>
 
                   <td className="px-6 py-5">
@@ -234,30 +355,60 @@ const Reminders = () => {
                       ? followUp.nextFollowupDate.split("T")[0]
                       : "No Date"}
                   </td>
+                  <td className="px-2 py-3">
+                    <CustomDropDown
+                      value={followUp.leadId.status}
+                      onChange={(selectedStatus) =>
+                        handleStatusChange(followUp.leadId._id, selectedStatus)
+                      }
+                      options={[
+                        "New",
+                        "Hot",
+                        "Warm",
+                        "Cold",
+                        "Contacted",
+                        "Interested",
+                        "Closed Won",
+                        "Closed Lost",
+                      ]}
+                    />
+                  </td>
 
+ <td className="px-6 py-5">
+                    {followUp.notes ? (
+                      <button
+                        onClick={() => {
+                          setSelectedNote(followUp.notes);
+                          setNotePopup(true);
+                        }}
+                        className="text-indigo-600 bg-indigo-50 border border-indigo-200 p-2 rounded-lg hover:bg-indigo-100"
+                      >
+                        <Info size={18} />
+                      </button>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+  
                   <td className="px-6 py-5">
                     <div className="flex gap-5 items-center">
-
                       <button
                         onClick={() => {
                           setSelectedId(followUp._id);
-                          setDeletePopup(true)
+                          setDeletePopup(true);
                         }}
-                        className="bg-red-500 w-full text-sm  text-white  px-2 py-1  hover:ring-2 hover:ring-offset-2  hover:ring-red-400 rounded  hover:text-white  ">
+                        className="text-red-600 bg-red-50 flex w-full text-sm justify-center items-center px-4 py-1 gap-3 border border-red-200 hover:ring-2 hover:ring-offset-2 hover:ring-red-300 rounded-lg"
+                      >
+                        <Trash2 size={15} />
                         Delete
                       </button>
-                      {deletePopup && (
-                        <CustomPopupDelete
-                          onClose={() => setDeletePopup(false)}
-                          onDelete={() => handleDelete(selectedId)}
-                        />
-                      )}
 
                       <button
                         onClick={() => openFollowup(followUp.leadId)}
-                        className="bg-gray-200 text-sm px-4 py-1 rounded whitespace-nowrap hover:bg-indigo-100 hover:ring-2 hover:ring-indigo-200 hover:ring-offset-2"
+                        className="flex justify-center items-center text-sm gap-3 p-1 bg-indigo-50 text-indigo-700 px-2 rounded-lg whitespace-nowrap hover:bg-indigo-100 hover:ring-2 border border-indigo-200 hover:ring-indigo-300 hover:ring-offset-2"
                       >
-                        + followups
+                        <Plus size={15} />
+                        FollowUps
                       </button>
                     </div>
                   </td>
@@ -268,6 +419,13 @@ const Reminders = () => {
         </table>
       </div>
 
+      {deletePopup && (
+        <CustomPopupDelete
+          onClose={() => setDeletePopup(false)}
+          onDelete={() => handleDelete(selectedId)}
+        />
+      )}
+
       {showFollowUps && selectedLead && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <AddFollowUps
@@ -276,7 +434,32 @@ const Reminders = () => {
           />
         </div>
       )}
+      {notePopup && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-3">
+              Followup Note
+            </h2>
+
+            <p className="text-gray-600 text-sm leading-6 whitespace-pre-wrap">
+              {selectedNote}
+            </p>
+
+            <button
+              onClick={() => {
+                setNotePopup(false);
+                setSelectedNote("");
+              }}
+              className="mt-6 w-full bg-indigo-600 text-white py-2 rounded-xl hover:bg-indigo-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+      <FollowupsList /> 
     </div>
+
   );
 };
 

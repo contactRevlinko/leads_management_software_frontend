@@ -32,11 +32,11 @@ const teamSlice = createSlice({
     error: null,
   },
   reducers: {
-    removeteamMember: (state, action) => {
-      state.teamList = state.teamList.filter((member) => {
-        member._id !== action.payload;
-      });
-    },
+ removeteamMember: (state, action) => {
+  state.teamList = state.teamList.filter(
+    (member) => member._id !== action.payload
+  );
+},
   },
 
   extraReducers: (builder) => {
@@ -50,7 +50,7 @@ const teamSlice = createSlice({
         state.teamList= action.payload;
     })
     .addCase(fetchTeamList.rejected , (state, action ) =>{
-        state.loadnig = false;
+     state.loading = false;
         state.error = action.payload;
     })
   },

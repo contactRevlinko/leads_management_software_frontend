@@ -1,89 +1,36 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import {
-  User,
-  Phone,
-  Mail,
-  CirclePlus,
-  NotebookPen,
-  CalendarFold,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { User, Phone, Mail, NotebookPen, X } from "lucide-react";
 import CustomDropDown from "../componenets/CustomDropDown";
 import axios from "axios";
+import { fetchAllLead } from "../redux/allLeadSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTeamList } from "../redux/teamSlice";
+import toast from "react-hot-toast";
+import CustomCalendar from "../componenets/CustomCalender"
+import { validateEmail } from "../utils/validation";
+
 const BASE_URL = import.meta.env.VITE_API_URL;
 
+const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
+  const dispatch = useDispatch();
+  const { teamList } = useSelector((state) => state.team);
 
-
-
-
-const AddLead = ({ setAddLeadModal, addLeadModal , }) => {
-  const [teamList , setTeamList] = useState([])
   const [form, setForm] = useState({
     name: "",
     phone: "",
     email: "",
-    status: "",
-    source: "",
-    assignedTo:"",
+    status: "New",
+    source: "Whatsapp",
+    assignedTo: "",
     notes: "",
     followUpDate: "",
   });
 
-  const fetchTeamList = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/team/all-team`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-      const result = await res.json();
-      setTeamList(result.data);
-      // console.log("All team member data",result );
-      // console.log("All team member", result.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleChange = (e) => {
-    // console.log(e.target.value);
-    // console.log(e)
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-  const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      console.log(form, "form");
-      const res = await axios.post(`${BASE_URL}/leads/create-lead`, form, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("add lead response", res );
-
-      alert("lead added successfully ");
-      setForm({
-        name: "",
-        phone: "",
-        email: "",
-        status: "New",
-        source: "whatsapp",
-        assignedTo: "",
-        notes: "",
-        followUpDate: "",
-      });
-      setAddLeadModal(false);
-    } catch (err) {
-      alert("Error: " + err.response?.data?.message);
-      console.log(err.response?.data);
-    }
-  };
+  useEffect(() => {
+    dispatch(fetchTeamList());
+  }, [dispatch]);
 
   useEffect(() => {
-    fetchTeamList()
     if (addLeadModal) {
       document.body.style.overflow = "hidden";
     } else {
@@ -95,80 +42,167 @@ const AddLead = ({ setAddLeadModal, addLeadModal , }) => {
     };
   }, [addLeadModal]);
 
+  const handleChange = (e) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+       if (!validateEmail(form.email)) {
+              toast.error("Please enter a valid email address");
+              return;
+            }
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.post(`${BASE_URL}/leads/create-lead`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success("Lead added successfully");
+
+      setForm({
+        name: "",
+        phone: "",
+        email: "",
+        status: "New",
+        source: "Whatsapp",
+        assignedTo: "",
+        notes: "",
+        followUpDate: "",
+      });
+
+      dispatch(fetchAllLead());
+
+      if (fetchStatusCount) {
+        fetchStatusCount();
+      }
+
+      setAddLeadModal(false);
+    } catch (err) {
+      toast.error("Error: " + (err.response?.data?.message || err.message));
+      console.log(err.response?.data);
+    }
+  };
+
   return (
-    <div className="  lg:w-1/2  w-[90%]  m-auto  ">
+    <div className="lg:w-1/2 w-[90%] m-auto">
       <div className="lg:p-10 md:p-8 p-5 bg-white rounded">
         <div className="flex justify-between border-b border-gray-300 md:pb-8 lg:pb-4 pb-2">
           <div>
-            <h2 className="font-bold  text-2xl mb-1  ">Created New Lead</h2>
-            <p>Add a new lead to your pipeline </p>
+            <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 mb-2">
+              Create New Lead
+            </h1>
+            <p className="text-gray-600">
+              Add a high value prospect to your sales pipeline
+            </p>
           </div>
 
           <button
             onClick={() => setAddLeadModal(false)}
-            className="bg-indigo-600 text-white md:w-12 md:h-12 lg:w-10 lg:h-10 w-7 h-7  hover:bg-indigo-700  rounded-full"
+            className="bg-indigo-100 text-indigo-700 font-medium md:w-12 md:h-12 lg:w-10 lg:h-10 w-7 h-7 hover:bg-indigo-200 rounded-lg flex items-center justify-center"
           >
-            X
+            <X size={18} />
           </button>
         </div>
 
-        <div className="lg:flex gap-5 lg:w-full justify-between">
+        <div className="lg:flex gap-5 lg:w-full justify-between text-gray-600">
+
+
           <div className="lg:my-5 md:my-3 md:text-lg my-2 w-full">
-            <p className="text-sm md:mb-2 mb-1 font-medium"> Full Name </p>
-            <div className="flex  border border-gray-300 gap-2 p-2 rounded-md">
+            <p className="text-sm  mb-1 font-medium">Full Name</p>
+            <div
+              className={`${form.name ? "bg-indigo-50" : "bg-white"
+                } flex border border-gray-300 gap-2 p-2 rounded-xl`}
+            >
               <User size={17} />
               <input
-                className=" outline-none  w-full rounded  text-sm"
+                className="outline-none w-full text-sm bg-transparent"
+                placeholder="Full name"
                 name="name"
-                placeholder="Enter Full Name"
                 value={form.name}
                 onChange={handleChange}
+                autoComplete="off"
               />
             </div>
           </div>
 
-          <div className="lg:my-5 md:text-lg my-3 w-full">
-            <p className="text-sm mb-1 font-medium">Email : </p>
-            <div className="flex border border-gray-300 gap-2 p-2  rounded-md">
+          <div className="lg:my-5  md:my-3 md:text-lg my-2 w-full ">
+            <p className="text-sm mb-1 font-medium">Email Address</p>
+            <div
+              className={`${form.email ? "bg-indigo-50" : "bg-white"
+                } flex border border-gray-300 gap-2 p-2 rounded-xl`}
+            >
               <Mail size={17} />
               <input
-                className=" outline-none  w-full text-sm"
+                className="outline-none w-full text-sm bg-transparent"
+                type="text"
                 name="email"
-                placeholder="email"
+                placeholder="example@gmail.com"
                 value={form.email}
                 onChange={handleChange}
+                autoComplete="off"
+                spellCheck={false}
               />
             </div>
           </div>
         </div>
 
-        <div className="lg:my-5 md:text-lg my-3">
-          <p className="text-sm mb-1 font-medium">Mobile Number : </p>
-          <div className="flex  border border-gray-300 gap-2 pt-2 px-2 rounded-md">
-            <div className="border-r border-gray-300  flex gap-2 ">
-              <Phone size={17} />
-              <select className="outline-none bg-transparent text-sm mb-3  ">
-                <option>+91</option>
-                <option>+1</option>
-                <option>+44</option>
-              </select>
-            </div>
+        <div className=" md:text-lg my-3 w-full text-gray-600">
+          <p className="text-sm mb-1 font-medium">Mobile Number</p>
+
+          <div
+            className={`${form.phone ? "bg-indigo-50" : "bg-white"
+              } flex border border-gray-300 gap-2 p-2 rounded-xl`}
+          >
+            <Phone size={17} />
+
             <input
-              className=" outline-none w-full rounded  mb-4 text-sm"
+              className="outline-none w-full text-sm bg-transparent"
+              type="text"
               name="phone"
-              placeholder="phone"
+              placeholder="Mobile number"
               value={form.phone}
-              onChange={handleChange}
+              onChange={(e) => {
+                let value = e.target.value.replace(/\D/g, "");
+
+              
+                if (value.startsWith("91") && value.length > 10) {
+                  toast.error("Please enter 10 digit number without +91");
+                  value = value.substring(2);
+                }
+
+                if (value.length > 10) {
+                  toast.error("Only 10 digits allowed ");
+                }
+
+                setForm((prev) => ({
+                  ...prev,
+                  phone: value.slice(0, 10),
+                }));
+              }}
+              autoComplete="off"
+              spellCheck={false}
             />
           </div>
         </div>
-        <div className="flex gap-25" >
 
-          <div >
-            <p className="text-sm mb-1 font-medium">Status : </p>
+        <p className="text-indigo-500 m-2 text-[0.8rem] font-medium">
+          LEAD DETAILS
+        </p>
+
+        <div className="grid  gap-4 grid-cols-3 ">
+          <div className="text-gray-600">
+            <p className="text-sm mb-1 font-medium">Status</p>
             <CustomDropDown
               value={form.status}
-              onChange={(value) => setForm({ ...form, status: value })}
+              onChange={(value) =>
+                setForm((prev) => ({ ...prev, status: value }))
+              }
               options={[
                 "New",
                 "Hot",
@@ -182,19 +216,24 @@ const AddLead = ({ setAddLeadModal, addLeadModal , }) => {
             />
           </div>
 
-          <div >
-            <p className="text-sm mb-1 font-medium">assignedTo : </p>
+          <div className="text-gray-600">
+            <p className="text-sm mb-1 font-medium">Assigned To</p>
             <CustomDropDown
               value={form.assignedTo}
-              onChange={(value) => setForm({ ...form, assignedTo: value })}
+              onChange={(value) =>
+                setForm((prev) => ({ ...prev, assignedTo: value }))
+              }
               options={teamList.map((teamMem) => teamMem.name)}
             />
           </div>
-          <div >
-            <p className="text-sm mb-1 font-medium">source: </p>
+
+          <div className="text-gray-600">
+            <p className="text-sm mb-1 font-medium">Source</p>
             <CustomDropDown
               value={form.source}
-              onChange={(value) => setForm({ ...form, source: value })}
+              onChange={(value) =>
+                setForm((prev) => ({ ...prev, source: value }))
+              }
               options={[
                 "Whatsapp",
                 "Instagram",
@@ -205,46 +244,63 @@ const AddLead = ({ setAddLeadModal, addLeadModal , }) => {
                 "Email",
                 "Telegram",
                 "Friend",
-               "Other",
-              
+                "Other",
               ]}
             />
           </div>
         </div>
 
-        <div className="lg:my-5 md:text-lg my-3">
-          <p className="text-sm mb-1 font-medium">notes:</p>
-          <div className="flex border border-gray-300 gap-2 p-2  rounded-md">
+        <div className="lg:my-5 md:text-lg my-3 text-gray-600">
+          <p className="text-sm mb-1 font-medium">Notes</p>
+          <div
+            className={`${form.notes ? "bg-indigo-50" : "bg-white"
+              } flex border border-gray-300 gap-2 p-2 rounded-xl`}
+          >
             <NotebookPen size={17} />
             <textarea
-              placeholder="add a note (optional)"
-              className="outline-none text-sm w-full  "
+              placeholder="Add a private note regarding this lead"
+              className="outline-none text-sm w-full bg-transparent resize-none overflow-y-auto"
               name="notes"
               value={form.notes}
-              onChange={handleChange}
+              rows={2}
+              style={{
+                minHeight: "24px",
+                maxHeight: "192px", // 8 lines × 24px
+              }}
+              onChange={(e) => {
+                handleChange(e);
+
+                e.target.style.height = "auto";
+                e.target.style.height = `${Math.min(
+                  e.target.scrollHeight,
+                  192
+                )}px`;
+              }}
+              autoComplete="off"
+              spellCheck={false}
             />
           </div>
         </div>
 
-        <div className="lg:my-5 my-3  md:text-lg ">
-          <p className="text-sm mb-1 font-medium">Follow up date :</p>
-          <div className="flex border border-gray-300 gap-2 p-2 rounded-md">
-            <input
-              className="outline-none px-2 w-full  "
+        <div className="flex flex-col md:flex-row justify-between items-center gap-5">
+          <div className="text-gray-600 w-full md:w-1/2">
+            <p className="text-sm mb-1 font-medium">Follow Up Date</p>
+
+            <CustomCalendar
               name="followUpDate"
-              type="date"
               value={form.followUpDate}
               onChange={handleChange}
+              placeholder="Select follow up date"
             />
           </div>
-        </div>
 
-        <button
-          className="text-white py-1 px-2  border-2 border-gray-300 md:py-2 bg-indigo-700 md:px-3 lg:py-1 lg:px-2 cursor-pointer  rounded  hover:bg-indigo-800 hover:font-medium hover:text-white  "
-          onClick={handleSubmit}
-        >
-          Save Lead
-        </button>
+          <button
+            className="w-full md:w-1/2 h-10 md:mt-5  text-white bg-indigo-700 rounded cursor-pointer hover:bg-indigo-800"
+            onClick={handleSubmit}
+          >
+            Save Lead
+          </button>
+        </div>
       </div>
     </div>
   );

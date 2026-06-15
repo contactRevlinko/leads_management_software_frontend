@@ -1,4 +1,16 @@
+import {
+  ChartNoAxesCombined,
+  ChartPie,
+  FunnelIcon,
+  HeartHandshake,
+  SunMedium,
+  Users,
+  Plus,
+  Link2,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
+import SqureCard from "../componenets/SqureCard";
+import AddLead from "../pages/AddLead"
 import {
   Cell,
   Funnel,
@@ -10,45 +22,55 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import CustomFunnelTooltip from "../componenets/CustonToolTip";
 
-const SourceCOLOR = [
-  "#FCA5A5",
-  "#99F6E4",
-  "#FDE68A",
-  "#86EFAC",
-  "#93C5FD",
-  "#D8B4FE",
-  "#F9A8D4",
-  "#67E8F9",
-  "#C4B5FD",
-];
-const COLORS = [
-  "#A5B4FC",
-  "#F9A8D4",
-  "#FCD34D",
-  "#6EE7B7",
-  "#93C5FD",
-  "#C4B5FD",
-  "#FDA4AF",
-  "#5EEAD4",
-];
+const SOURCE_COLORS = {
+  Website: "#6366F1",
+  Whatsapp: "#25D366",
+  Instagram: "#E1306C",
+  Facebook: "#1877F2",
+  Referral: "#F59E0B",
+  Call: "#10B981",
+  Email: "#EF4444",
+  Telegram: "#229ED9",
+  Friend: "#8B5CF6",
+  Other: "#94A3B8",
+  "No Source": "#CBD5E1",
+};
+
+export const STATUS_COLORS = {
+  New: "#6366F1",         
+  Hot: "#EF4444",         
+  Warm: "#F59E0B",        
+  Cold: "#06B6D4",         
+  Contacted: "#8B5CF6",    
+  Interested: "#EC4899",   
+  "Closed Won": "#10B981", 
+  "Closed Lost": "#6B7280", 
+  "No Status": "#CBD5E1",
+};
+
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
-  const [sourceTotal, setSourceTotal] = useState(0);
   const [souceData, setSourceData] = useState([]);
+
+  const [warm, setWarm] = useState(0);
+  const [inteStatus, setInteStatus] = useState(0);
+  const [wonStatus, setWonStatus] = useState(0);
 
   const fetchStatusCount = async () => {
     try {
       const token = localStorage.getItem("token");
-      console.log(token, "token");
+
       const res = await fetch(`${BASE_URL}/leads/analytics`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
       const result = await res.json();
 
       if (res.ok && result.success) {
@@ -56,12 +78,23 @@ const Dashboard = () => {
           name: s._id || "No Status",
           count: s.count,
         }));
+
         setTotal(result.total);
         setData(formattedData);
-        console.log(formattedData, "formattedData");
-      }
 
-      console.log(result);
+        const warmLead =
+          formattedData.find((item) => item.name === "Warm")?.count || 0;
+
+        const interestedLead =
+          formattedData.find((item) => item.name === "Interested")?.count || 0;
+
+        const wonLead =
+          formattedData.find((item) => item.name === "Closed Won")?.count || 0;
+
+        setWarm(warmLead);
+        setInteStatus(interestedLead);
+        setWonStatus(wonLead);
+      }
     } catch (err) {
       console.log("Dashboard API error:", err);
     }
@@ -70,95 +103,200 @@ const Dashboard = () => {
   const fetchSource = async () => {
     try {
       const token = localStorage.getItem("token");
+
       const res = await fetch(`${BASE_URL}/leads/source`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
       const result = await res.json();
-      console.log(" source ", result);
 
       if (res.ok && result.success) {
         const formattedDataSource = result.source.map((s) => ({
           name: s._id || "No Source",
           count: s.count,
         }));
+
         setSourceData(formattedDataSource);
-        setSourceTotal(result.total);
-        console.log("formattedData of source ", formattedDataSource);
       }
     } catch (err) {
-      console.log(err);
+      console.log("Source API error:", err);
     }
   };
+
   useEffect(() => {
     fetchStatusCount();
     fetchSource();
   }, []);
 
+  const conversionRate =
+    total > 0 ? ((wonStatus / total) * 100).toFixed(1) : 0;
+
+  const cardData = [
+    {
+      name: "TOTAL LEADS",
+      leads: total,
+      icon: Users,
+      color: { bg: "bg-indigo-100", text: "text-indigo-600" },
+    },
+    {
+      name: "WARM",
+      leads: warm,
+      icon: SunMedium,
+      color: { bg: "bg-orange-100", text: "text-orange-600" },
+    },
+    {
+      name: "INTERESTED",
+      leads: inteStatus,
+      icon: HeartHandshake,
+      color: { bg: "bg-pink-100", text: "text-pink-600" },
+    },
+    {
+      name: "CONVERSION RATE",
+      leads: `${conversionRate}%`,
+      icon: ChartNoAxesCombined,
+      color: { bg: "bg-amber-100", text: "text-amber-600" },
+    },
+  ];
+
   return (
-    <div className="min-h-screen mt-10 ">
-      <div className="flex gap-4">
-        <h2 className="font-bold text-2xl">Total Leads:</h2>
-        <p className="bg-gray-100 rounded-full px-2 border-2 border-gray-300">
-          {total}
+    <div className="min-h-screen bg-slate-50 p-6">
+    
+      <div className="mb-10">
+        <h1 className="md:text-5xl text-3xl font-medium">  Analytics Overview</h1>
+        <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
+          Track lead performance, sources and conversion trends
         </p>
       </div>
 
-
-      <div className="w-full max-w-xl h-[500px] bg-white rounded-2xl mb-20 mt-10 shadow p-5 ">
-        <h1 className="text-xl font-bold mb-5">Lead status breakdown</h1>
-        <ResponsiveContainer width="100%" height="90%">
-          <FunnelChart>
-            <Tooltip />
-
-            <Funnel dataKey="count" data={data} isAnimationActive>
-              <LabelList
-                position="center"
-                fill="#000"
-                stroke="none"
-                dataKey="name"
-              />
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Funnel>
-
-          </FunnelChart>
-
-        </ResponsiveContainer>
+      <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {cardData.map((card) => (
+          <SqureCard
+            key={card.name}
+            name={card.name}
+            leads={card.leads}
+            icon={card.icon}
+            color={card.color}
+          />
+        ))}
       </div>
 
-      <div className="bg-white w-full max-w-xl p-5 rounded-xl shadow-md my-10 h-[500px] ">
-        <h1 className="text-xl font-bold mb-5">Lead Source Breakdown</h1>
-        <ResponsiveContainer width="100%" height="90%">
-          <PieChart>
-            <Pie
-              data={souceData}
-              dataKey="count"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={120}
-              label
-            >
-              {souceData.map((entry, index) => (
-                <Cell
-                  key={index}
-                  fill={SourceCOLOR[index % SourceCOLOR.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="mb-6 flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50">
+              <FunnelIcon className="h-7 w-7 text-indigo-600" />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">
+                Lead Status Breakdown
+              </h2>
+              <p className="text-sm text-slate-500">
+                Funnel view of current lead stages
+              </p>
+            </div>
+          </div>
+
+          <div className="h-[460px]">
+            {data.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <FunnelChart>
+                  <Tooltip content={<CustomFunnelTooltip />} />
+                  <Funnel dataKey="count" data={data} isAnimationActive>
+                    <LabelList
+                      position="center"
+                      fill="#111827"
+                      stroke="none"
+                      dataKey="name"
+                    />
+                    {data.map((entry, index) => (
+                      <Cell
+                        key={index}
+                        fill={STATUS_COLORS[entry.name] || "#CBD5E1"}
+                      />
+                    ))}
+                  </Funnel>
+                </FunnelChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center text-center">
+                <div className="w-36 h-36 rounded-full bg-indigo-50 flex items-center justify-center mb-6">
+                  <FunnelIcon className="w-20 h-20 text-indigo-300" />
+                </div>
+
+                <h2 className="text-2xl font-bold text-slate-900 mb-3">
+                  No lead data yet
+                </h2>
+
+                <p className="text-slate-500 max-w-sm mb-6">
+                  Once you start getting leads, you’ll see the funnel breakdown of all
+                  stages here.
+                </p>
+
+                {/* <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2">
+                  <Plus size={20} />
+                  Add Your First Lead
+                </button>
+           */}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="mb-6 flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-50">
+              <ChartPie className="h-7 w-7 text-pink-600" />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">
+                Lead Source Breakdown
+              </h2>
+              <p className="text-sm text-slate-500">
+                Distribution of leads by source
+              </p>
+            </div>
+          </div>
+
+          <div className="h-[320px] sm:h-[420px] md:h-[460px] w-full overflow-hidden">
+            {souceData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+                  <Pie
+                    data={souceData}
+                    dataKey="count"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius="70%"
+                    labelLine={false}
+                    label={false}
+                  >
+                    {souceData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={SOURCE_COLORS[entry.name?.trim()] || "#CBD5E1"}
+                      />
+                    ))}
+                  </Pie>
+
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              // your empty state
+              <div className="h-full flex flex-col items-center justify-center text-center">
+                No source data yet
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
-
   );
 };
 

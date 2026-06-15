@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ChartNoAxesGantt,
   Download,
   ListFilter,
-  Calendar,
   Upload,
+  Calendar,
+  Flag,
 } from "lucide-react";
 import CustomDropDown from "./CustomDropDown";
+import CustomCalendar from "./CustomCalender";
 
 const LeadManageRow = ({
   filter,
@@ -14,29 +16,61 @@ const LeadManageRow = ({
   selectDate,
   setSelectDate,
   handleExportExcel,
-  filtered,
   setSortOrder,
-  sortOrder,
-  handleUploadFile,
+
+  priorityFilter,
+  setPriorityFilter,
 }) => {
   const [openSort, setOpenSort] = useState(false);
-  const [value, setValue] = useState("High");
-  // console.log(filtered)
+  const sortRef = useRef(null);
 
-  // console.log(openSort);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (sortRef.current && !sortRef.current.contains(e.target)) {
+        setOpenSort(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="bg-white md:flex md:justify-between p-4 md:items-center rounded-2xl border-2 border-gray-200 md:mt-6">
-      <div className="md:flex   md:justify-evenly md:gap-16 lg:flex-row lg:items-center lg:justify-evenly w-full ">
-        <div className=" p-2 md:w-full  bg-indigo-50 flex mb-2 justify-evenly rounded-2xl md:gap-3 mr-2  md:justify-evenly lg:justify-evenly border-2 border-gray-200 ">
-          <div className="flex p-2 gap-4 mr-4 border-r-2 border-gray-200 ">
-            <ListFilter className=" mr-10 mt-2" size={17} />
-            <div className="-ml-8">
+    <div
+      className="
+        bg-white/90 backdrop-blur-xl
+        border border-indigo-100
+        rounded-3xl z-50 relative
+        shadow-sm
+        mt-6 p-4 
+      "
+    >
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        {/* Left Filters */}
+        <div className="flex flex-col md:flex-row lg:gap-14 md:gap-5 flex-1 gap-5">
+          {/* Status */}
+          <div
+            className="
+              h-14 flex items-center gap-3
+              px-4 rounded-2xl
+            
+              bg-white
+              min-w-[240px]
+            "
+          >
+            <ListFilter size={18} className="text-indigo-600" />
+
+            <div className="flex-1">
               <CustomDropDown
                 options={[
                   "All",
                   "New",
-                  "Hot", "Warm", "Cold",
+                  "Hot",
+                  "Warm",
+                  "Cold",
                   "Contacted",
                   "Interested",
                   "Closed Won",
@@ -48,44 +82,89 @@ const LeadManageRow = ({
             </div>
           </div>
 
-          <div className="mt-2  ">
-            <CustomDropDown
-              options={["High", "Medium", "Low"]}
-              value={value}
-              onChange={setValue}
+          {/* Priority */}
+          <div
+            className="
+              h-14 flex items-center gap-3
+              px-4 rounded-2xl
+           
+              bg-white
+              min-w-[220px]
+            "
+          >
+            <Flag size={18} className="text-indigo-600" />
+
+            <div className="flex-1">
+              <CustomDropDown
+                options={["All", "High", "Medium", "Low"]}
+                value={priorityFilter}
+                onChange={setPriorityFilter}
+              />
+            </div>
+          </div>
+
+          {/* Date */}
+          <div
+            className="
+              h-14 flex items-center gap-3
+              px-4 rounded-2xl
+          
+              bg-white
+              min-w-[220px]
+            "
+          >
+
+
+            <CustomCalendar
+              value={selectDate}
+              onChange={(date) => setSelectDate(date)}
+              placeholder="Select Date"
             />
           </div>
+
         </div>
 
-        <div className="flex md:justify-between md:items-center md:-ml-10 ">
-          <div className=" bg-indigo-50 md:p-3 p-1 lg:p-3  md:text-sm lg:text-sm rounded-xl border-2 border-gray-200 ">
-            <input
-              value={selectDate}
-              onChange={(e) => setSelectDate(e.target.value)}
-              type="date"
-              className="text-gray-500 outline-none"
-            />
-          </div>
-
-          <div className="flex gap-5 items-center lg:gap-16 whitespace-nowrap ">
+        {/* Right Actions */}
+        <div className="flex items-center gap-5 md:gap-8 justify-between">
+          {/* Sort */}
+          <div className="relative" ref={sortRef}>
+            
             <button
-              className=" lg:ml-10  ml-5 gap-2 flex whitespace-nowrap items-center"
-              onClick={() => setOpenSort(!openSort)}
+              onClick={() => setOpenSort((prev) => !prev)}
+              className="
+                h-12 px-4 rounded-2xl
+                flex items-center gap-2
+                text-sm font-medium text-slate-700
+                hover:bg-indigo-50
+                transition
+              "
             >
-              <ChartNoAxesGantt width={17} />
-              <p className="text-sm  hidden lg:block">Sort </p>
+              <ChartNoAxesGantt size={18} />
+              <span className="hidden sm:block">Sort</span>
             </button>
 
             {openSort && (
-              <div className=" bg-white border  border-gray-200 rounded-xl shadow-lg ">
+              <div
+                className="
+                  absolute right-0 top-14 z-30
+                  w-36 bg-white
+                  border border-indigo-100
+                  rounded-2xl shadow-xl
+                  p-2
+                "
+              >
                 <button
                   onClick={() => {
                     setSortOrder("asc");
                     setOpenSort(false);
                   }}
-                  className="  px-1 text-xs hover:bg-indigo-50"
+                  className="
+                    w-full text-left px-4 py-2
+                    text-sm rounded-xl
+                    hover:bg-indigo-50
+                  "
                 >
-                  Asc
+                  Ascending
                 </button>
 
                 <button
@@ -93,45 +172,34 @@ const LeadManageRow = ({
                     setSortOrder("desc");
                     setOpenSort(false);
                   }}
-                  className=" px-1 text-xs hover:bg-indigo-50"
+                  className="
+                    w-full text-left px-4 py-2
+                    text-sm rounded-xl
+                    hover:bg-indigo-50
+                  "
                 >
-                  desc
+                  Descending
                 </button>
               </div>
             )}
-
-            <label
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                console.log(e.dataTransfer.files[0]);
-                const file = e.dataTransfer.files[0];
-                console.log(e.dataTransfer.files[0]);
-
-                if (file) {
-                  handleUploadFile({ target: { files: [file] } });
-                }
-              }}
-              className=" text-sm lg:flex gap-2 whitespace-nowrap"
-            >
-              <Upload width={17} />
-              <input
-                type="file"
-                accept=".xlsx , .xls"
-                hidden
-                onChange={handleUploadFile}
-              />
-              <p className="hidden lg:block "> Upload File </p>
-            </label>
-
-            <div className="flex gap-1 text-sm ">
-              <button onClick={handleExportExcel} className="flex gap-2">
-                <Download width={17} />
-                <p className="hidden lg:block">Export</p>{" "}
-              </button>
-            </div>
-            <div />
           </div>
+
+         
+          {/* Export */}
+          <button
+            onClick={handleExportExcel}
+            className="
+              h-12 px-4 rounded-2xl
+              flex items-center gap-2
+              text-sm font-medium text-slate-700
+              hover:bg-indigo-50
+              transition
+            "
+          >
+            <Download size={18} />
+            <span className="hidden sm:block">Export All Lead
+            </span>
+          </button>
         </div>
       </div>
     </div>
