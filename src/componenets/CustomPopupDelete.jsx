@@ -12,13 +12,20 @@ const CustomPopupDelete = ({ onClose, onDelete }) => {
                 <p className="text-gray-600 text-md">Are you sure do you want to delete this element ? </p>
                 <p className="text-gray-600 text-md">This action is final.</p>
 
-                <div className="md:flex lg:flex  gap-4 my-4 justify-between w-full">
+                <div className="flex gap-4 my-4 justify-between w-full">
                     <button
                         onClick={onClose}
-                        className="bg-white border w-full mb-5 md:mb-0 border-gray-400  px-4 py-2 rounded-xl">Cancle</button>
+                        className="bg-white border w-full border-gray-400 px-4 py-2 rounded-xl"
+                    >
+                        Cancel
+                    </button>
+
                     <button
                         onClick={onDelete}
-                        className="bg-red-400 px-4 py-2 w-full rounded-xl text-white ">Delete</button>
+                        className="bg-red-500 px-4 py-2 w-full rounded-xl text-white"
+                    >
+                        Delete
+                    </button>
                 </div>
             </div>
         </div>

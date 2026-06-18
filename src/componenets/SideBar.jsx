@@ -23,7 +23,7 @@ const SideBar = ({ showSideBar, handleSideBar }) => {
     <div
       className={`
         fixed left-0 top-0 h-screen w-72
-        bg-white
+         bg-indigo-50/50
         p-5 border-r border-gray-200 z-50
         transition-transform duration-300
         ${showSideBar ? "translate-x-0" : "-translate-x-full"}
@@ -85,7 +85,6 @@ const SideBar = ({ showSideBar, handleSideBar }) => {
 };
 
 
-// const SideBar = () => {
-//   return <div>Sidebar Working</div>;
-// };
+
+
 export default SideBar;

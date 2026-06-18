@@ -1,16 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import Topbar from "./Topbar";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useNavigate } from "react-router-dom";
+
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Layout = () => {
   const [showSideBar, setShowSideBar] = useState(false);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
   const handleSideBar = () => {
     setShowSideBar((prev) => !prev);
   };
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch(`${BASE_URL}/auth/check-status`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 403 || res.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    };
+    
+
+    checkStatus();
+ 
+    const interval = setInterval(checkStatus, 2 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [navigate]);
 
   if (!token) {
     return <Navigate to="/login" replace />;

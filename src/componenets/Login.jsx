@@ -45,6 +45,25 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(result.user));
         navigate("/dashboard", { replace: true });
       } else {
+
+        if (result.paymentRequired) {
+          toast.error("Please complete payment first");
+
+          navigate("/pricing", {
+            replace: true,
+            state: {
+              userId: result.user._id,
+              name: result.user.name,
+              email: result.user.email,
+              phone: result.user.phone,
+            },
+          });
+          return;
+
+        
+        
+        }
+
         toast.error(result.message || "Login failed");
       }
     } catch (err) {

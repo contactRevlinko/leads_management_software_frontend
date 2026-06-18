@@ -50,10 +50,10 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
   };
 
   const handleSubmit = async () => {
-       if (!validateEmail(form.email)) {
-              toast.error("Please enter a valid email address");
-              return;
-            }
+    if (!validateEmail(form.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
     try {
       const token = localStorage.getItem("token");
 
@@ -150,6 +150,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
               />
             </div>
           </div>
+
         </div>
 
         <div className=" md:text-lg my-3 w-full text-gray-600">
@@ -170,7 +171,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
               onChange={(e) => {
                 let value = e.target.value.replace(/\D/g, "");
 
-              
+
                 if (value.startsWith("91") && value.length > 10) {
                   toast.error("Please enter 10 digit number without +91");
                   value = value.substring(2);

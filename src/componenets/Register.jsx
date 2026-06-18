@@ -68,14 +68,25 @@ const Register = () => {
           email,
           businessType,
           password,
+          
+          
         }),
       });
       const result = await res.json();
       console.log("register user", result);
-      if (res.ok) {
-        navigate("/login");
-      } else {
-        navigate("/register");
+      if (result.success) {
+        if (result.data.paymentVerified) {
+          navigate("/login");
+        } else {
+          navigate("/pricing", {
+            state: {
+              userId: result.data._id,
+              name: result.data.name,
+              email: result.data.email,
+              phone: result.data.phone,
+            },
+          });
+        }
       }
     } catch (err) {
       console.log(err);
