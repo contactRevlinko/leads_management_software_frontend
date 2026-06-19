@@ -18,7 +18,13 @@ const Layout = () => {
   useEffect(() => {
     const checkStatus = async () => {
       const token = localStorage.getItem("token");
+      const loginType = localStorage.getItem("loginType");
+
       if (!token) return;
+
+      if (loginType === "team") {
+        return;
+      }
 
       const res = await fetch(`${BASE_URL}/auth/check-status`, {
         method: "GET",
@@ -29,10 +35,12 @@ const Layout = () => {
 
       if (res.status === 403 || res.status === 401) {
         localStorage.removeItem("token");
-        navigate("/login");
+        localStorage.removeItem("user");
+        localStorage.removeItem("teamMember");
+        localStorage.removeItem("loginType");
+        navigate("/login", { replace: true });
       }
     };
-    
 
     checkStatus();
  
@@ -57,7 +65,7 @@ const Layout = () => {
         setShowSideBar={setShowSideBar}
       />
 
-      <div className="lg:ml-72 min-h-screen">
+      <div className=" z-30 lg:ml-72 min-h-screen">
         <Topbar handleSideBar={handleSideBar} />
 
         <main className="pt-24 mx-5 overflow-x-hidden">

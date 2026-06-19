@@ -48,7 +48,7 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
     try {
       const token = localStorage.getItem("token");
       const finalData = { ...form, leadId: lead._id };
-      const res = await fetch(`${BASE_URL}/followups/creat-followups`, {
+      const res = await fetch(`${BASE_URL}/followups/create-followups`, {
         method: "POST",
 
         headers: {

@@ -11,6 +11,11 @@ import toast from "react-hot-toast";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
+
+  const loginType = localStorage.getItem("loginType");
+  const isTeamLogin = loginType === "team";
+
+
   const dispatch = useDispatch();
   const { teamList } = useSelector((state) => state.team);
   const { allLeads } = useSelector((state) => state.lead);
@@ -186,16 +191,18 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
                   <p className="text-gray-800 font-medium">{lead.source}</p>
                 </div>
 
-                <div className="grid grid-cols-[110px_1fr] items-center gap-3">
-                  <p className="text-gray-500">Assigned To</p>
-                  <CustomDropDown
-                    value={lead.assignedTo}
-                    onChange={(selectedAssignedTo) =>
-                      handleAssignedToChange(lead._id, selectedAssignedTo)
-                    }
-                    options={teamList.map((teamMem) => teamMem.name)}
-                  />
-                </div>
+                {!isTeamLogin && (
+                  <div className="grid grid-cols-[110px_1fr] items-center gap-3">
+                    <p className="text-gray-500">Assigned To</p>
+                    <CustomDropDown
+                      value={lead.assignedTo?.name || lead.assignedTo || "Select"}
+                      onChange={(selectedAssignedTo) =>
+                        handleAssignedToChange(lead._id, selectedAssignedTo)
+                      }
+                      options={teamList.map((teamMem) => teamMem.name)}
+                    />
+                  </div>
+                )}
 
                 <div className="grid grid-cols-[110px_1fr] items-center gap-3">
                   <p className="text-gray-500">Status</p>
@@ -292,12 +299,12 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
               </th>
 
               {[
-                "SR NO.",
+              
                 "NAME",
                 "PHONE",
                 "EMAIL",
                 "STATUS",
-                "ASSIGNED TO",
+                ...(!isTeamLogin ? ["ASSIGNED TO"] : []),
                 "SOURCE",
                 "FOLLOW UP DATE",
                 "NOTES",
@@ -355,15 +362,20 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
                     />
                   </td>
 
-                  <td className="px-2 py-3">
-                    <CustomDropDown
-                      value={lead.assignedTo?.name || lead.assignedTo || "Select"}
-                      onChange={(selectedAssignedTo) =>
-                        handleAssignedToChange(lead._id, selectedAssignedTo)
-                      }
-                      options={teamList.map((teamMem) => teamMem.name)}
-                    />
-                  </td>
+                  {!isTeamLogin && (
+                    <td className="px-2 py-3">
+                      <CustomDropDown
+                        value={lead.assignedTo?.name || "Select"}
+                        onChange={(selectedId) =>
+                          handleAssignedToChange(lead._id, selectedId)
+                        }
+                        options={teamList.map((teamMem) => ({
+                          label: teamMem.name,
+                          value: teamMem._id
+                        }))}
+                      />
+                    </td>
+                  )}
 
                   <td className="px-2 py-3">{lead.source}</td>
 

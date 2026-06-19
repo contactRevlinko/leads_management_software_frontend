@@ -9,9 +9,14 @@ import {
   Users,
   Settings,
   X,
+  Plus,
 } from "lucide-react";
 
+
 const SideBar = ({ showSideBar, handleSideBar }) => {
+
+  const loginType = localStorage.getItem("loginType");
+
   const navClass = ({ isActive }) =>
     `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200
     ${isActive
@@ -70,7 +75,14 @@ const SideBar = ({ showSideBar, handleSideBar }) => {
           Analytics
         </NavLink>
 
-        <NavLink to="/team" className={navClass}>
+        <NavLink to="/source" className={navClass}>
+          <Plus size={22} />
+          select source
+        </NavLink>
+
+        {loginType !== "team" && 
+        <>
+         <NavLink to="/team" className={navClass}>
           <Users size={22} />
           Team
         </NavLink>
@@ -79,6 +91,10 @@ const SideBar = ({ showSideBar, handleSideBar }) => {
           <Settings size={22} />
           Settings
         </NavLink>
+        </>
+        }
+
+       
       </div>
     </div>
   );

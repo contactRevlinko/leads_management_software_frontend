@@ -142,7 +142,8 @@ const AddTeam = ({ setOpenAddTeam }) => {
               autoComplete="new-password"
               autoCorrect="off"
               spellCheck={false} />
-            <p className="text-sm md:mb-2 mb-1 font-medium text-gray-600">   Alternate phoner</p>
+            <p className="text-sm md:mb-2 mb-1 font-medium text-gray-600">   Alternate phone </p>
+
             <input
               className={`${form.phone2 ? "bg-indigo-50" : "bg-white"} outline-none w-full text-sm border border-gray-300 p-2 rounded-xl`}
               type="text"

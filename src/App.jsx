@@ -15,10 +15,32 @@ import AddFollowUps from "./componenets/AddFollowUps";
 
 import Register from "./componenets/Register";
 import Login from "./componenets/Login";
+import TeamLogin from "./componenets/TeamLogin";
 import ForgotPassword from "./componenets/ForgotPassword";
 
 import { Toaster } from "react-hot-toast";
 import Pricing from "./componenets/Pricing";
+import Source from "./componenets/Source";
+
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+const AdminOnlyRoute = ({ children }) => {
+  const loginType = localStorage.getItem("loginType");
+
+  if (loginType === "team") {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
 
 function App() {
   return (
@@ -39,20 +61,44 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
         <Route path="/login" element={<Login />} />
+        <Route path="/team-login" element={<TeamLogin />} />
         <Route path="/register" element={<Register />} />
-        <Route path="pricing" element={<Pricing />} />
-
+        <Route path="/pricing" element={<Pricing />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        <Route element={<Layout />}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="leads" element={<LeadMangement />} />
           <Route path="followups" element={<FollowupsList />} />
           <Route path="add" element={<AddLead />} />
           <Route path="reminders" element={<Reminders />} />
           <Route path="analytics" element={<Analytics />} />
-          <Route path="team" element={<Team />} />
-          <Route path="settings" element={<Setting />} />
+          <Route path="source" element={<Source />} />
+
+          <Route
+            path="team"
+            element={
+              <AdminOnlyRoute>
+                <Team />
+              </AdminOnlyRoute>
+            }
+          />
+
+          <Route
+            path="settings"
+            element={
+              <AdminOnlyRoute>
+                <Setting />
+              </AdminOnlyRoute>
+            }
+          />
+  
           <Route path="addfollowups" element={<AddFollowUps />} />
         </Route>
 

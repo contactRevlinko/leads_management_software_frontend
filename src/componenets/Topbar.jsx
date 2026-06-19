@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   BellDot,
   UserPlus,
@@ -8,19 +8,45 @@ import {
   Power,
 } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useUser } from "./UserContext";
 
 
 const Topbar = ({ handleSideBar }) => {
-  const { user, setUser } = useUser();
+
+
+
+
+  const loginType = localStorage.getItem("loginType");
+
+  let loggedUser = {};
+
+  try {
+    loggedUser =
+      loginType === "team"
+        ? JSON.parse(localStorage.getItem("teamMember") || "{}")
+        : JSON.parse(localStorage.getItem("user") || "{}");
+  } catch (err) {
+    loggedUser = {};
+  }
+
+
+
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const boxRef = useRef()
+  const boxRef = useRef(null);
 
   const handleLogout = () => {
+    const type = localStorage.getItem("loginType");
+
     localStorage.removeItem("token");
-    setUser(null);
-    navigate("/login");
+    localStorage.removeItem("user");
+    localStorage.removeItem("teamMember");
+    localStorage.removeItem("loginType");
+
+    if (type === "team") {
+      navigate("/team-login", { replace: true });
+    } else {
+      navigate("/login", { replace: true });
+    }
   };
 
   useEffect(() => {
@@ -40,29 +66,29 @@ const Topbar = ({ handleSideBar }) => {
 
 
   return (
-    <div className="  justify-between lg:justify-end  fixed top-0 left-0 right-0 lg:left-64 h-20  lg:px-12 px-4  bg-indigo-50/50 border-b border-gray-300 z-10 flex items-center gap-3">
+    <div className=" backdrop-blur-sm justify-between lg:justify-end  fixed top-0 left-0 right-0 lg:left-64 h-20  lg:px-12 px-4  bg-indigo-50/50 border-b border-gray-300 z-10 flex items-center gap-3">
       <PanelRight
         onClick={handleSideBar}
         className="lg:hidden cursor-pointer text-gray-700 w-6 h-6"
       />{" "}
-      {console.log(user)}
+      {console.log(loggedUser)}
       <div className="flex gap-5  shrink-0">
 
 
 
 
-        <div className="relative  " ref={boxRef}>
+        <div className="relative" ref={boxRef} >
           <UserPlus onClick={() => setOpen(!open)} />
           {open && (
             <div className="absolute right-0 top-12 w-64 bg-white rounded-3xl shadow-xl  border border-slate-100 p-4 z-50">
 
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 rounded-full bg-violet-500 text-white flex items-center justify-center font-semibold">
-                  {user?.name?.charAt(0)?.toUpperCase()}
+                  {loggedUser?.name?.charAt(0)?.toUpperCase()}
                 </div>
 
                 <h2 className="mt-2 text-sm font-semibold text-slate-700">
-                  {user?.name}
+                  {loggedUser?.name}
                 </h2>
 
                 <div className="w-10 h-[1px] bg-slate-200 my-2"></div>
@@ -75,17 +101,17 @@ const Topbar = ({ handleSideBar }) => {
                   </span>
 
                   <span className="text-sm text-slate-800 font-semibold">
-                    {user?.phone}
+                    {loggedUser?.phone || loggedUser?.phone1 || "-"}
                   </span>
                 </div>
 
                 <div className="bg-indigo-50 rounded-xl px-4 py-3 flex items-center justify-between">
                   <span className="text-sm text-slate-500 font-medium">
-                    Business
+                    {loginType === "team" ? "Role" : "Business"}
                   </span>
 
                   <span className="text-sm text-slate-800 font-semibold">
-                    {user?.businessType}
+                    {loginType === "team" ? loggedUser?.role : loggedUser?.businessType}
                   </span>
                 </div>
 
@@ -95,7 +121,7 @@ const Topbar = ({ handleSideBar }) => {
                   </span>
 
                   <span className="text-xs text-slate-800 font-semibold max-w-[120px] truncate">
-                    {user?.email}
+                    {loggedUser?.email}
                   </span>
                 </div>
 

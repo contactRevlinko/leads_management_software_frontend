@@ -12,8 +12,14 @@ import { validateEmail } from "../utils/validation";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
+
+  const loginType = localStorage.getItem("loginType");
+  const teamMember = JSON.parse(localStorage.getItem("teamMember"));
+  const isTeamLogin = loginType === "team";
+
   const dispatch = useDispatch();
   const { teamList } = useSelector((state) => state.team);
+  const [sources, setSources] = useState();
 
   const [form, setForm] = useState({
     name: "",
@@ -21,7 +27,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
     email: "",
     status: "New",
     source: "Whatsapp",
-    assignedTo: "",
+    assignedTo: isTeamLogin ? teamMember?._id : "",
     notes: "",
     followUpDate: "",
   });
@@ -71,7 +77,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
         email: "",
         status: "New",
         source: "Whatsapp",
-        assignedTo: "",
+        assignedTo: isTeamLogin ? teamMember?._id : "",
         notes: "",
         followUpDate: "",
       });
@@ -88,6 +94,29 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
       console.log(err.response?.data);
     }
   };
+
+  useEffect(() => {
+    const fetchSources = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(`${BASE_URL}/source/all`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setSources(res.data.data);
+      } catch (err) {
+        console.log(err);
+        toast.error("Failed to load sources");
+      }
+    };
+
+    fetchSources();
+    dispatch(fetchTeamList());
+  }, [dispatch]);
+
 
   return (
     <div className="lg:w-1/2 w-[90%] m-auto">
@@ -200,33 +229,32 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
           <div className="text-gray-600">
             <p className="text-sm mb-1 font-medium">Status</p>
             <CustomDropDown
-              value={form.status}
+              value={form.source}
               onChange={(value) =>
-                setForm((prev) => ({ ...prev, status: value }))
+                setForm((prev) => ({ ...prev, source: value }))
               }
-              options={[
-                "New",
-                "Hot",
-                "Warm",
-                "Cold",
-                "Contacted",
-                "Interested",
-                "Closed Won",
-                "Closed Lost",
-              ]}
+              options={sources?.map((s) => ({
+                label: s.name,
+                value: s.name,
+              }))}
             />
           </div>
 
-          <div className="text-gray-600">
-            <p className="text-sm mb-1 font-medium">Assigned To</p>
-            <CustomDropDown
-              value={form.assignedTo}
-              onChange={(value) =>
-                setForm((prev) => ({ ...prev, assignedTo: value }))
-              }
-              options={teamList.map((teamMem) => teamMem.name)}
-            />
-          </div>
+         {!isTeamLogin && (
+  <div className="text-gray-600">
+    <p className="text-sm mb-1 font-medium">Assigned To</p>
+              <CustomDropDown
+                value={teamList.find((team) => team._id === form.assignedTo)?.name || ""}
+                onChange={(id) =>
+                  setForm((prev) => ({ ...prev, assignedTo: id }))
+                }
+                options={teamList.map((teamMem) => ({
+                  label: teamMem.name,
+                  value: teamMem._id,
+                }))}
+              />
+  </div>
+)}
 
           <div className="text-gray-600">
             <p className="text-sm mb-1 font-medium">Source</p>

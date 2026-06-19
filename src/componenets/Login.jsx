@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useUser } from "./UserContext";
+
 import { Eye, EyeOff, TrendingUp } from "lucide-react";
 
 import { validateEmail, validatePassword } from "../utils/validation";
@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Login = () => {
-  const { user, setUser } = useUser();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -39,12 +39,27 @@ const Login = () => {
       });
 
       const result = await res.json();
+  
+
+      console.log("LOGIN STATUS:", res.status);
+      console.log("LOGIN RESULT:", result);
 
       if (res.ok) {
         localStorage.setItem("token", result.token);
+
+        // SAFE FIX (IMPORTANT)
+        localStorage.setItem(
+          "loginType",
+          result.user.loginType || "admin"
+        );
+
         localStorage.setItem("user", JSON.stringify(result.user));
+
+        localStorage.removeItem("teamMember");
+
         navigate("/dashboard", { replace: true });
-      } else {
+      }
+       else {
 
         if (result.paymentRequired) {
           toast.error("Please complete payment first");
