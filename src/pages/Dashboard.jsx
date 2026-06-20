@@ -24,18 +24,20 @@ import {
 } from "recharts";
 import CustomFunnelTooltip from "../componenets/CustonToolTip";
 
-const SOURCE_COLORS = {
-  Website: "#6366F1",
-  Whatsapp: "#25D366",
-  Instagram: "#E1306C",
-  Facebook: "#1877F2",
-  Referral: "#F59E0B",
-  Call: "#10B981",
-  Email: "#EF4444",
-  Telegram: "#229ED9",
-  Friend: "#8B5CF6",
-  Other: "#94A3B8",
-  "No Source": "#CBD5E1",
+const getColorFromString = (str = "") => {
+  const colors = [
+    "#6366F1", "#25D366", "#E1306C", "#1877F2",
+    "#F59E0B", "#10B981", "#EF4444", "#8B5CF6",
+    "#06B6D4", "#F97316", "#84CC16", "#A855F7",
+    "#14B8A6", "#F43F5E", "#3B82F6"
+  ];
+
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i);
+  }
+
+  return colors[hash % colors.length];
 };
 
 export const STATUS_COLORS = {
@@ -273,14 +275,17 @@ const Dashboard = () => {
                     cy="50%"
                     outerRadius="70%"
                     labelLine={false}
-                    label={false}
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
                   >
                     {souceData.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
-                        fill={SOURCE_COLORS[entry.name?.trim()] || "#CBD5E1"}
+                        fill={getColorFromString(entry.name)}
                       />
                     ))}
+               
                   </Pie>
 
                   <Tooltip />
