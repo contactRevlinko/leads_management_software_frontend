@@ -225,21 +225,23 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
           LEAD DETAILS
         </p>
 
-        <div className="grid  gap-4 grid-cols-3 ">
-          <div className="text-gray-600">
-            <p className="text-sm mb-1 font-medium">Status</p>
-            <CustomDropDown
-              value={form.source}
-              onChange={(value) =>
-                setForm((prev) => ({ ...prev, source: value }))
-              }
-              options={sources?.map((s) => ({
-                label: s.name,
-                value: s.name,
-              }))}
-            />
-          </div>
-
+        <div >
+          <p className="text-sm mb-1 font-medium">Status : </p>
+          <CustomDropDown
+            value={form.status}
+            onChange={(value) => setForm({ ...form, status: value })}
+            options={[
+              "New",
+              "Hot",
+              "Warm",
+              "Cold",
+              "Contacted",
+              "Interested",
+              "Closed Won",
+              "Closed Lost",
+            ]}
+          />
+        </div>
          {!isTeamLogin && (
   <div className="text-gray-600">
     <p className="text-sm mb-1 font-medium">Assigned To</p>
