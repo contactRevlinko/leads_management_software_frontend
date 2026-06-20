@@ -30,17 +30,24 @@ const fixedColors = {
   Referral: "#F59E0B",
 };
 
-const getColorFromString = (str) => {
-  if (fixedColors[str]) return fixedColors[str];
+const colorMap = {};
 
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
+const getColorFromString = (str = "") => {
+  if (colorMap[str]) return colorMap[str];
 
-  return `hsl(${Math.abs(hash) % 360}, 70%, 50%)`;
+  const goldenAngle = 137.508;
+
+  const keys = Object.keys(colorMap);
+  const index = keys.length;
+
+  const hue = (index * goldenAngle) % 360;
+
+  const color = `hsl(${hue}, 70%, 50%)`;
+
+  colorMap[str] = color;
+
+  return color;
 };
-
 export const STATUS_COLORS = {
   New: "#6366F1",         
   Hot: "#EF4444",         
