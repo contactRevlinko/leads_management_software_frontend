@@ -82,7 +82,7 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
   };
 
   return (
-    <div className="lg:w-[35%] w-[95%] md:m-auto px-2 bg-white border-2 rounded-lg  border-gray-200 ">
+    <div className="lg:w-[35%] w-[95%] md:m-auto px-2 bg-white border-2 rounded-lg  border-gray-200  ">
       <div className="flex  justify-between m-5">
         <div className="p-1 md:p-4">
           <h1 className="text-xl sm:text-2xl lg:text-xl font-bold text-gray-900 mb-2">

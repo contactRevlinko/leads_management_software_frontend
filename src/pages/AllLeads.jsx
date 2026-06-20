@@ -35,12 +35,6 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
     dispatch(fetchTeamList());
   }, [dispatch]);
 
-  useEffect(() => {
-    document.body.style.overflow = showFollowUps ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [showFollowUps]);
 
   const handleDelete = async (id) => {
     try {
@@ -132,7 +126,7 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
   });
 
   return (
-    <div className="md:p-4 lg:p-0 m-2 md:mt-6 md:rounded-2xl overflow-x-auto overflow-y-visible">
+    <div className="md:p-4 lg:p-0 m-2 md:mt-6 md:rounded-2xl w-full overflow-x-auto overflow-y-visible">
       <div className="flex justify-between pb-5">
         <div className="flex my-5 hover:shadow-sm w-full bg-white p-2 rounded-xl md:w-1/2 gap-2">
           <Search />
@@ -282,8 +276,8 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
       </div>
 
       {/* Desktop */}
-      <div className="hidden lg:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-visible">
-        <table className="w-full">
+      <div className="hidden lg:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-x-auto max-h-[70vh] overflow-y-auto">
+        <table className="w-full min-w-[1200px]">
           <thead className="bg-indigo-50 border-b border-gray-200">
             <tr className="text-left">
               <th className="p-6 text-sm font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">

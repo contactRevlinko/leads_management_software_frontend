@@ -145,7 +145,7 @@ const FollowupsList = () => {
   });
 
   return (
-    <div className="w-full sm:w-auto h-screen overflow-x-scroll">
+    <div className="w-full overflow-x-auto">
       <div className="mt-10">
         <h1 className="md:text-5xl text-3xl font-medium mb-2">
           Follow-Up Schedule

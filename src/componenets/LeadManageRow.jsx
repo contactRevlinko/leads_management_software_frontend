@@ -41,12 +41,13 @@ const LeadManageRow = ({
   return (
     <div
       className="
-        bg-white/90 backdrop-blur-xl
-        border border-indigo-100
-        rounded-3xl z-50 relative
-        shadow-sm
-        mt-6 p-4 
-      "
+    bg-white/90 backdrop-blur-xl
+    border border-indigo-100
+    rounded-3xl z-50 relative
+    shadow-sm
+    mt-6 p-4
+    overflow-x-auto
+  "
     >
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         {/* Left Filters */}

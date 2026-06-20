@@ -144,7 +144,7 @@ const Reminders = () => {
 
 
   return (
-    <div className="h-screen px-5 py-10">
+    <div className="w-full px-5 py-10">
       <div className="mb-10">
         <h1 className="md:text-5xl text-3xl font-medium">
           Today's Reminder

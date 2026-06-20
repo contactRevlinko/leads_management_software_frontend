@@ -194,7 +194,7 @@ const Analytics = () => {
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6 flex flex-col gap-3 ">
+    <div className="w-full bg-gray-50 p-4 md:p-6 flex flex-col gap-3 ">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">
         Lead Analytics
       </h1>

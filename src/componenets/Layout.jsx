@@ -1,74 +1,81 @@
-import React, { useEffect, useState } from "react";
+
+
+import React, { useEffect, useRef, useState } from "react";
 import SideBar from "./SideBar";
 import Topbar from "./Topbar";
-import { Outlet, Navigate, useNavigate } from "react-router-dom";
+import { Outlet, Navigate, useNavigate, useLocation } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Layout = () => {
   const [showSideBar, setShowSideBar] = useState(false);
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const mainRef = useRef(null);
   const token = localStorage.getItem("token");
 
-  const handleSideBar = () => {
-    setShowSideBar((prev) => !prev);
-  };
+  const handleSideBar = () => setShowSideBar((p) => !p);
+
+  // Reset scroll to top on every route change
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTop = 0;
+    }
+  }, [location.pathname]);
+
+  // Fix: force body to never scroll (AllLeads was setting body overflow to auto)
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    };
+  }, []);
 
   useEffect(() => {
     const checkStatus = async () => {
       const token = localStorage.getItem("token");
       const loginType = localStorage.getItem("loginType");
 
-      if (!token) return;
-
-      if (loginType === "team") {
-        return;
-      }
+      if (!token || loginType === "team") return;
 
       const res = await fetch(`${BASE_URL}/auth/check-status`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (res.status === 403 || res.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("teamMember");
-        localStorage.removeItem("loginType");
+      if (res.status === 401 || res.status === 403) {
+        localStorage.clear();
         navigate("/login", { replace: true });
       }
     };
 
     checkStatus();
- 
-    const interval = setInterval(checkStatus, 2 * 60 * 1000);
-
-    return () => clearInterval(interval);
   }, [navigate]);
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+  if (!token) return <Navigate to="/login" replace />;
 
   return (
-    <div className="bg-indigo-50/50 min-h-screen overflow-x-hidden">
+    <div className="h-screen w-full flex overflow-hidden bg-indigo-50/50">
+
       {showSideBar && (
-        <div className="fixed inset-0 z-10 bg-black/40 backdrop-blur-sm" />
+        <div
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          onClick={() => setShowSideBar(false)}
+        />
       )}
 
       <SideBar
-        handleSideBar={handleSideBar}
         showSideBar={showSideBar}
         setShowSideBar={setShowSideBar}
+        handleSideBar={handleSideBar}
       />
 
-      <div className=" z-30 lg:ml-72 min-h-screen">
+      <div className="flex flex-col flex-1 h-screen overflow-hidden lg:ml-72">
         <Topbar handleSideBar={handleSideBar} />
 
-        <main className="pt-24 mx-5 overflow-x-hidden">
+        <main ref={mainRef} className="flex-1 overflow-y-auto pt-24 px-5 pb-6">
           <Outlet />
         </main>
       </div>

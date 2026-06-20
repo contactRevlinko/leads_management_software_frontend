@@ -171,7 +171,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
+     <div className="w-full bg-gray-50">
     
       <div className="mb-10">
         <h1 className="md:text-5xl text-3xl font-medium">  Analytics Overview</h1>
