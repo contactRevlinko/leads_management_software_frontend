@@ -266,11 +266,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
               onChange={(value) =>
                 setForm((prev) => ({ ...prev, source: value }))
               }
-              options={[
-
-                "Referral"
-
-              ]}
+              options={sources?.map((s) => s.name) || []}
             />
           </div>
         </div>
