@@ -243,9 +243,9 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
               ]}
             />
           </div>
-         {!isTeamLogin && (
-  <div className="text-gray-600">
-    <p className="text-sm mb-1 font-medium">Assigned To</p>
+          {!isTeamLogin && (
+            <div className="text-gray-600">
+              <p className="text-sm mb-1 font-medium">Assigned To</p>
               <CustomDropDown
                 value={teamList.find((team) => team._id === form.assignedTo)?.name || ""}
                 onChange={(id) =>
@@ -256,8 +256,8 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
                   value: teamMem._id,
                 }))}
               />
-  </div>
-)}
+            </div>
+          )}
 
           <div className="text-gray-600">
             <p className="text-sm mb-1 font-medium">Source</p>
@@ -267,16 +267,9 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
                 setForm((prev) => ({ ...prev, source: value }))
               }
               options={[
-                "Whatsapp",
-                "Instagram",
-                "Referral",
-                "Website",
-                "Facebook",
-                "Call",
-                "Email",
-                "Telegram",
-                "Friend",
-                "Other",
+
+                "Referral"
+
               ]}
             />
           </div>
