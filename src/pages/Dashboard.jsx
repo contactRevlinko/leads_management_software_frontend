@@ -24,20 +24,21 @@ import {
 } from "recharts";
 import CustomFunnelTooltip from "../componenets/CustonToolTip";
 
-const getColorFromString = (str = "") => {
-  const colors = [
-    "#6366F1", "#25D366", "#E1306C", "#1877F2",
-    "#F59E0B", "#10B981", "#EF4444", "#8B5CF6",
-    "#06B6D4", "#F97316", "#84CC16", "#A855F7",
-    "#14B8A6", "#F43F5E", "#3B82F6"
-  ];
+const fixedColors = {
+  Instagram: "#E1306C",
+  Whatsapp: "#25D366",
+  Referral: "#F59E0B",
+};
+
+const getColorFromString = (str) => {
+  if (fixedColors[str]) return fixedColors[str];
 
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i);
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  return colors[hash % colors.length];
+  return `hsl(${Math.abs(hash) % 360}, 70%, 50%)`;
 };
 
 export const STATUS_COLORS = {
