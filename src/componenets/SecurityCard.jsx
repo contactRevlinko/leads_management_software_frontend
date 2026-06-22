@@ -65,7 +65,7 @@ const SecurityCard = () => {
   };
 
   return (
-    <div className="w-full bg-white rounded-2xl md:rounded-3xl border border-gray-200 shadow-sm p-5 sm:p-6 md:p-8 hover:shadow-md transition-all duration-300">
+    <div className="w-full bg-white rounded-3xl border border-slate-200/80 shadow-sm p-5 md:p-6 lg:p-8 hover:shadow-md transition-all duration-300">
       <div className="flex items-start gap-4 md:gap-5">
         <div className="min-w-12 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-orange-50 flex items-center justify-center">
           <LockKeyhole className="w-6 h-6 md:w-7 md:h-7 text-orange-500" />

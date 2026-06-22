@@ -379,35 +379,31 @@ const LeadMangement = () => {
   ];
 
   return (
-    <div className="mt-5 pl-3">
-      <div className="md:flex md:justify-between md:items-center p-4">
+    <div className="w-full">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         <div>
-          <h1 className="md:text-5xl text-3xl font-medium">Leads Management</h1>
+          <h1 className="md:text-5xl text-3xl font-medium text-slate-900">Leads Management</h1>
           <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
-            manage and track your sales pipeline across all channels.
+            Manage and track your sales pipeline across all channels.
           </p>
         </div>
 
-
-
-
-        <div className="flex gap-5 ">
+        <div className="flex gap-4">
           <button
-            className="bg-indigo-700 text-white w-full md:w-auto mt-4 px-2 py-2 rounded"
             onClick={handleAddLead}
+            className="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2.5 rounded-xl font-medium transition"
           >
             + Add Leads
           </button>
 
-
           <button
-            className="bg-white  text-indigo-700 border border-indigo-700 w-full md:w-auto mt-4 px-2 py-2 rounded"
             onClick={() => setBulkModal(!bulkModal)}
+            className="bg-white text-indigo-700 border border-indigo-700 px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-50 transition"
           >
-            + Add Bulk leads
+            + Add Bulk Leads
           </button>
-
-          {bulkModal && <div className="fixed inset-0 bg-black/50 backdrop-blur-2xl z-[100] flex items-center justify-center px-4">
+        </div>
+      </div>{bulkModal && <div className="fixed inset-0 bg-black/50 backdrop-blur-2xl z-[9999] flex items-center justify-center px-4">
            <div className="bg-white w-full max-w-2xl rounded-lg shadow-2xl p-5">
 
              <div className="flex justify-between mb-5">
@@ -499,13 +495,6 @@ const LeadMangement = () => {
 
 
 
-        </div>
-
-
-      </div>
-
-
-
 
       <div className="md:my-0 lg:gap-3 gap-5 my-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {cardData.map((card) => (
@@ -540,7 +529,7 @@ const LeadMangement = () => {
       />
 
       {addLeadModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
           <AddLead
             setAddLeadModal={setAddLeadModal}
             addLeadModal={addLeadModal}

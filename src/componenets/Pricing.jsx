@@ -151,7 +151,7 @@ const Pricing = () => {
                         <Loader2 className="animate-spin text-indigo-600" size={40} />
                     </div>
                 ) : packages.length === 0 ? (
-                    <div className="text-center bg-white rounded-2xl p-10 shadow">
+                    <div className="text-center bg-white rounded-3xl border border-slate-200/80 p-10 shadow-sm">
                         <p className="text-gray-500">No packages available</p>
                     </div>
                 ) : (
@@ -159,7 +159,7 @@ const Pricing = () => {
                         {packages.map((pkg, index) => (
                             <div
                                 key={pkg._id || index}
-                                className="relative flex flex-col bg-white rounded-3xl border border-gray-200 shadow-sm p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                                className="relative flex flex-col bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 hover:shadow-md transition-all duration-300"
                             >
                                 {/* {index === 1 && (
                                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-semibold px-4 py-1 rounded-full">
@@ -167,7 +167,7 @@ const Pricing = () => {
                                     </span>
                                 )} */}
 
-                                <div className="border-b border-gray-200 pb-5">
+                                <div className="border-b border-slate-100 pb-5">
                                     <h2 className="text-xl font-bold text-gray-900">
                                         {pkg.packageName}
                                     </h2>

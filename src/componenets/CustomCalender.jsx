@@ -13,6 +13,7 @@ const CustomCalendar = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpward, setOpenUpward] = useState(false);
+  const [openRightToLeft, setOpenRightToLeft] = useState(false);
 
   const [currentDate, setCurrentDate] = useState(
     value ? new Date(value) : new Date()
@@ -55,8 +56,10 @@ const CustomCalendar = ({
       const rect = calendarRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
       const calendarHeight = 360;
+      const calendarWidth = 290;
 
       setOpenUpward(spaceBelow < calendarHeight);
+      setOpenRightToLeft(rect.left + calendarWidth > window.innerWidth);
     }
 
     setOpen((prev) => !prev);
@@ -117,8 +120,8 @@ const CustomCalendar = ({
           value={value || ""}
           onClick={handleOpenCalendar}
           placeholder={placeholder}
-          className={`w-full border rounded-lg px-3 pr-10 py-2 text-sm outline-none focus:border-indigo-500 cursor-pointer
-    ${value ? "bg-indigo-50 border-gray-300" : "bg-white border-gray-300"}
+          className={`w-full border rounded-xl px-3 pr-10 py-2 text-sm outline-none focus:border-indigo-500 cursor-pointer h-11
+    ${value ? "bg-indigo-50/50 border-gray-300" : "bg-white border-gray-300"}
     disabled:bg-gray-100 disabled:cursor-not-allowed
     ${className}
   `}
@@ -135,9 +138,10 @@ const CustomCalendar = ({
       {open && (
         <div
           className={`
-    absolute left-0 z-[99999] w-[290px] rounded-2xl bg-white p-3
+    absolute z-[99999] w-[290px] rounded-2xl bg-white p-3
     shadow-2xl border border-gray-200
     ${openUpward ? "bottom-12" : "top-12"}
+    ${openRightToLeft ? "right-0" : "left-0"}
   `}
         
         >
@@ -145,7 +149,8 @@ const CustomCalendar = ({
 
           <div
             className={`
-              absolute left-10 w-4 h-4 bg-white rotate-45 border-gray-200
+              absolute w-4 h-4 bg-white rotate-45 border-gray-200
+              ${openRightToLeft ? "right-10" : "left-10"}
               ${openUpward
                 ? "-bottom-2 border-r border-b"
                 : "-top-2 border-l border-t"

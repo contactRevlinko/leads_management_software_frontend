@@ -111,20 +111,20 @@ const Team = () => {
   };
 
   return (
-    <div className="pl-5">
-      <div className="lg:flex md:flex md:justify-between md:items-center lg:justify-between lg:items-center mb-10">
-        <div className="mt-10">
-          <h1 className="md:text-5xl text-3xl font-medium">
+    <div className="w-full">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <div>
+          <h1 className="md:text-5xl text-3xl font-medium text-slate-900">
             Team Member List
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
             Manage your team members and their roles
           </p>
         </div>
 
         <button
           onClick={() => setOpenAddTeam(true)}
-          className="bg-indigo-700 text-white w-full md:w-auto mt-4 py-2 px-4 rounded hover:bg-indigo-800"
+          className="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2.5 rounded-xl font-medium transition"
         >
           + Team Member
         </button>
@@ -133,7 +133,7 @@ const Team = () => {
       {/* Mobile */}
       <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-5 lg:hidden p-5">
         {teamList?.length === 0 ? (
-          <div className="col-span-full bg-white rounded-2xl border border-gray-200 p-10 text-center">
+          <div className="col-span-full bg-white rounded-3xl border border-slate-200/80 p-10 text-center shadow-sm">
             <Users className="mx-auto mb-3 w-12 h-12 text-gray-400" />
             <h3 className="text-xl font-semibold text-gray-700">
               No Team Members Found
@@ -146,7 +146,7 @@ const Team = () => {
           teamList?.map((teamMem) => (
             <div
               key={teamMem._id}
-              className="bg-white rounded-2xl border border-gray-100 shadow-[0_12px_35px_rgba(15,23,42,0.10)] p-4"
+              className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 hover:shadow-md transition-all duration-300"
             >
               <div className="flex justify-between">
                 <h1 className="text-lg font-bold text-gray-900 capitalize">
@@ -204,7 +204,7 @@ const Team = () => {
       {/* Desktop */}
       <div className="bg-white rounded-2xl border border-gray-200 mt-10 overflow-hidden hidden lg:block">
         <table className="w-full">
-          <thead className="bg-indigo-50 border-b border-gray-200">
+          <thead className="bg-indigo-50/60 border-b border-slate-200/80">
             <tr className="text-left">
               {[
                 "SR NO.",
@@ -218,7 +218,7 @@ const Team = () => {
               ].map((head) => (
                 <th
                   key={head}
-                  className="p-6 text-sm font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap"
+                  className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap"
                 >
                   {head}
                 </th>
@@ -243,21 +243,21 @@ const Team = () => {
               teamList?.map((teamMem, i) => (
                 <tr
                   key={teamMem._id}
-                  className="text-left text-gray-700 hover:bg-gray-50"
+                  className="border-b border-slate-100 text-left hover:bg-slate-50/60 transition-colors"
                 >
-                  <td className="px-6 py-5">{i + 1}</td>
-                  <td className="px-6 py-5">{teamMem.name}</td>
-                  <td className="px-6 py-5">{teamMem.phone1}</td>
-                  <td className="px-6 py-5">{teamMem.phone2 || "-"}</td>
-                  <td className="px-6 py-5">{teamMem.email}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{i + 1}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{teamMem.name}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{teamMem.phone1}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{teamMem.phone2 || "-"}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{teamMem.email}</td>
 
-                  <td>
+                  <td className="px-6 py-4">
                     <span className="rounded-full bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700">
                       {teamMem.role}
                     </span>
                   </td>
 
-                  <td className="px-2 py-3">
+                  <td className="px-6 py-3">
                     <button
                       onClick={() => openChangePassword(teamMem._id)}
                       className="text-indigo-600 bg-indigo-50 flex px-4 text-sm justify-center items-center py-2 gap-2 border border-indigo-200 hover:ring-2 hover:ring-offset-2 hover:ring-indigo-300 rounded-lg"
@@ -267,7 +267,7 @@ const Team = () => {
                     </button>
                   </td>
 
-                  <td className="px-2 py-3">
+                  <td className="px-6 py-3">
                     <button
                       onClick={() => {
                         setSelectedId(teamMem._id);

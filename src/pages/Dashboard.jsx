@@ -171,10 +171,10 @@ const Dashboard = () => {
   ];
 
   return (
-     <div className="w-full bg-gray-50">
+     <div className="w-full">
     
       <div className="mb-10">
-        <h1 className="md:text-5xl text-3xl font-medium">  Analytics Overview</h1>
+        <h1 className="md:text-5xl text-3xl font-medium text-slate-900">Analytics Overview</h1>
         <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
           Track lead performance, sources and conversion trends
         </p>

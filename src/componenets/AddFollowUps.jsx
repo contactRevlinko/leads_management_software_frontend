@@ -104,40 +104,40 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
           <p className="text-sm text-gray-700 font-medium  mb-4">
             Follow-up type
           </p>
-          <div className="grid grid-cols-4 gap-5  text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
             <button
               onClick={() => setFollowUpType("Call")}
-              className={`flex flex-col items-center justify-center gap-2 h-20  ${selectedtype === "Call" ? " text-white bg-indigo-600  " : "text-gray-700 border border-gray-300 "}text-center   rounded text-gray-700  `}
+              className={`flex flex-col items-center justify-center gap-2 h-20 rounded-xl transition-all ${selectedtype === "Call" ? "text-white bg-indigo-600 shadow-sm shadow-indigo-100" : "text-slate-700 border border-slate-200 hover:bg-slate-50"}`}
             >
-              <Phone size={20} className="md:ml-6 ml-4 lg:mr-6 " />
-              <p className="text-sm">phone</p>
+              <Phone size={20} />
+              <p className="text-sm font-medium">phone</p>
             </button>
             <button
               onClick={() => setFollowUpType("Email")}
-              className={` flex flex-col items-center justify-center gap-2 h-20 ${selectedtype === "Email" ? " bg-indigo-600 text-white  " : "text-gray-700 border border-gray-300 "}text-center  rounded text-gray-700  `}
+              className={`flex flex-col items-center justify-center gap-2 h-20 rounded-xl transition-all ${selectedtype === "Email" ? "text-white bg-indigo-600 shadow-sm shadow-indigo-100" : "text-slate-700 border border-slate-200 hover:bg-slate-50"}`}
             >
-              <Mail size={20} className="md:ml-6 ml-4 lg:mr-6" />
-              <p className="text-sm">Email</p>
+              <Mail size={20} />
+              <p className="text-sm font-medium">Email</p>
             </button>
             <button
               onClick={() => setFollowUpType("Meeting")}
-              className={` flex flex-col items-center justify-center gap-2 h-20 ${selectedtype === "Meeting" ? "text-white bg-indigo-600 " : "text-gray-700 border border-gray-300 "}text-center  rounded text-gray-700 `}
+              className={`flex flex-col items-center justify-center gap-2 h-20 rounded-xl transition-all ${selectedtype === "Meeting" ? "text-white bg-indigo-600 shadow-sm shadow-indigo-100" : "text-slate-700 border border-slate-200 hover:bg-slate-50"}`}
             >
-              <UsersRound size={20} className="md:ml-6 ml-4 lg:mr-6" />
-              <p className="text-sm">Meeting</p>
+              <UsersRound size={20} />
+              <p className="text-sm font-medium">Meeting</p>
             </button>
             <button
               onClick={() => setFollowUpType("WhatsApp")}
-              className={` flex flex-col items-center justify-center gap-2 h-20  ${selectedtype === "WhatsApp" ? "text-white bg-indigo-600 " : "text-gray-700 border border-gray-300 "}text-center rounded text-gray-700 `}
+              className={`flex flex-col items-center justify-center gap-2 h-20 rounded-xl transition-all ${selectedtype === "WhatsApp" ? "text-white bg-indigo-600 shadow-sm shadow-indigo-100" : "text-slate-700 border border-slate-200 hover:bg-slate-50"}`}
             >
-              <MessageSquareText size={20} className="md:ml-6 ml-4 lg:mr-6" />
-              <p className="text-sm">WhatsApp</p>
+              <MessageSquareText size={20} />
+              <p className="text-sm font-medium">WhatsApp</p>
             </button>
           </div>
         </div>
-        <div className="flex gap-2 md:my-5 my-0 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:my-5 my-2">
           <div className="w-full">
-            <p className=" my-2 text-sm text-gray-700 font-medium  ">Date </p>
+            <p className="my-2 text-sm text-gray-700 font-medium">Date </p>
             <CustomCalendar
               value={form.followUpDate}
               onChange={handleChange}

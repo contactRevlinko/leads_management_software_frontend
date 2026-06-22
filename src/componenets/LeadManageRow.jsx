@@ -43,112 +43,80 @@ const LeadManageRow = ({
       className="
     bg-white/90 backdrop-blur-xl
     border border-indigo-100
-    rounded-3xl z-50 relative
+    rounded-3xl z-20 relative
     shadow-sm
-    mt-6 p-4
-    overflow-x-auto
+    mt-6 p-5 md:p-6
+    overflow-visible
   "
     >
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
         {/* Left Filters */}
-        <div className="flex flex-col md:flex-row lg:gap-14 md:gap-5 flex-1 gap-5">
+        <div className="grid grid-cols-2 md:flex md:flex-row md:items-end gap-4 flex-1">
           {/* Status */}
-          <div
-            className="
-              h-14 flex items-center gap-3
-              px-4 rounded-2xl
-            
-              bg-white
-              min-w-[240px]
-            "
-          >
-            <ListFilter size={18} className="text-indigo-600" />
-
-            <div className="flex-1">
-              <CustomDropDown
-                options={[
-                  "All",
-                  "New",
-                  "Hot",
-                  "Warm",
-                  "Cold",
-                  "Contacted",
-                  "Interested",
-                  "Closed Won",
-                  "Closed Lost",
-                ]}
-                value={filter}
-                onChange={setFilter}
-              />
-            </div>
+          <div className="col-span-1 md:flex-none md:w-[180px]">
+            <p className="text-slate-500 text-xs md:text-sm font-medium mb-1.5">Status</p>
+            <CustomDropDown
+              options={[
+                "All",
+                "New",
+                "Hot",
+                "Warm",
+                "Cold",
+                "Contacted",
+                "Interested",
+                "Closed Won",
+                "Closed Lost",
+              ]}
+              value={filter}
+              onChange={setFilter}
+            />
           </div>
 
           {/* Priority */}
-          <div
-            className="
-              h-14 flex items-center gap-3
-              px-4 rounded-2xl
-           
-              bg-white
-              min-w-[220px]
-            "
-          >
-            <Flag size={18} className="text-indigo-600" />
-
-            <div className="flex-1">
-              <CustomDropDown
-                options={["All", "High", "Medium", "Low"]}
-                value={priorityFilter}
-                onChange={setPriorityFilter}
-              />
-            </div>
+          <div className="col-span-1 md:flex-none md:w-[150px]">
+            <p className="text-slate-500 text-xs md:text-sm font-medium mb-1.5">Priority</p>
+            <CustomDropDown
+              options={["All", "High", "Medium", "Low"]}
+              value={priorityFilter}
+              onChange={setPriorityFilter}
+            />
           </div>
 
           {/* Date */}
-          <div
-            className="
-              h-14 flex items-center gap-3
-              px-4 rounded-2xl
-          
-              bg-white
-              min-w-[220px]
-            "
-          >
-
-
+          <div className="col-span-2 md:flex-none md:w-[180px]">
+            <p className="text-slate-500 text-xs md:text-sm font-medium mb-1.5">Date</p>
             <CustomCalendar
               value={selectDate}
               onChange={(date) => setSelectDate(date)}
               placeholder="Select Date"
             />
           </div>
-
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-5 md:gap-8 justify-between">
+        <div className="grid grid-cols-2 md:flex md:flex-row gap-3 mt-4 pt-4 border-t border-slate-100 lg:mt-0 lg:pt-0 lg:border-t-0 md:gap-4 md:items-end">
           {/* Sort */}
-          <div className="relative" ref={sortRef}>
-            
+          <div className="relative col-span-1" ref={sortRef}>
             <button
               onClick={() => setOpenSort((prev) => !prev)}
               className="
-                h-12 px-4 rounded-2xl
-                flex items-center gap-2
-                text-sm font-medium text-slate-700
-                hover:bg-indigo-50
-                transition
+                w-full md:w-auto h-11 px-4 rounded-xl
+                flex items-center justify-center gap-2
+                text-sm font-semibold text-slate-700 bg-slate-50/50
+                border border-slate-200/80
+                hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200
+                transition-all duration-200
               "
             >
-              <ChartNoAxesGantt size={18} />
-              <span className="hidden sm:block">Sort</span>
+              <ChartNoAxesGantt size={16} />
+              <span>Sort</span>
             </button>
 
             {openSort && (
               <div
                 className="
-                  absolute right-0 top-14 z-30
-                  w-36 bg-white
+                  absolute left-0 right-0 md:left-auto md:right-0 top-13 z-30
+                  md:w-36 bg-white
                   border border-indigo-100
                   rounded-2xl shadow-xl
                   p-2
@@ -185,21 +153,20 @@ const LeadManageRow = ({
             )}
           </div>
 
-         
           {/* Export */}
           <button
             onClick={handleExportExcel}
             className="
-              h-12 px-4 rounded-2xl
-              flex items-center gap-2
-              text-sm font-medium text-slate-700
-              hover:bg-indigo-50
-              transition
+              col-span-1 h-11 px-4 rounded-xl
+              flex items-center justify-center gap-2
+              text-sm font-semibold text-slate-700 bg-slate-50/50
+              border border-slate-200/80
+              hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200
+              transition-all duration-200
             "
           >
-            <Download size={18} />
-            <span className="hidden sm:block">Export All Lead
-            </span>
+            <Download size={16} />
+            <span>Export</span>
           </button>
         </div>
       </div>

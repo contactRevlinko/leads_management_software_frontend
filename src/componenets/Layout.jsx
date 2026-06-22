@@ -57,11 +57,11 @@ const Layout = () => {
   if (!token) return <Navigate to="/login" replace />;
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-indigo-50/50">
+    <div className="h-screen w-full flex overflow-hidden bg-slate-50">
 
       {showSideBar && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-sm lg:hidden"
           onClick={() => setShowSideBar(false)}
         />
       )}

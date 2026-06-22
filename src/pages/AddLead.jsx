@@ -225,8 +225,8 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
           LEAD DETAILS
         </p>
 
-        <div className="grid  gap-4 grid-cols-3 ">
-          <div >
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+          <div>
             <p className="text-sm mb-1 font-medium">Status : </p>
             <CustomDropDown
               value={form.status}

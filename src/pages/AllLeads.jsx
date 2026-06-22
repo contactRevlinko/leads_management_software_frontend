@@ -126,7 +126,7 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
   });
 
   return (
-    <div className="md:p-4 lg:p-0 m-2 md:mt-6 md:rounded-2xl w-full overflow-x-auto overflow-y-visible">
+    <div className="md:p-4 lg:p-0 md:mt-6 md:rounded-2xl overflow-y-visible">
       <div className="flex justify-between pb-5">
         <div className="flex my-5 hover:shadow-sm w-full bg-white p-2 rounded-xl md:w-1/2 gap-2">
           <Search />
@@ -141,7 +141,7 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
       {/* Mobile */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-20 lg:hidden">
         {leadData.length === 0 ? (
-          <div className="col-span-full bg-white rounded-2xl border border-gray-200 p-10 text-center">
+          <div className="col-span-full bg-white rounded-3xl border border-slate-200/80 p-10 text-center shadow-sm">
             <Users className="mx-auto mb-3 w-12 h-12 text-gray-400" />
             <h3 className="text-xl font-semibold text-gray-700">
               No Leads Found
@@ -154,11 +154,7 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
           leadData.map((lead) => (
             <div
               key={lead._id}
-              className="
-      bg-white rounded-2xl border border-gray-100
-      shadow-[0_12px_35px_rgba(15,23,42,0.10)]
-      p-4
-    "
+              className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 hover:shadow-md transition-all duration-300"
             >
               {/* Header */}
               <div className="mb-4">
@@ -278,9 +274,9 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
       {/* Desktop */}
       <div className="hidden lg:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-x-auto max-h-[70vh] overflow-y-auto">
         <table className="w-full min-w-[1200px]">
-          <thead className="bg-indigo-50 border-b border-gray-200">
+          <thead className="bg-indigo-50/60 border-b border-slate-200/80">
             <tr className="text-left">
-              <th className="p-6 text-sm font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                 <button
                   onClick={() =>
                     setSortOrderIndex(sortOrderIndex === "asc" ? "desc" : "asc")
@@ -307,7 +303,7 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
               ].map((head) => (
                 <th
                   key={head}
-                  className="p-6 text-sm font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap"
+                  className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap"
                 >
                   {head}
                 </th>
@@ -318,7 +314,7 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
           <tbody>
             {leadData.length === 0 ? (
               <tr>
-                <td colSpan="10" className="text-center py-16 text-gray-500">
+                <td colSpan="11" className="text-center py-16 text-gray-500">
                   <Users className="mx-auto mb-3 w-12 h-12 text-gray-400" />
                   <h3 className="text-xl font-semibold text-gray-700">
                     No Leads Found
@@ -330,14 +326,14 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
               sortedLeadData.map((lead, i) => (
                 <tr
                   key={lead._id}
-                  className="border-b border-gray-200 text-left hover:bg-gray-50"
+                  className="border-b border-slate-100 text-left hover:bg-slate-50/60 transition-colors"
                 >
-                  <td className="px-6 py-3">{lead.leadNo}</td>
-                  <td className="px-2 py-3">{lead.name}</td>
-                  <td className="px-2 py-3">{lead.phone}</td>
-                  <td className="px-2 py-3">{lead.email}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.leadNo}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.name}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.phone}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.email}</td>
 
-                  <td className="px-2 py-3">
+                  <td className="px-6 py-3">
                     <CustomDropDown
                       value={lead.status}
                       onChange={(selectedStatus) =>
@@ -357,7 +353,7 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
                   </td>
 
                   {!isTeamLogin && (
-                    <td className="px-2 py-3">
+                    <td className="px-6 py-3">
                       <CustomDropDown
                         value={lead.assignedTo?.name || "Select"}
                         onChange={(selectedId) =>
@@ -371,15 +367,15 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
                     </td>
                   )}
 
-                  <td className="px-2 py-3">{lead.source}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.source}</td>
 
-                  <td className="px-2 py-3">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {lead.followUpDate
                       ? lead.followUpDate.split("T")[0]
                       : "No Date"}
                   </td>
 
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {lead.notes ? (
                       <button
                         onClick={() => {
@@ -395,7 +391,7 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
                     )}
                   </td>
 
-                  <td className="px-2 py-3">
+                  <td className="px-6 py-3">
                     <button
                       onClick={() => {
                         setSelectedId(lead._id);
@@ -408,7 +404,7 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
                     </button>
                   </td>
 
-                  <td className="px-2 py-3">
+                  <td className="px-6 py-3">
                     <button
                       onClick={() => openFollowup(lead)}
                       className="flex justify-center items-center gap-3 p-1 bg-indigo-50 text-indigo-700 px-2 rounded-lg whitespace-nowrap hover:bg-indigo-100 hover:ring-2 border border-indigo-200 hover:ring-indigo-300 hover:ring-offset-2"

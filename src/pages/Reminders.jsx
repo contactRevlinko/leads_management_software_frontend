@@ -144,9 +144,9 @@ const Reminders = () => {
 
 
   return (
-    <div className="w-full px-5 py-10">
+    <div className="w-full">
       <div className="mb-10">
-        <h1 className="md:text-5xl text-3xl font-medium">
+        <h1 className="md:text-5xl text-3xl font-medium text-slate-900">
           Today's Reminder
         </h1>
 
@@ -158,7 +158,7 @@ const Reminders = () => {
       {/* mobile */}
       <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-5 lg:hidden p-5">
         {data.length === 0 ? (
-          <div className="lg:hidden sm:block col-span-full bg-white rounded-2xl border border-gray-200 p-10 text-center">
+          <div className="lg:hidden sm:block col-span-full bg-white rounded-3xl border border-slate-200/80 p-10 text-center shadow-sm">
             <Users className="mx-auto mb-3 w-12 h-12 text-gray-400" />
             <h3 className="text-xl font-semibold text-gray-700">
               No reminder Found
@@ -171,7 +171,7 @@ const Reminders = () => {
           data.map((follow) => (
             <div
               key={follow._id}
-              className="bg-white rounded-2xl border border-gray-100 shadow-[0_12px_35px_rgba(15,23,42,0.10)] p-4"
+              className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 hover:shadow-md transition-all duration-300"
             >
               <div className="mb-4">
                 <h1 className="text-lg font-bold text-gray-900 capitalize">
@@ -265,7 +265,7 @@ const Reminders = () => {
 
                 <button
                   onClick={() => openFollowup(follow.leadId)}
-                  className="w-1/2 rounded-lg text-sm font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 active:scale-[0.98] transition whitespace-nowrap"
+                  className="w-1/2 rounded-lg text-sm font-semibold text-indigo-700 bg-white border border-indigo-200 hover:bg-indigo-50 active:scale-[0.98] transition whitespace-nowrap"
                 >
                   + followups
                 </button>
@@ -275,12 +275,11 @@ const Reminders = () => {
         )}
       </div>
 
-      {/* desktop */}
-      <div className="hidden lg:block bg-white rounded-2xl border border-gray-200 overflow-visible">
+      <div className="hidden lg:block bg-white rounded-2xl border border-gray-200 overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-indigo-50 border-b border-gray-200">
-            <tr className="bg-indigo-50/50 text-left text-gray-500 text-sm">
-              <th className="px-6 py-5 font-semibold">
+          <thead className="bg-indigo-50/60 border-b border-slate-200/80">
+            <tr className="text-left text-gray-500 text-sm">
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                 <button
                   onClick={() =>
                     setSortOrder(sortOrder === "asc" ? "desc" : "asc")
@@ -291,28 +290,28 @@ const Reminders = () => {
                   <ChevronsUpDown size={16} />
                 </button>
               </th>
-              <th className="px-6 py-5 font-semibold">NAME</th>
-              <th className="px-6 py-5 font-semibold">TEAM MEMBER</th>
-              <th className="px-6 py-5 font-semibold">FOLLOW UP TYPE</th>
-              <th className="px-6 py-5 font-semibold">FOLLOWUP DATE</th>
-              <th className="px-6 py-5 font-semibold">FOLLOW UP TIME</th>
-              <th className="px-6 py-5 font-semibold">
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">NAME</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">TEAM MEMBER</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOW UP TYPE</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOWUP DATE</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOW UP TIME</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                 NEXT FOLLOW UP DATE
               </th>
-              <th className="px-6 py-5 font-semibold">
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                 STATUS
               </th>
-              <th className="px-6 py-5 font-semibold">
-        NOTES
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
+                NOTES
               </th>
-              <th className="px-6 py-5 font-semibold">ACTIONS</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">ACTIONS</th>
             </tr>
           </thead>
 
           <tbody>
             {sortedFollowups.length === 0 ? (
               <tr>
-                <td colSpan="8" className="text-center py-16 text-gray-500">
+                <td colSpan="10" className="text-center py-16 text-gray-500">
                   <Bell className="mx-auto mb-3 w-12 h-12 text-gray-400" />
                   <h3 className="text-xl font-semibold text-gray-700">
                     No reminder Found
@@ -326,36 +325,36 @@ const Reminders = () => {
               sortedFollowups.map((followUp, i) => (
                 <tr
                   key={followUp._id}
-                  className="border-b-2 border-gray-200 text-left"
+                  className="border-b border-slate-100 text-left hover:bg-slate-50/60 transition-colors"
                 >
-                  <td className="px-6 py-5" >{followUp.followupNo}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium" >{followUp.followupNo}</td>
 
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {followUp.leadId?.name || "No Name"}
                   </td>
 
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {getTeamMemberName(followUp)}
                   </td>
 
-                  <td className="px-6 py-5">{followUp.followUpType}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{followUp.followUpType}</td>
 
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {followUp.followUpDate
                       ? followUp.followUpDate.split("T")[0]
                       : "No Date"}
                   </td>
 
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {formatTime(followUp.followUpTime)}
                   </td>
 
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {followUp.nextFollowupDate
                       ? followUp.nextFollowupDate.split("T")[0]
                       : "No Date"}
                   </td>
-                  <td className="px-2 py-3">
+                  <td className="px-6 py-3">
                     <CustomDropDown
                       value={followUp.leadId.status}
                       onChange={(selectedStatus) =>
@@ -374,7 +373,7 @@ const Reminders = () => {
                     />
                   </td>
 
- <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {followUp.notes ? (
                       <button
                         onClick={() => {
@@ -389,8 +388,8 @@ const Reminders = () => {
                       "-"
                     )}
                   </td>
-  
-                  <td className="px-6 py-5">
+   
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     <div className="flex gap-5 items-center">
                       <button
                         onClick={() => {
@@ -405,7 +404,7 @@ const Reminders = () => {
 
                       <button
                         onClick={() => openFollowup(followUp.leadId)}
-                        className="flex justify-center items-center text-sm gap-3 p-1 bg-indigo-50 text-indigo-700 px-2 rounded-lg whitespace-nowrap hover:bg-indigo-100 hover:ring-2 border border-indigo-200 hover:ring-indigo-300 hover:ring-offset-2"
+                        className="flex justify-center items-center text-sm gap-3 p-1 bg-white text-indigo-700 px-2 rounded-lg whitespace-nowrap hover:bg-indigo-50 hover:ring-2 border border-indigo-200 hover:ring-indigo-300 hover:ring-offset-2"
                       >
                         <Plus size={15} />
                         FollowUps
@@ -457,7 +456,9 @@ const Reminders = () => {
           </div>
         </div>
       )}
-      <FollowupsList /> 
+      <div className="mt-16">
+        <FollowupsList />
+      </div>
     </div>
 
   );

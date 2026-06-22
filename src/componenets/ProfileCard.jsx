@@ -76,7 +76,7 @@ const ProfileCard = () => {
     };
 
     return (
-        <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-5 lg:p-8 hover:shadow-md transition-all duration-300">
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-5 md:p-6 lg:p-8 hover:shadow-md transition-all duration-300">
 
             {/* Header */}
             <div className="flex items-center gap-3 lg:gap-4 mb-5 lg:mb-8">

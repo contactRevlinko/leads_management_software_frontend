@@ -194,10 +194,16 @@ const Analytics = () => {
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div className="w-full bg-gray-50 p-4 md:p-6 flex flex-col gap-3 ">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
-        Lead Analytics
-      </h1>
+    <div className="w-full">
+      <div className="mb-10">
+        <h1 className="md:text-5xl text-3xl font-medium text-slate-900">
+          Lead Analytics
+        </h1>
+
+        <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
+          Track and analyze your leads conversion trends and metrics.
+        </p>
+      </div>
 
 
       <div className="bg-white rounded-2xl border border-gray-200 p-4 mb-6 shadow-sm">

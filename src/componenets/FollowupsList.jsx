@@ -145,13 +145,13 @@ const FollowupsList = () => {
   });
 
   return (
-    <div className="w-full overflow-x-auto">
-      <div className="mt-10">
-        <h1 className="md:text-5xl text-3xl font-medium mb-2">
+    <div className="w-full overflow-y-visible">
+      <div className="mb-10">
+        <h1 className="md:text-5xl text-3xl font-medium text-slate-900">
           Follow-Up Schedule
         </h1>
 
-        <p className="text-gray-400 text-lg mb-10">
+        <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
           View upcoming and completed follow-up activities.
         </p>
       </div>
@@ -333,11 +333,11 @@ const FollowupsList = () => {
       )}
 
       {/* laptop */}
-      <div className="lg:block hidden bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <div className="lg:block hidden bg-white rounded-2xl border border-gray-200 overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-indigo-50 border-b border-gray-200">
-            <tr className="bg-indigo-50 text-gray-500 text-left text-sm font-semibold">
-              <th className="px-6 py-5 font-semibold">
+          <thead className="bg-indigo-50/60 border-b border-slate-200/80">
+            <tr className="text-left">
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                 <button
                   onClick={() =>
                     setSortOrder(sortOrder === "asc" ? "desc" : "asc")
@@ -348,24 +348,24 @@ const FollowupsList = () => {
                   <ChevronsUpDown size={16} />
                 </button>
               </th>
-              <th className="px-6 py-5 font-semibold">NAME</th>
-              <th className="px-6 py-5 font-semibold">TEAM MEMBER</th>
-              <th className="px-6 py-5 font-semibold">FOLLOW UP TYPE</th>
-              <th className="px-6 py-5 font-semibold">FOLLOWUP DATE</th>
-              <th className="px-6 py-5 font-semibold">FOLLOW UP TIME</th>
-              <th className="px-6 py-5 font-semibold">
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">NAME</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">TEAM MEMBER</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOW UP TYPE</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOWUP DATE</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOW UP TIME</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                 NEXT FOLLOW UP DATE
               </th>
-              <th className="px-6 py-5 font-semibold">STATUS</th>
-              <th className="px-6 py-5 font-semibold">NOTE</th>
-              <th className="px-6 py-5 font-semibold">ACTION</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">STATUS</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">NOTE</th>
+              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">ACTION</th>
             </tr>
           </thead>
 
           {filteredFollowups.length === 0 ? (
             <tbody>
               <tr>
-                <td colSpan="9" className="text-center py-16 text-gray-500">
+                <td colSpan="10" className="text-center py-16 text-gray-500">
                   <Bell className="mx-auto mb-3 w-12 h-12 text-gray-400" />
                   <h3 className="text-xl font-semibold text-gray-700">
                     No reminder Found
@@ -381,30 +381,30 @@ const FollowupsList = () => {
               {sortedFollowups.map((followUp, i) => (
                 <tr
                   key={followUp._id}
-                  className="border-b-2 border-gray-200 text-left"
+                  className="border-b border-slate-100 text-left hover:bg-slate-50/60 transition-colors"
                 >
-                  <td className="px-6 py-5" >{followUp.followupNo}</td>
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium" >{followUp.followupNo}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {followUp.leadId?.name || "No Name"}
                   </td>
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {getTeamMemberName(followUp)}
                   </td>
-                  <td className="px-6 py-5">{followUp.followUpType}</td>
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{followUp.followUpType}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {followUp.followUpDate
                       ? followUp.followUpDate.split("T")[0]
                       : "No Date"}
                   </td>
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {formatTime(followUp.followUpTime)}
                   </td>
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {followUp.nextFollowupDate
                       ? followUp.nextFollowupDate.split("T")[0]
                       : "No Date"}
                   </td>
-                  <td className="px-2 py-3">
+                  <td className="px-6 py-3">
                     <CustomDropDown
                       value={followUp.leadId.status}
                       onChange={(selectedStatus) =>
@@ -423,7 +423,7 @@ const FollowupsList = () => {
                     />
                   </td>
 
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     {followUp.notes ? (
                       <button
                         onClick={() => {
@@ -439,7 +439,7 @@ const FollowupsList = () => {
                     )}
                   </td>
 
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                     <button
                       onClick={() => {
                         setSelectedId(followUp._id);
