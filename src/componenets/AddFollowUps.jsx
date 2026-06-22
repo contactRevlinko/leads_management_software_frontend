@@ -82,28 +82,28 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
   };
 
   return (
-    <div className="lg:w-[35%] w-[95%] md:m-auto px-2 bg-white border-2 rounded-lg  border-gray-200  ">
-      <div className="flex  justify-between m-5">
-        <div className="p-1 md:p-4">
-          <h1 className="text-xl sm:text-2xl lg:text-xl font-bold text-gray-900 mb-2">
+    <div className="lg:w-[35%] w-[95%] md:m-auto bg-white border border-slate-200/60 rounded-2xl shadow-xl relative z-50 p-6 md:p-8">
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             Schedule Follow Up
           </h1>
-          <p className="text-sm text-indigo-600 font-medium">
-            Lead : {lead?.name}
+          <p className="mt-2 text-sm font-medium text-indigo-700 bg-indigo-50 inline-block px-2.5 py-1 rounded-md">
+            Lead: {lead?.name}
           </p>
         </div>
         <button
           onClick={() => setShowFollowUps(false)}
-          className="bg-indigo-100 text-indigo-700 font-medium md:w-12 md:h-12 lg:w-10 lg:h-10 w-7 h-7 hover:bg-indigo-200 rounded-lg flex items-center justify-center"
+          className="bg-slate-100 text-slate-500 hover:text-slate-700 font-medium w-10 h-10 hover:bg-slate-200 rounded-lg flex items-center justify-center shrink-0 transition-colors"
         >
           <X size={18} />
         </button>
       </div>
-      <div className=" px-5">
-        <div className="-mt-5">
-          <p className="text-sm text-gray-700 font-medium  mb-4">
+      <div>
+        <div>
+          <label className="text-sm mb-2.5 font-semibold text-slate-700 block">
             Follow-up type
-          </p>
+          </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
             <button
               onClick={() => setFollowUpType("Call")}
@@ -135,43 +135,47 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
             </button>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:my-5 my-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-6">
           <div className="w-full">
-            <p className="my-2 text-sm text-gray-700 font-medium">Date </p>
+            <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Date</label>
             <CustomCalendar
               value={form.followUpDate}
               onChange={handleChange}
               name="followUpDate"
               placeholder="Select date"
-              className={`${form.followUpDate ? "bg-indigo-50" : "bg-white"
-                } text-gray-700 px-2 py-3 md:text-sm text-xs rounded-xl border border-gray-300 w-full`}
+              className={`w-full outline-none text-sm px-4 py-2.5 rounded-xl border transition-all duration-200 ${
+                form.followUpDate ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus:bg-white border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+              }`}
             />
           </div>
           <div className="w-full">
-            <p className="text-sm text-gray-700 font-medium my-2">Time </p>
+            <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Time</label>
             <input
               value={form.followUpTime}
               onChange={handleChange}
               name="followUpTime"
               type="time"
-              className={`${form.followUpTime ? "bg-indigo-50 " : "bg-white "} text-gray-700 px-2 py-3 md:text-sm text-xs rounded-xl border border-gray-300 w-full `}
+              className={`w-full outline-none text-sm px-4 py-2.5 rounded-xl border transition-all duration-200 ${
+                form.followUpTime ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus:bg-white border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+              }`}
             />
           </div>
         </div>
-        <div className="w-full">
-          <p className=" my-2  text-sm text-gray-700 font-medium  ">
+        <div className="w-full mt-5">
+          <label className="text-sm mb-1.5 font-semibold text-slate-700 block">
             Next FollowUp Date 
-          </p>
+          </label>
           <CustomCalendar
             value={form.nextFollowupDate}
             onChange={handleChange}
             name="nextFollowupDate"
-            className={` ${form.nextFollowupDate ? "bg-indigo-50 " : "bg-white"}  outline-none  text-gray-700 px-2 py-3 md:text-sm text-xs rounded-xl border border-gray-300 w-full `}
-          />{" "}
-          {console.log(form.nextFollowupDate, "next follow up date")}
+            className={`w-full outline-none text-sm px-4 py-2.5 rounded-xl border transition-all duration-200 ${
+              form.nextFollowupDate ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus:bg-white border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+            }`}
+          />
         </div>
-        <div className="mt-4">
-          <p className="text-sm text-gray-700 font-medium my-2 ">Remarks  </p>
+        <div className="mt-5">
+          <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Remarks</label>
           <textarea
             name="notes"
             value={form.notes}
@@ -190,30 +194,18 @@ const AddFollowUps = ({ lead, setShowFollowUps }) => {
               )}px`;
             }}
             placeholder="Add important followup remarks..."
-            className={` ${form.notes ? "bg-indigo-50" : "bg-white"} outline-none  w-full border border-gray-300 px-2 py-3 md:text-sm text-xs rounded-xl `}
-            name="notes"
+            className={`w-full outline-none text-sm px-4 py-2.5 rounded-xl border transition-all duration-200 resize-none overflow-y-auto ${
+              form.notes ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus:bg-white border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+            }`}
           />
         </div>
       </div>
-      <div className="py-4 px-8 mb-5 flex  justify-evenly  border-t-0 border-gray-200 ">
+      <div className="mt-8 flex justify-center">
         <button
           onClick={handleSubmit}
-          className="
-    w-full
-    py-3 px-4
-    bg-indigo-600
-    text-white
-    font-medium
-    rounded
-    shadow-md
-    transition-all duration-200
-    hover:bg-indigo-700
-    hover:shadow-lg
-    active:scale-[0.98]
-    cursor-pointer
-  "
+          className="w-full py-3 px-4 bg-indigo-600 text-white font-medium rounded-xl shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md active:scale-[0.98] cursor-pointer"
         >
-          Schedule
+          Schedule Follow Up
         </button>
       </div>
     </div>

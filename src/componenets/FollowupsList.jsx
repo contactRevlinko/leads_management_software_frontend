@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Bell, Trash2, Users, Info, Calendar, Calendar1, ChevronsUpDown } from "lucide-react";
+import { Bell, Trash2, Users, Eye, Calendar, Calendar1, ChevronsUpDown, FileText, X, CalendarPlus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import CustomPopupDelete from "./CustomPopupDelete";
@@ -213,27 +213,27 @@ const FollowupsList = () => {
 
       {/* mobile */}
       {filteredFollowups.length === 0 ? (
-        <div className="lg:hidden sm:block col-span-full bg-white rounded-2xl border border-gray-200 p-10 text-center">
-          <Users className="mx-auto mb-3 w-12 h-12 text-gray-400" />
-          <h3 className="text-xl font-semibold text-gray-700">
+        <div className="lg:hidden sm:block col-span-full bg-slate-50/50 rounded-2xl border border-slate-200/60 p-10 text-center">
+          <Users className="mx-auto mb-3 w-12 h-12 text-slate-300" />
+          <h3 className="text-base font-semibold text-slate-700">
             No reminder Found
           </h3>
-          <p className="text-gray-500 mt-2">
+          <p className="text-slate-500 text-sm mt-1">
             No followups found in selected date range.
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-20 lg:hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden pb-10">
           {filteredFollowups.map((follow) => (
             <div
               key={follow._id}
-              className="bg-white rounded-2xl border border-gray-100 shadow-[0_12px_35px_rgba(15,23,42,0.10)] p-4"
+              className="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-5 hover:shadow-md transition-shadow duration-300"
             >
               <div className="mb-4">
-                <h1 className="text-lg font-bold text-gray-900 capitalize">
+                <h1 className="text-base font-bold text-slate-800 capitalize">
                   {follow.leadId?.name || "No Name"}
                 </h1>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-slate-400 mt-1">
                   Follow Up Details
                 </p>
               </div>
@@ -278,11 +278,9 @@ const FollowupsList = () => {
                   </p>
                 </div>
                
-                <div className=" flex w-full justify-between ">
-                 <div className="mt-4">
-
+                <div className="flex w-full mt-4 justify-between items-center">
+                  <div className="w-[140px]">
                     <CustomDropDown
-
                       value={follow.leadId.status}
                       onChange={(selectedStatus) =>
                         handleStatusChange(follow.leadId._id, selectedStatus)
@@ -300,32 +298,32 @@ const FollowupsList = () => {
                     />
                   </div>
           
+                  <div className="flex gap-2">
+                    {follow.notes && (
+                      <button
+                        onClick={() => {
+                          setSelectedNote(follow.notes);
+                          setNotePopup(true);
+                        }}
+                        className="w-8 h-8 flex items-center justify-center rounded-full text-amber-600 bg-amber-50 border border-amber-200/60 hover:bg-amber-100 transition-colors"
+                        title="View Note"
+                      >
+                        <Eye size={14} strokeWidth={2.2} />
+                      </button>
+                    )} 
 
-                {follow.notes && (
-                  <button
-                    onClick={() => {
-                      setSelectedNote(follow.notes);
-                      setNotePopup(true);
-                    }}
-                    className="mt-4 w-1/2 flex justify-center items-center gap-2 h-10 rounded-xl text-sm font-semibold text-indigo-600 bg-indigo-50 border border-indigo-200"
-                  >
-                    <Info size={17} />
-                    View Note
-                  </button>
-                )} 
-               </div>
-              </div>
-
-              <div className="mt-5 pt-4 border-t border-gray-100">
-                <button
-                  onClick={() => {
-                    setSelectedId(follow._id);
-                    setDeletePopup(true);
-                  }}
-                  className="h-10 w-full rounded-xl text-sm font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 active:scale-[0.98] transition"
-                >
-                  Delete
-                </button>
+                    <button
+                      onClick={() => {
+                        setSelectedId(follow._id);
+                        setDeletePopup(true);
+                      }}
+                      className="w-8 h-8 flex items-center justify-center rounded-full text-red-500 bg-red-50 border border-red-200/60 hover:bg-red-100 transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 size={14} strokeWidth={2.2} />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -336,29 +334,29 @@ const FollowupsList = () => {
       <div className="lg:block hidden bg-white rounded-2xl border border-gray-200 overflow-x-auto">
         <table className="w-full">
           <thead className="bg-indigo-50/60 border-b border-slate-200/80">
-            <tr className="text-left">
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
+            <tr className="text-left text-slate-500 text-sm">
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                 <button
                   onClick={() =>
                     setSortOrder(sortOrder === "asc" ? "desc" : "asc")
                   }
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-1.5"
                 >
                   SR NO
-                  <ChevronsUpDown size={16} />
+                  <ChevronsUpDown size={12} />
                 </button>
               </th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">NAME</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">TEAM MEMBER</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOW UP TYPE</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOWUP DATE</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOW UP TIME</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
-                NEXT FOLLOW UP DATE
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">NAME</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">TEAM MEMBER</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOW UP TYPE</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOWUP DATE</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">FOLLOW UP TIME</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
+                NEXT FOLLOW UP
               </th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">STATUS</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">NOTE</th>
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">ACTION</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">STATUS</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">NOTE</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">ACTION</th>
             </tr>
           </thead>
 
@@ -381,74 +379,77 @@ const FollowupsList = () => {
               {sortedFollowups.map((followUp, i) => (
                 <tr
                   key={followUp._id}
-                  className="border-b border-slate-100 text-left hover:bg-slate-50/60 transition-colors"
+                  className="border-b border-slate-100/80 text-left hover:bg-slate-50/50 transition-colors duration-100 group"
                 >
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium" >{followUp.followupNo}</td>
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
+                  <td className="px-4 py-3 text-xs text-slate-400 font-medium">{followUp.followupNo}</td>
+                  <td className="px-4 py-3 text-sm text-slate-800 font-medium capitalize">
                     {followUp.leadId?.name || "No Name"}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
+                  <td className="px-4 py-3 text-sm text-slate-600">
                     {getTeamMemberName(followUp)}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{followUp.followUpType}</td>
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
+                  <td className="px-4 py-3 text-sm text-slate-600">{followUp.followUpType}</td>
+                  <td className="px-4 py-3 text-sm text-slate-600 tabular-nums whitespace-nowrap">
                     {followUp.followUpDate
                       ? followUp.followUpDate.split("T")[0]
-                      : "No Date"}
+                      : "—"}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
+                  <td className="px-4 py-3 text-sm text-slate-600 tabular-nums whitespace-nowrap">
                     {formatTime(followUp.followUpTime)}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
+                  <td className="px-4 py-3 text-sm text-slate-600 tabular-nums whitespace-nowrap">
                     {followUp.nextFollowupDate
                       ? followUp.nextFollowupDate.split("T")[0]
-                      : "No Date"}
+                      : "—"}
                   </td>
-                  <td className="px-6 py-3">
-                    <CustomDropDown
-                      value={followUp.leadId.status}
-                      onChange={(selectedStatus) =>
-                        handleStatusChange(followUp.leadId._id, selectedStatus)
-                      }
-                      options={[
-                        "New",
-                        "Hot",
-                        "Warm",
-                        "Cold",
-                        "Contacted",
-                        "Interested",
-                        "Closed Won",
-                        "Closed Lost",
-                      ]}
-                    />
+                  <td className="px-4 py-3">
+                    <div className="w-[120px]">
+                      <CustomDropDown
+                        value={followUp.leadId.status}
+                        onChange={(selectedStatus) =>
+                          handleStatusChange(followUp.leadId._id, selectedStatus)
+                        }
+                        options={[
+                          "New",
+                          "Hot",
+                          "Warm",
+                          "Cold",
+                          "Contacted",
+                          "Interested",
+                          "Closed Won",
+                          "Closed Lost",
+                        ]}
+                      />
+                    </div>
                   </td>
 
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
+                  <td className="px-4 py-3">
                     {followUp.notes ? (
                       <button
                         onClick={() => {
                           setSelectedNote(followUp.notes);
                           setNotePopup(true);
                         }}
-                        className="text-indigo-600 bg-indigo-50 border border-indigo-200 p-2 rounded-lg hover:bg-indigo-100"
+                        className="w-7 h-7 flex items-center justify-center rounded-full text-amber-600 bg-amber-50 border border-amber-200/60 hover:bg-amber-100 hover:scale-105 transition-all duration-150"
+                        title="View Note"
                       >
-                        <Info size={18} />
+                        <Eye size={13} strokeWidth={2.2} />
                       </button>
                     ) : (
-                      "-"
+                      <span className="text-slate-300 text-xs">—</span>
                     )}
                   </td>
 
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
+                  <td className="px-4 py-3">
                     <button
                       onClick={() => {
                         setSelectedId(followUp._id);
                         setDeletePopup(true);
                       }}
-                      className="text-red-600 bg-red-50 flex w-full text-sm justify-center items-center px-4 py-1 gap-3 border border-red-200 hover:ring-2 hover:ring-offset-2 hover:ring-red-300 rounded-lg"
+                      className="w-7 h-7 flex items-center justify-center rounded-full text-red-500 bg-red-50 border border-red-200/60 hover:bg-red-100 hover:scale-105 transition-all duration-150 opacity-60 group-hover:opacity-100"
+                      title="Delete"
                     >
-                      <Trash2 size={15} />
-                      Delete
+                      <Trash2 size={13} strokeWidth={2.2} />
                     </button>
                   </td>
                 </tr>
@@ -466,25 +467,40 @@ const FollowupsList = () => {
       )}
 
       {notePopup && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">
-              Followup Note
-            </h2>
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-50 flex items-center justify-center px-4"
+          onClick={() => { setNotePopup(false); setSelectedNote(""); }}
+        >
+          <div
+            className="bg-white w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200/60 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 pt-5 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center border border-amber-200/60">
+                  <FileText size={14} className="text-amber-600" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-800">Followup Note</h2>
+                </div>
+              </div>
+              <button
+                onClick={() => { setNotePopup(false); setSelectedNote(""); }}
+                className="w-7 h-7 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+              >
+                <X size={14} />
+              </button>
+            </div>
 
-            <p className="text-gray-600 text-sm leading-6 whitespace-pre-wrap">
-              {selectedNote}
-            </p>
-
-            <button
-              onClick={() => {
-                setNotePopup(false);
-                setSelectedNote("");
-              }}
-              className="mt-6 w-full bg-indigo-600 text-white py-2 rounded-xl hover:bg-indigo-700"
-            >
-              Close
-            </button>
+            {/* Note Content */}
+            <div className="px-5 pb-5">
+              <div className="bg-slate-50/80 rounded-xl p-4 border border-slate-100">
+                <p className="text-slate-600 text-[13px] leading-relaxed whitespace-pre-wrap">
+                  {selectedNote}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}

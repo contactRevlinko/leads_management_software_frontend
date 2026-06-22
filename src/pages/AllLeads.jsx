@@ -1,58 +1,90 @@
 import React, { useState, useEffect } from "react";
-import { ChevronsUpDown, ChevronsUpDownIcon, Info, Plus, Search, Trash2, Users } from "lucide-react";
+import {
+  ChevronsUpDown,
+  Eye,
+  Plus,
+  Search,
+  Trash2,
+  Users,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  X,
+  CalendarPlus,
+} from "lucide-react";
 import AddFollowUps from "../componenets/AddFollowUps";
 import CustomDropDown from "../componenets/CustomDropDown";
 import CustomPopupDelete from "../componenets/CustomPopupDelete";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTeamList } from "../redux/teamSlice";
-import { fetchAllLead, removeLead } from "../redux/allLeadSlice";
+import { fetchAllLead } from "../redux/allLeadSlice";
 import toast from "react-hot-toast";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
+// Status badge color mapping
+const statusColors = {
+  New: "bg-blue-50 text-blue-700 border-blue-200",
+  Hot: "bg-red-50 text-red-600 border-red-200",
+  Warm: "bg-amber-50 text-amber-700 border-amber-200",
+  Cold: "bg-cyan-50 text-cyan-700 border-cyan-200",
+  Contacted: "bg-purple-50 text-purple-700 border-purple-200",
+  Interested: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  "Closed Won": "bg-green-50 text-green-700 border-green-200",
+  "Closed Lost": "bg-slate-100 text-slate-500 border-slate-200",
+};
 
+const statusDots = {
+  New: "bg-blue-500",
+  Hot: "bg-red-500",
+  Warm: "bg-amber-500",
+  Cold: "bg-cyan-500",
+  Contacted: "bg-purple-500",
+  Interested: "bg-emerald-500",
+  "Closed Won": "bg-green-500",
+  "Closed Lost": "bg-slate-400",
+};
+
+const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
   const loginType = localStorage.getItem("loginType");
   const isTeamLogin = loginType === "team";
 
-
   const dispatch = useDispatch();
   const { teamList } = useSelector((state) => state.team);
-  const { allLeads } = useSelector((state) => state.lead);
 
   const [showFollowUps, setShowFollowUps] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedLead, setSelectedLead] = useState(null);
-
   const [notePopup, setNotePopup] = useState(false);
   const [selectedNote, setSelectedNote] = useState("");
-
   const [sortOrderIndex, setSortOrderIndex] = useState("asc");
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     dispatch(fetchAllLead());
     dispatch(fetchTeamList());
   }, [dispatch]);
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filtered]);
 
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
-
       const res = await fetch(`${BASE_URL}/leads/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       const data = await res.json();
-
       if (res.ok) {
         await dispatch(fetchAllLead());
         fetchStatusCount();
-
         setDeletePopup(false);
         setSelectedId(null);
       } else {
@@ -71,7 +103,6 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
   const handleStatusChange = async (id, newStatus) => {
     try {
       const token = localStorage.getItem("token");
-
       const res = await fetch(`${BASE_URL}/leads/${id}/status`, {
         method: "PATCH",
         headers: {
@@ -80,11 +111,8 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-
       const result = await res.json();
-
       if (res.ok) {
-
         dispatch(fetchAllLead());
         fetchStatusCount();
       } else {
@@ -98,7 +126,6 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
   const handleAssignedToChange = async (id, newAssignedTo) => {
     try {
       const token = localStorage.getItem("token");
-
       const res = await fetch(`${BASE_URL}/leads/${id}/assign-lead`, {
         method: "PUT",
         headers: {
@@ -107,7 +134,6 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
         },
         body: JSON.stringify({ assignedTo: newAssignedTo }),
       });
-
       if (res.ok) {
         dispatch(fetchAllLead());
       }
@@ -118,308 +144,355 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
 
   const leadData = filtered || [];
   const sortedLeadData = [...leadData].sort((a, b) => {
-    if (sortOrderIndex === "asc") {
-      return a.leadNo - b.leadNo;
-    } else {
-      return b.leadNo - a.leadNo;
-    }
+    if (sortOrderIndex === "asc") return a.leadNo - b.leadNo;
+    return b.leadNo - a.leadNo;
   });
 
+  // Pagination calculations
+  const totalItems = sortedLeadData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = sortedLeadData.slice(startIndex, endIndex);
+
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
+  // Generate page numbers to show
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisible = 5;
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+    if (end - start < maxVisible - 1) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+    for (let i = start; i <= end; i++) pages.push(i);
+    return pages;
+  };
+
   return (
-    <div className="md:p-4 lg:p-0 md:mt-6 md:rounded-2xl overflow-y-visible">
-      <div className="flex justify-between pb-5">
-        <div className="flex my-5 hover:shadow-sm w-full bg-white p-2 rounded-xl md:w-1/2 gap-2">
-          <Search />
+    <div className="mt-4">
+      {/* Search Bar */}
+      <div className="mb-4">
+        <div className="relative max-w-md">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
-            className="outline-none w-full"
-            placeholder="Search by name or phone"
+            className="w-full h-10 pl-9 pr-4 bg-white border border-slate-200/80 rounded-lg text-sm text-slate-700 placeholder-slate-400 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 transition-all duration-150"
+            placeholder="Search by name, phone, or team..."
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>
 
-      {/* Mobile */}
+      {/* Mobile Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-20 lg:hidden">
         {leadData.length === 0 ? (
-          <div className="col-span-full bg-white rounded-3xl border border-slate-200/80 p-10 text-center shadow-sm">
-            <Users className="mx-auto mb-3 w-12 h-12 text-gray-400" />
-            <h3 className="text-xl font-semibold text-gray-700">
-              No Leads Found
-            </h3>
-            <p className="text-gray-500 mt-2">
-              Add your first lead to get started.
-            </p>
+          <div className="col-span-full bg-white rounded-xl border border-slate-200/60 p-10 text-center">
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Users className="w-6 h-6 text-slate-400" />
+            </div>
+            <h3 className="text-base font-semibold text-slate-700">No Leads Found</h3>
+            <p className="text-slate-400 text-sm mt-1">Add your first lead to get started.</p>
           </div>
         ) : (
-          leadData.map((lead) => (
+          paginatedData.map((lead) => (
             <div
               key={lead._id}
-              className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 hover:shadow-md transition-all duration-300"
+              className="bg-white rounded-xl border border-slate-200/60 p-4 hover:border-slate-300 transition-all duration-200"
             >
-              {/* Header */}
-              <div className="mb-4">
-                <h1 className="text-lg font-bold text-gray-900 capitalize">
-                  {lead.name}
-                </h1>
-                <p className="text-xs text-gray-400 mt-1">Lead Details</p>
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h1 className="text-sm font-semibold text-slate-800 capitalize">{lead.name}</h1>
+                  <p className="text-xs text-slate-400 mt-0.5">{lead.email}</p>
+                </div>
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${statusColors[lead.status] || "bg-slate-50 text-slate-500 border-slate-200"}`}>
+                  {lead.status}
+                </span>
               </div>
 
-              {/* Info */}
-              <div className="space-y-3 text-sm">
-                <div className="grid grid-cols-[110px_1fr] items-center gap-3">
-                  <p className="text-gray-500">Mobile</p>
-                  <p className="text-gray-800 font-medium truncate">{lead.phone}</p>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Phone</span>
+                  <span className="text-slate-700 font-medium">{lead.phone}</span>
                 </div>
-
-                <div className="grid grid-cols-[110px_1fr] items-center gap-3">
-                  <p className="text-gray-500">Email</p>
-                  <p className="text-gray-800 font-medium truncate">{lead.email}</p>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Source</span>
+                  <span className="text-slate-700 font-medium">{lead.source}</span>
                 </div>
-
-                <div className="grid grid-cols-[110px_1fr] items-center gap-3">
-                  <p className="text-gray-500">Source</p>
-                  <p className="text-gray-800 font-medium">{lead.source}</p>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Follow Up</span>
+                  <span className="text-slate-700 font-medium">
+                    {lead.followUpDate ? lead.followUpDate.split("T")[0] : "—"}
+                  </span>
                 </div>
 
                 {!isTeamLogin && (
-                  <div className="grid grid-cols-[110px_1fr] items-center gap-3">
-                    <p className="text-gray-500">Assigned To</p>
-                    <CustomDropDown
-                      value={lead.assignedTo?.name || lead.assignedTo || "Select"}
-                      onChange={(selectedAssignedTo) =>
-                        handleAssignedToChange(lead._id, selectedAssignedTo)
-                      }
-                      options={teamList.map((teamMem) => teamMem.name)}
-                    />
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-slate-400">Assigned To</span>
+                    <div className="w-[140px]">
+                      <CustomDropDown
+                        value={lead.assignedTo?.name || lead.assignedTo || "Select"}
+                        onChange={(sel) => handleAssignedToChange(lead._id, sel)}
+                        options={teamList.map((t) => t.name)}
+                      />
+                    </div>
                   </div>
                 )}
 
-                <div className="grid grid-cols-[110px_1fr] items-center gap-3">
-                  <p className="text-gray-500">Status</p>
-                  <CustomDropDown
-                    value={lead.status}
-                    onChange={(selectedStatus) =>
-                      handleStatusChange(lead._id, selectedStatus)
-                    }
-                    options={[
-                      "New",
-                      "Hot",
-                      "Warm",
-                      "Cold",
-                      "Contacted",
-                      "Interested",
-                      "Closed Won",
-                      "Closed Lost",
-                    ]}
-                  />
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-slate-400">Status</span>
+                  <div className="w-[140px]">
+                    <CustomDropDown
+                      value={lead.status}
+                      onChange={(sel) => handleStatusChange(lead._id, sel)}
+                      options={["New", "Hot", "Warm", "Cold", "Contacted", "Interested", "Closed Won", "Closed Lost"]}
+                    />
+                  </div>
                 </div>
-
-                <div className="grid grid-cols-[110px_1fr] items-center gap-3">
-                  <p className="text-gray-500">Follow Up</p>
-                  <p className="text-gray-800 font-medium">
-                    {lead.followUpDate ? lead.followUpDate.split("T")[0] : "No Date"}
-                  </p>
-                </div>
-
-                {lead.notes && (
-                  <button
-                    onClick={() => {
-                      setSelectedNote(lead.notes);
-                      setNotePopup(true);
-                    }}
-                    className="mt-4 w-full flex justify-center items-center gap-2 h-10 rounded-xl text-sm font-semibold text-indigo-600 bg-indigo-50 border border-indigo-200"
-                  >
-                    <Info size={17} />
-                    View Note
-                  </button>
-                )}
               </div>
 
-              {/* Buttons */}
-              <div className="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-gray-100">
+              <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100">
                 <button
-                  onClick={() => {
-                    setSelectedId(lead._id);
-                    setDeletePopup(true);
-                  }}
-                  className="
-          h-10 rounded-xl text-sm font-semibold
-          text-red-600 bg-red-50 border border-red-200
-          hover:bg-red-100 active:scale-[0.98]
-          transition
-        "
+                  onClick={() => { setSelectedId(lead._id); setDeletePopup(true); }}
+                  className="h-8 rounded-lg text-xs font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 active:scale-[0.97] transition"
                 >
                   Delete
                 </button>
-
                 <button
                   onClick={() => openFollowup(lead)}
-                  className="
-          h-10 rounded-xl text-sm font-semibold
-          text-indigo-700 bg-indigo-50 border border-indigo-200
-          hover:bg-indigo-100 active:scale-[0.98]
-          transition whitespace-nowrap
-        "
+                  className="h-8 rounded-lg text-xs font-medium text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 active:scale-[0.97] transition"
                 >
-                  + FollowUps
+                  + Follow Up
                 </button>
               </div>
             </div>
           ))
         )}
-
-
       </div>
 
-      {/* Desktop */}
-      <div className="hidden lg:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-x-auto max-h-[70vh] overflow-y-auto">
-        <table className="w-full min-w-[1200px]">
-          <thead className="bg-indigo-50/60 border-b border-slate-200/80">
-            <tr className="text-left">
-              <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap">
-                <button
-                  onClick={() =>
-                    setSortOrderIndex(sortOrderIndex === "asc" ? "desc" : "asc")
-                  }
-                  className="flex items-center gap-2"
-                >
-                  SR NO.
-                  <ChevronsUpDownIcon size={16} />
-                </button>
-              </th>
-
-              {[
-              
-                "NAME",
-                "PHONE",
-                "EMAIL",
-                "STATUS",
-                ...(!isTeamLogin ? ["ASSIGNED TO"] : []),
-                "SOURCE",
-                "FOLLOW UP DATE",
-                "NOTES",
-                "DELETE",
-                "FOLLOWUP",
-              ].map((head) => (
-                <th
-                  key={head}
-                  className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap"
-                >
-                  {head}
+      {/* Desktop Table */}
+      <div className="hidden lg:block bg-white rounded-xl border border-slate-200/60 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1100px]">
+            <thead>
+              <tr className="bg-slate-50/80 border-b border-slate-200/60">
+                <th className="px-4 py-3 text-left">
+                  <button
+                    onClick={() => setSortOrderIndex(sortOrderIndex === "asc" ? "desc" : "asc")}
+                    className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-slate-500 hover:text-indigo-600 transition-colors"
+                  >
+                    #
+                    <ChevronsUpDown size={12} />
+                  </button>
                 </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {leadData.length === 0 ? (
-              <tr>
-                <td colSpan="11" className="text-center py-16 text-gray-500">
-                  <Users className="mx-auto mb-3 w-12 h-12 text-gray-400" />
-                  <h3 className="text-xl font-semibold text-gray-700">
-                    No Leads Found
-                  </h3>
-                  <p className="mt-2">Add your first lead to get started.</p>
-                </td>
+                {[
+                  "Name",
+                  "Phone",
+                  "Email",
+                  "Status",
+                  ...(!isTeamLogin ? ["Assigned To"] : []),
+                  "Source",
+                  "Follow Up",
+                  "Notes",
+                  "",
+                ].map((head) => (
+                  <th
+                    key={head}
+                    className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500"
+                  >
+                    {head}
+                  </th>
+                ))}
               </tr>
-            ) : (
-              sortedLeadData.map((lead, i) => (
-                <tr
-                  key={lead._id}
-                  className="border-b border-slate-100 text-left hover:bg-slate-50/60 transition-colors"
-                >
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.leadNo}</td>
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.name}</td>
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.phone}</td>
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.email}</td>
+            </thead>
 
-                  <td className="px-6 py-3">
-                    <CustomDropDown
-                      value={lead.status}
-                      onChange={(selectedStatus) =>
-                        handleStatusChange(lead._id, selectedStatus)
-                      }
-                      options={[
-                        "New",
-                        "Hot",
-                        "Warm",
-                        "Cold",
-                        "Contacted",
-                        "Interested",
-                        "Closed Won",
-                        "Closed Lost",
-                      ]}
-                    />
-                  </td>
-
-                  {!isTeamLogin && (
-                    <td className="px-6 py-3">
-                      <CustomDropDown
-                        value={lead.assignedTo?.name || "Select"}
-                        onChange={(selectedId) =>
-                          handleAssignedToChange(lead._id, selectedId)
-                        }
-                        options={teamList.map((teamMem) => ({
-                          label: teamMem.name,
-                          value: teamMem._id
-                        }))}
-                      />
-                    </td>
-                  )}
-
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">{lead.source}</td>
-
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
-                    {lead.followUpDate
-                      ? lead.followUpDate.split("T")[0]
-                      : "No Date"}
-                  </td>
-
-                  <td className="px-6 py-4 text-sm text-slate-600 font-medium">
-                    {lead.notes ? (
-                      <button
-                        onClick={() => {
-                          setSelectedNote(lead.notes);
-                          setNotePopup(true);
-                        }}
-                        className="text-indigo-600 bg-indigo-50 border border-indigo-200 p-2 rounded-lg hover:bg-indigo-100"
-                      >
-                        <Info size={18} />
-                      </button>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-
-                  <td className="px-6 py-3">
-                    <button
-                      onClick={() => {
-                        setSelectedId(lead._id);
-                        setDeletePopup(true);
-                      }}
-                      className="text-red-600 bg-red-50 flex w-full text-sm justify-center items-center px-4 py-1 gap-3 border border-red-200 hover:ring-2 hover:ring-offset-2 hover:ring-red-300 rounded-lg"
-                    >
-                      <Trash2 size={15} />
-                      Delete
-                    </button>
-                  </td>
-
-                  <td className="px-6 py-3">
-                    <button
-                      onClick={() => openFollowup(lead)}
-                      className="flex justify-center items-center gap-3 p-1 bg-indigo-50 text-indigo-700 px-2 rounded-lg whitespace-nowrap hover:bg-indigo-100 hover:ring-2 border border-indigo-200 hover:ring-indigo-300 hover:ring-offset-2"
-                    >
-                      <Plus size={15} />
-                      FollowUps
-                    </button>
+            <tbody>
+              {leadData.length === 0 ? (
+                <tr>
+                  <td colSpan={!isTeamLogin ? 10 : 9} className="text-center py-16">
+                    <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Users className="w-6 h-6 text-slate-400" />
+                    </div>
+                    <h3 className="text-base font-semibold text-slate-700">No Leads Found</h3>
+                    <p className="text-slate-400 text-sm mt-1">Add your first lead to get started.</p>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                paginatedData.map((lead, i) => (
+                  <tr
+                    key={lead._id}
+                    className="border-b border-slate-100/80 hover:bg-slate-50/50 transition-colors duration-100 group"
+                  >
+                    {/* Sr No */}
+                    <td className="px-4 py-3">
+                      <span className="text-xs font-medium text-slate-400">{lead.leadNo}</span>
+                    </td>
+
+                    {/* Name */}
+                    <td className="px-4 py-3">
+                      <span className="text-sm font-medium text-slate-800 capitalize">{lead.name}</span>
+                    </td>
+
+                    {/* Phone */}
+                    <td className="px-4 py-3">
+                      <span className="text-sm text-slate-600 tabular-nums">{lead.phone}</span>
+                    </td>
+
+                    {/* Email */}
+                    <td className="px-4 py-3">
+                      <span className="text-sm text-slate-500 truncate max-w-[180px] block">{lead.email}</span>
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-4 py-3">
+                      <CustomDropDown
+                        value={lead.status}
+                        onChange={(sel) => handleStatusChange(lead._id, sel)}
+                        options={["New", "Hot", "Warm", "Cold", "Contacted", "Interested", "Closed Won", "Closed Lost"]}
+                      />
+                    </td>
+
+                    {/* Assigned To */}
+                    {!isTeamLogin && (
+                      <td className="px-4 py-3">
+                        <CustomDropDown
+                          value={lead.assignedTo?.name || "Select"}
+                          onChange={(sel) => handleAssignedToChange(lead._id, sel)}
+                          options={teamList.map((t) => ({
+                            label: t.name,
+                            value: t._id,
+                          }))}
+                        />
+                      </td>
+                    )}
+
+                    {/* Source */}
+                    <td className="px-4 py-3">
+                      <span className="text-xs font-medium text-slate-500 bg-slate-50 border border-slate-200/60 px-2 py-1 rounded-md">
+                        {lead.source}
+                      </span>
+                    </td>
+
+                    {/* Follow Up Date */}
+                    <td className="px-4 py-3">
+                      <span className="text-xs text-slate-500 tabular-nums whitespace-nowrap">
+                        {lead.followUpDate ? lead.followUpDate.split("T")[0] : "—"}
+                      </span>
+                    </td>
+
+                    {/* Notes */}
+                    <td className="px-4 py-3">
+                      {lead.notes ? (
+                        <button
+                          onClick={() => { setSelectedNote(lead.notes); setSelectedLead(lead); setNotePopup(true); }}
+                          className="w-7 h-7 flex items-center justify-center rounded-full text-amber-600 bg-amber-50 border border-amber-200/60 hover:bg-amber-100 hover:scale-105 transition-all duration-150"
+                          title="View Note"
+                        >
+                          <Eye size={13} strokeWidth={2.2} />
+                        </button>
+                      ) : (
+                        <span className="text-slate-300 text-xs">—</span>
+                      )}
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => { setSelectedId(lead._id); setDeletePopup(true); }}
+                          className="w-7 h-7 flex items-center justify-center rounded-full text-red-500 bg-red-50 border border-red-200/60 hover:bg-red-100 hover:scale-105 transition-all duration-150"
+                          title="Delete"
+                        >
+                          <Trash2 size={13} strokeWidth={2.2} />
+                        </button>
+                        <button
+                          onClick={() => openFollowup(lead)}
+                          className="h-7 px-3 flex items-center gap-1.5 rounded-full text-[11px] font-semibold text-indigo-600 bg-indigo-50 border border-indigo-200/60 hover:bg-indigo-100 hover:scale-[1.02] transition-all duration-150 whitespace-nowrap"
+                          title="Add Follow Up"
+                        >
+                          <CalendarPlus size={12} strokeWidth={2.2} />
+                          <span>Follow Up</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-t border-slate-100 bg-slate-50/40">
+            <p className="text-xs text-slate-400 mb-2 sm:mb-0">
+              Showing <span className="font-semibold text-slate-600">{startIndex + 1}</span>–<span className="font-semibold text-slate-600">{Math.min(endIndex, totalItems)}</span> of{" "}
+              <span className="font-semibold text-slate-600">{totalItems}</span> leads
+            </p>
+
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-white hover:border-slate-300 border border-transparent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft size={15} />
+              </button>
+
+              {getPageNumbers().map((page) => (
+                <button
+                  key={page}
+                  onClick={() => goToPage(page)}
+                  className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-semibold transition-all duration-150 ${
+                    page === currentPage
+                      ? "bg-indigo-600 text-white shadow-sm"
+                      : "text-slate-600 hover:bg-white hover:border-slate-300 border border-transparent"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-white hover:border-slate-300 border border-transparent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronRight size={15} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* Mobile Pagination */}
+      {totalPages > 1 && (
+        <div className="lg:hidden flex items-center justify-between px-2 py-4">
+          <p className="text-xs text-slate-400">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="h-8 px-3 flex items-center gap-1 rounded-lg text-xs font-medium border border-slate-200 text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft size={13} /> Prev
+            </button>
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="h-8 px-3 flex items-center gap-1 rounded-lg text-xs font-medium border border-slate-200 text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Next <ChevronRight size={13} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Popup */}
       {deletePopup && (
         <CustomPopupDelete
           onClose={() => setDeletePopup(false)}
@@ -427,8 +500,9 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
         />
       )}
 
+      {/* Follow Up Modal */}
       {showFollowUps && selectedLead && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <AddFollowUps
             lead={selectedLead}
             setShowFollowUps={setShowFollowUps}
@@ -436,26 +510,45 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
         </div>
       )}
 
+      {/* Note Popup */}
       {notePopup && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">
-              lead Note
-            </h2>
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-[9999] flex items-center justify-center px-4"
+          onClick={() => { setNotePopup(false); setSelectedNote(""); }}
+        >
+          <div
+            className="bg-white w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200/60 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 pt-5 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center border border-amber-200/60">
+                  <FileText size={14} className="text-amber-600" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-800">Lead Note</h2>
+                  {selectedLead && (
+                    <p className="text-[11px] text-slate-400 mt-0.5 capitalize">{selectedLead.name}</p>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={() => { setNotePopup(false); setSelectedNote(""); }}
+                className="w-7 h-7 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+              >
+                <X size={14} />
+              </button>
+            </div>
 
-            <p className="text-gray-600 text-sm leading-6 whitespace-pre-wrap">
-              {selectedNote}
-            </p>
-
-            <button
-              onClick={() => {
-                setNotePopup(false);
-                setSelectedNote("");
-              }}
-              className="mt-6 w-full bg-indigo-600 text-white py-2 rounded-xl hover:bg-indigo-700"
-            >
-              Close
-            </button>
+            {/* Note Content */}
+            <div className="px-5 pb-5">
+              <div className="bg-slate-50/80 rounded-xl p-4 border border-slate-100">
+                <p className="text-slate-600 text-[13px] leading-relaxed whitespace-pre-wrap">
+                  {selectedNote}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -463,4 +556,4 @@ const AllLeads = ({ fetchStatusCount, setSearch, filtered = [] }) => {
   );
 };
 
-export default AllLeads;  
+export default AllLeads;

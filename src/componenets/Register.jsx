@@ -22,6 +22,9 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isCustomBusiness, setIsCustomBusiness] = useState(false);
+  const [customBusiness, setCustomBusiness] = useState("");
+  const [localCustomBusinessTypes, setLocalCustomBusinessTypes] = useState(businessTypes);
   const navigate = useNavigate();
   const gradient = "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #6d28d9 100%)";
 
@@ -202,7 +205,19 @@ const Register = () => {
                 {/* Business Type — same pattern as Role in AddTeam */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Business Type</label>
-                  <CustomDropDown value={businessType} options={businessTypes} onChange={setBusinessType} />
+                  <CustomDropDown 
+                    value={businessType} 
+                    options={localCustomBusinessTypes} 
+                    onChange={(val) => {
+                      if (val.toLowerCase() === "other") {
+                        setIsCustomBusiness(true);
+                        setBusinessType("other");
+                      } else {
+                        setIsCustomBusiness(false);
+                        setBusinessType(val);
+                      }
+                    }} 
+                  />
                   {isCustomBusiness && (
                     <div className="mt-2 flex gap-2 items-center">
                       <input

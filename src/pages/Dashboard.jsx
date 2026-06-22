@@ -148,39 +148,38 @@ const Dashboard = () => {
       name: "TOTAL LEADS",
       leads: total,
       icon: Users,
-      color: { bg: "bg-indigo-100", text: "text-indigo-600" },
+      color: { bg: "bg-indigo-50", text: "text-indigo-600" },
     },
     {
       name: "WARM",
       leads: warm,
       icon: SunMedium,
-      color: { bg: "bg-orange-100", text: "text-orange-600" },
+      color: { bg: "bg-orange-50", text: "text-orange-600" },
     },
     {
       name: "INTERESTED",
       leads: inteStatus,
       icon: HeartHandshake,
-      color: { bg: "bg-pink-100", text: "text-pink-600" },
+      color: { bg: "bg-pink-50", text: "text-pink-600" },
     },
     {
       name: "CONVERSION RATE",
       leads: `${conversionRate}%`,
       icon: ChartNoAxesCombined,
-      color: { bg: "bg-amber-100", text: "text-amber-600" },
+      color: { bg: "bg-emerald-50", text: "text-emerald-600" },
     },
   ];
 
   return (
-     <div className="w-full">
-    
-      <div className="mb-10">
-        <h1 className="md:text-5xl text-3xl font-medium text-slate-900">Analytics Overview</h1>
-        <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
-          Track lead performance, sources and conversion trends
+    <div className="w-full space-y-8">
+      <div>
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Analytics Overview</h1>
+        <p className="text-sm text-slate-500 mt-1">
+          Track lead performance, sources, and conversion trends in real time
         </p>
       </div>
 
-      <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {cardData.map((card) => (
           <SqureCard
             key={card.name}
@@ -192,24 +191,25 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-6 flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50">
-              <FunnelIcon className="h-7 w-7 text-indigo-600" />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Lead Status Breakdown Card */}
+        <div className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm">
+          <div className="mb-6 flex items-center gap-3.5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 shrink-0">
+              <FunnelIcon className="h-5 w-5 text-indigo-600" />
             </div>
 
             <div>
-              <h2 className="text-lg font-bold text-slate-900">
+              <h2 className="text-base font-bold text-slate-800">
                 Lead Status Breakdown
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mt-0.5">
                 Funnel view of current lead stages
               </p>
             </div>
           </div>
 
-          <div className="h-[460px]">
+          <div className="h-[400px] flex items-center justify-center">
             {data.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <FunnelChart>
@@ -220,6 +220,7 @@ const Dashboard = () => {
                       fill="#111827"
                       stroke="none"
                       dataKey="name"
+                      style={{ fontSize: '12px', fontWeight: '500' }}
                     />
                     {data.map((entry, index) => (
                       <Cell
@@ -231,47 +232,39 @@ const Dashboard = () => {
                 </FunnelChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex flex-col items-center justify-center text-center">
-                <div className="w-36 h-36 rounded-full bg-indigo-50 flex items-center justify-center mb-6">
-                  <FunnelIcon className="w-20 h-20 text-indigo-300" />
+              <div className="flex flex-col items-center justify-center text-center p-6">
+                <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center mb-4">
+                  <FunnelIcon className="w-8 h-8 text-indigo-400" />
                 </div>
-
-                <h2 className="text-2xl font-bold text-slate-900 mb-3">
+                <h3 className="text-sm font-bold text-slate-800 mb-1">
                   No lead data yet
-                </h2>
-
-                <p className="text-slate-500 max-w-sm mb-6">
-                  Once you start getting leads, you’ll see the funnel breakdown of all
-                  stages here.
+                </h3>
+                <p className="text-xs text-slate-400 max-w-xs">
+                  Once you start adding leads, you'll see the funnel breakdown of all stages here.
                 </p>
-
-                {/* <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2">
-                  <Plus size={20} />
-                  Add Your First Lead
-                </button>
-           */}
               </div>
             )}
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-6 flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-50">
-              <ChartPie className="h-7 w-7 text-pink-600" />
+        {/* Lead Source Breakdown Card */}
+        <div className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm">
+          <div className="mb-6 flex items-center gap-3.5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-pink-50 shrink-0">
+              <ChartPie className="h-5 w-5 text-pink-600" />
             </div>
 
             <div>
-              <h2 className="text-lg font-bold text-slate-900">
+              <h2 className="text-base font-bold text-slate-800">
                 Lead Source Breakdown
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mt-0.5">
                 Distribution of leads by source
               </p>
             </div>
           </div>
 
-          <div className="h-[320px] sm:h-[420px] md:h-[460px] w-full overflow-hidden">
+          <div className="h-[400px] w-full flex items-center justify-center overflow-hidden">
             {souceData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
@@ -293,17 +286,22 @@ const Dashboard = () => {
                         fill={getColorFromString(entry.name)}
                       />
                     ))}
-               
                   </Pie>
-
                   <Tooltip />
-                  <Legend />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle" />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              // your empty state
-              <div className="h-full flex flex-col items-center justify-center text-center">
-                No source data yet
+              <div className="flex flex-col items-center justify-center text-center p-6">
+                <div className="w-16 h-16 rounded-2xl bg-pink-50 flex items-center justify-center mb-4">
+                  <ChartPie className="w-8 h-8 text-pink-400" />
+                </div>
+                <h3 className="text-sm font-bold text-slate-800 mb-1">
+                  No source data yet
+                </h3>
+                <p className="text-xs text-slate-400 max-w-xs">
+                  Source distribution analysis will be visible once leads are populated.
+                </p>
               </div>
             )}
           </div>

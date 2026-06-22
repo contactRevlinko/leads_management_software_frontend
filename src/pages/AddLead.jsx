@@ -119,36 +119,35 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
 
 
   return (
-    <div className="lg:w-1/2 w-[90%] m-auto">
-      <div className="lg:p-10 md:p-8 p-5 bg-white rounded">
-        <div className="flex justify-between border-b border-gray-300 md:pb-8 lg:pb-4 pb-2">
-          <div>
-            <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 mb-2">
+    <div className="lg:w-1/2 w-[95%] md:w-[80%] m-auto relative z-50">
+      <div className="bg-white rounded-2xl border border-slate-200/60 shadow-xl p-6 md:p-8 lg:p-10">
+        <div className="flex items-start justify-between gap-4 mb-8">
+          <div className="flex-1">
+            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
               Create New Lead
             </h1>
-            <p className="text-gray-600">
+            <p className="mt-1.5 text-sm text-slate-500">
               Add a high value prospect to your sales pipeline
             </p>
           </div>
 
           <button
             onClick={() => setAddLeadModal(false)}
-            className="bg-indigo-100 text-indigo-700 font-medium md:w-12 md:h-12 lg:w-10 lg:h-10 w-7 h-7 hover:bg-indigo-200 rounded-lg flex items-center justify-center"
+            className="bg-slate-100 text-slate-500 hover:text-slate-700 font-medium w-10 h-10 hover:bg-slate-200 rounded-lg flex items-center justify-center shrink-0 transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="lg:flex gap-5 lg:w-full justify-between text-gray-600">
-
-
-          <div className="lg:my-5 md:my-3 md:text-lg my-2 w-full">
-            <p className="text-sm  mb-1 font-medium">Full Name</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+          <div className="w-full">
+            <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Full Name</label>
             <div
-              className={`${form.name ? "bg-indigo-50" : "bg-white"
-                } flex border border-gray-300 gap-2 p-2 rounded-xl`}
+              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-200 ${
+                form.name ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus-within:bg-white border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10"
+              }`}
             >
-              <User size={17} />
+              <User size={18} className={form.name ? "text-indigo-500" : "text-slate-400"} />
               <input
                 className="outline-none w-full text-sm bg-transparent"
                 placeholder="Full name"
@@ -160,13 +159,14 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
             </div>
           </div>
 
-          <div className="lg:my-5  md:my-3 md:text-lg my-2 w-full ">
-            <p className="text-sm mb-1 font-medium">Email Address</p>
+          <div className="w-full">
+            <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Email Address</label>
             <div
-              className={`${form.email ? "bg-indigo-50" : "bg-white"
-                } flex border border-gray-300 gap-2 p-2 rounded-xl`}
+              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-200 ${
+                form.email ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus-within:bg-white border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10"
+              }`}
             >
-              <Mail size={17} />
+              <Mail size={18} className={form.email ? "text-indigo-500" : "text-slate-400"} />
               <input
                 className="outline-none w-full text-sm bg-transparent"
                 type="text"
@@ -180,104 +180,101 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
             </div>
           </div>
 
-        </div>
-
-        <div className=" md:text-lg my-3 w-full text-gray-600">
-          <p className="text-sm mb-1 font-medium">Mobile Number</p>
-
-          <div
-            className={`${form.phone ? "bg-indigo-50" : "bg-white"
-              } flex border border-gray-300 gap-2 p-2 rounded-xl`}
-          >
-            <Phone size={17} />
-
-            <input
-              className="outline-none w-full text-sm bg-transparent"
-              type="text"
-              name="phone"
-              placeholder="Mobile number"
-              value={form.phone}
-              onChange={(e) => {
-                let value = e.target.value.replace(/\D/g, "");
-
-
-                if (value.startsWith("91") && value.length > 10) {
-                  toast.error("Please enter 10 digit number without +91");
-                  value = value.substring(2);
-                }
-
-                if (value.length > 10) {
-                  toast.error("Only 10 digits allowed ");
-                }
-
-                setForm((prev) => ({
-                  ...prev,
-                  phone: value.slice(0, 10),
-                }));
-              }}
-              autoComplete="off"
-              spellCheck={false}
-            />
-          </div>
-        </div>
-
-        <p className="text-indigo-500 m-2 text-[0.8rem] font-medium">
-          LEAD DETAILS
-        </p>
-
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
-          <div>
-            <p className="text-sm mb-1 font-medium">Status : </p>
-            <CustomDropDown
-              value={form.status}
-              onChange={(value) => setForm({ ...form, status: value })}
-              options={[
-                "New",
-                "Hot",
-                "Warm",
-                "Cold",
-                "Contacted",
-                "Interested",
-                "Closed Won",
-                "Closed Lost",
-              ]}
-            />
-          </div>
-          {!isTeamLogin && (
-            <div className="text-gray-600">
-              <p className="text-sm mb-1 font-medium">Assigned To</p>
-              <CustomDropDown
-                value={teamList.find((team) => team._id === form.assignedTo)?.name || ""}
-                onChange={(id) =>
-                  setForm((prev) => ({ ...prev, assignedTo: id }))
-                }
-                options={teamList.map((teamMem) => ({
-                  label: teamMem.name,
-                  value: teamMem._id,
-                }))}
+          <div className="w-full md:col-span-2">
+            <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Mobile Number</label>
+            <div
+              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-200 ${
+                form.phone ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus-within:bg-white border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10"
+              }`}
+            >
+              <Phone size={18} className={form.phone ? "text-indigo-500" : "text-slate-400"} />
+              <input
+                className="outline-none w-full text-sm bg-transparent"
+                type="text"
+                name="phone"
+                placeholder="Mobile number"
+                value={form.phone}
+                onChange={(e) => {
+                  let value = e.target.value.replace(/\D/g, "");
+                  if (value.startsWith("91") && value.length > 10) {
+                    toast.error("Please enter 10 digit number without +91");
+                    value = value.substring(2);
+                  }
+                  if (value.length > 10) {
+                    toast.error("Only 10 digits allowed ");
+                  }
+                  setForm((prev) => ({
+                    ...prev,
+                    phone: value.slice(0, 10),
+                  }));
+                }}
+                autoComplete="off"
+                spellCheck={false}
               />
             </div>
-          )}
-
-          <div className="text-gray-600">
-            <p className="text-sm mb-1 font-medium">Source</p>
-            <CustomDropDown
-              value={form.source}
-              onChange={(value) =>
-                setForm((prev) => ({ ...prev, source: value }))
-              }
-              options={sources?.map((s) => s.name) || []}
-            />
           </div>
         </div>
 
-        <div className="lg:my-5 md:text-lg my-3 text-gray-600">
-          <p className="text-sm mb-1 font-medium">Notes</p>
+        <div className="mt-8 mb-4 border-t border-slate-200/60 pt-6">
+          <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">
+            Lead Details
+          </h2>
+
+          <div className="grid gap-5 grid-cols-1 sm:grid-cols-3">
+            <div>
+              <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Status</label>
+              <CustomDropDown
+                value={form.status}
+                onChange={(value) => setForm({ ...form, status: value })}
+                options={[
+                  "New",
+                  "Hot",
+                  "Warm",
+                  "Cold",
+                  "Contacted",
+                  "Interested",
+                  "Closed Won",
+                  "Closed Lost",
+                ]}
+              />
+            </div>
+            {!isTeamLogin && (
+              <div>
+                <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Assigned To</label>
+                <CustomDropDown
+                  value={teamList.find((team) => team._id === form.assignedTo)?.name || ""}
+                  onChange={(id) =>
+                    setForm((prev) => ({ ...prev, assignedTo: id }))
+                  }
+                  options={teamList.map((teamMem) => ({
+                    label: teamMem.name,
+                    value: teamMem._id,
+                  }))}
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Source</label>
+              <CustomDropDown
+                value={form.source}
+                onChange={(value) =>
+                  setForm((prev) => ({ ...prev, source: value }))
+                }
+                options={sources?.map((s) => s.name) || []}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 w-full">
+          <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Notes</label>
           <div
-            className={`${form.notes ? "bg-indigo-50" : "bg-white"
-              } flex border border-gray-300 gap-2 p-2 rounded-xl`}
+            className={`flex gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-200 ${
+              form.notes ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus-within:bg-white border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10"
+            }`}
           >
-            <NotebookPen size={17} />
+            <NotebookPen size={18} className={`mt-0.5 ${form.notes ? "text-indigo-500" : "text-slate-400"}`} />
             <textarea
               placeholder="Add a private note regarding this lead"
               className="outline-none text-sm w-full bg-transparent resize-none overflow-y-auto"
@@ -286,16 +283,12 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
               rows={2}
               style={{
                 minHeight: "24px",
-                maxHeight: "192px", // 8 lines × 24px
+                maxHeight: "192px",
               }}
               onChange={(e) => {
                 handleChange(e);
-
                 e.target.style.height = "auto";
-                e.target.style.height = `${Math.min(
-                  e.target.scrollHeight,
-                  192
-                )}px`;
+                e.target.style.height = `${Math.min(e.target.scrollHeight, 192)}px`;
               }}
               autoComplete="off"
               spellCheck={false}
@@ -303,10 +296,9 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center gap-5">
-          <div className="text-gray-600 w-full md:w-1/2">
-            <p className="text-sm mb-1 font-medium">Follow Up Date</p>
-
+        <div className="flex flex-col md:flex-row justify-between items-end gap-5 mt-8">
+          <div className="w-full md:w-1/2">
+            <label className="text-sm mb-1.5 font-semibold text-slate-700 block">Follow Up Date</label>
             <CustomCalendar
               name="followUpDate"
               value={form.followUpDate}
@@ -316,7 +308,7 @@ const AddLead = ({ setAddLeadModal, addLeadModal, fetchStatusCount }) => {
           </div>
 
           <button
-            className="w-full md:w-1/2 h-10 md:mt-5  text-white bg-indigo-700 rounded cursor-pointer hover:bg-indigo-800"
+            className="w-full md:w-1/2 py-3 px-4 bg-indigo-600 text-white font-medium rounded-xl shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
             onClick={handleSubmit}
           >
             Save Lead

@@ -20,6 +20,10 @@ import {
   UserPlus,
   Users,
   XCircle,
+  Plus,
+  Upload,
+  FileSpreadsheet,
+  X,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ExcelJS from "exceljs";
@@ -54,7 +58,8 @@ const LeadMangement = () => {
 
   const [bulkModal, setBulkModal] = useState(false);
   const [bulkFile, setBulkFile] = useState(null);
-  
+  const [isDragging, setIsDragging] = useState(false);
+
   const navigate = useNavigate();
 
   const handleApiError = (err, name) => {
@@ -124,6 +129,7 @@ const LeadMangement = () => {
 
       toast.success(res.data?.message || "File uploaded successfully");
       dispatch(fetchAllLead());
+      fetchStatusCount();
       e.target.value = "";
     } catch (err) {
       handleApiError(err, "handleUploadFile");
@@ -380,124 +386,158 @@ const LeadMangement = () => {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="md:text-5xl text-3xl font-medium text-slate-900">Leads Management</h1>
-          <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
-            Manage and track your sales pipeline across all channels.
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Leads</h1>
+          <p className="text-sm text-slate-500 mt-0.5">
+            Manage and track your sales pipeline
           </p>
         </div>
 
-        <div className="flex gap-4">
-          <button
-            onClick={handleAddLead}
-            className="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2.5 rounded-xl font-medium transition"
-          >
-            + Add Leads
-          </button>
-
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => setBulkModal(!bulkModal)}
-            className="bg-white text-indigo-700 border border-indigo-700 px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-50 transition"
+            className="h-9 px-3.5 flex items-center gap-1.5 bg-white text-slate-700 border border-slate-200/80 rounded-lg text-xs font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all duration-150"
           >
-            + Add Bulk Leads
+            <Upload size={14} />
+            <span>Import</span>
+          </button>
+          <button
+            onClick={handleAddLead}
+            className="h-9 px-3.5 flex items-center gap-1.5 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 active:scale-[0.97] transition-all duration-150 shadow-sm shadow-indigo-200"
+          >
+            <Plus size={14} />
+            <span>Add Lead</span>
           </button>
         </div>
-      </div>{bulkModal && <div className="fixed inset-0 bg-black/50 backdrop-blur-2xl z-[9999] flex items-center justify-center px-4">
-           <div className="bg-white w-full max-w-2xl rounded-lg shadow-2xl p-5">
+      </div>
 
-             <div className="flex justify-between mb-5">
-                <h2 className="text-2xl font-bold text-gray-800">Bulk Uploads</h2>
-                <button 
-                  className="bg-gradient-to-r from-indigo-500 to-indigo-900 text-white px-5 py-3 rounded-md font-semibold flex items-center gap-2" 
-                onClick={handleDownloadTemplate}>
-                  <Download />
+      {/* Bulk Upload Modal */}
+      {bulkModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] flex items-center justify-center px-4">
+          <div className="bg-white w-full max-w-lg rounded-xl shadow-2xl border border-slate-200/60 overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+              <div>
+                <h2 className="text-base font-bold text-slate-800">Import Leads</h2>
+                <p className="text-xs text-slate-400 mt-0.5">Upload your spreadsheet to bulk import leads</p>
+              </div>
+              <button
+                onClick={() => { setBulkModal(false); setBulkFile(null); }}
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
 
-                  Download Template sheet
-
-                </button>
-             </div>
-           
-
-         <label 
-                className="border border-dashed border-gray-300 rounded-md h-64 flex flex-col items-center justify-center cursor-pointer"
-                 onDragOver={(e) => e.preventDefault()}
-                 onDrop={(e) => 
-                  {e.preventDefault()
-                const file = e.dataTransfer.files[0];
-                if(file)setBulkFile(file)
-
-                  }
-                   
-                 }
-              
-          >
-                <div className="bg-indigo-100 text-indigo-700 p-5 rounded-md mb-6">
-                  <CloudUpload size={38} />
+            {/* Modal Body */}
+            <div className="p-5">
+              {/* Download Template */}
+              <button
+                onClick={handleDownloadTemplate}
+                className="w-full flex items-center gap-3 px-4 py-3 mb-4 bg-slate-50 border border-slate-200/60 rounded-lg hover:bg-slate-100 transition-colors group"
+              >
+                <div className="w-9 h-9 bg-indigo-100 rounded-lg flex items-center justify-center shrink-0">
+                  <FileSpreadsheet size={16} className="text-indigo-600" />
                 </div>
-                <h3 className="text-2xl font-bold">Click, drag, or paste sheet</h3>
-                 <p className="text-gray-400 mt-3">
-                  Compatible with CSV, XLS, or XLSX files
-                </p>
+                <div className="text-left">
+                  <p className="text-xs font-semibold text-slate-700">Download Template</p>
+                  <p className="text-[11px] text-slate-400">Get the blank template with correct columns</p>
+                </div>
+                <Download size={14} className="ml-auto text-slate-400 group-hover:text-indigo-600 transition-colors" />
+              </button>
 
-                {bulkFile && (
-                  <p className="mt-4 text-sm text-indigo-700 font-medium">
-                    {bulkFile.name}
-                  </p>
+              {/* Drag & Drop Zone */}
+              <label
+                className={`flex flex-col items-center justify-center h-44 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 ${
+                  isDragging
+                    ? "border-indigo-400 bg-indigo-50/50"
+                    : bulkFile
+                    ? "border-emerald-300 bg-emerald-50/30"
+                    : "border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
+                }`}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  const file = e.dataTransfer.files[0];
+                  if (file) setBulkFile(file);
+                }}
+              >
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-3 ${
+                  bulkFile ? "bg-emerald-100" : "bg-slate-100"
+                }`}>
+                  <CloudUpload size={20} className={bulkFile ? "text-emerald-600" : "text-slate-400"} />
+                </div>
+
+                {bulkFile ? (
+                  <>
+                    <p className="text-sm font-semibold text-slate-700">{bulkFile.name}</p>
+                    <p className="text-[11px] text-slate-400 mt-1">Click or drop to replace</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium text-slate-600">
+                      Drop your file here, or <span className="text-indigo-600">browse</span>
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-1">Supports CSV, XLS, XLSX</p>
+                  </>
                 )}
+
                 <input
                   type="file"
                   accept=".csv,.xls,.xlsx"
                   hidden
                   onChange={(e) => setBulkFile(e.target.files[0])}
                 />
-         </label>
+              </label>
+            </div>
 
-              <div className="grid grid-cols-2 gap-5 mt-7">
-
-                <button
-                  onClick={() => {
-                    setBulkModal(false);
-                    setBulkFile(null);
-                  }}
-                  className="bg-gray-100 py-4 rounded-md font-semibold text-gray-700"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (!bulkFile) {
-                      toast.error("Please select file");
-                      return;
-                    }
-
-                    handleUploadFile({
-                      target: {
-                        files: [bulkFile],
-                        value: "",
-                      },
-                    });
-
-                    setBulkModal(false);
-                    setBulkFile(null);
-                  }}
-                  className="bg-indigo-700 text-white py-4 rounded-md font-semibold"
-                >
-                  Process Records
-                </button>
-              
-
-              </div>
+            {/* Modal Footer */}
+            <div className="flex items-center gap-2.5 px-5 py-4 border-t border-slate-100 bg-slate-50/40">
+              <button
+                onClick={() => { setBulkModal(false); setBulkFile(null); }}
+                className="flex-1 h-10 rounded-lg text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (!bulkFile) {
+                    toast.error("Please select a file");
+                    return;
+                  }
+                  handleUploadFile({
+                    target: { files: [bulkFile], value: "" },
+                  });
+                  setBulkModal(false);
+                  setBulkFile(null);
+                }}
+                className="flex-1 h-10 rounded-lg text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-200"
+              >
+                Upload & Process
+              </button>
             </div>
           </div>
-          }
+        </div>
+      )}
 
-
-
-
-      <div className="md:my-0 lg:gap-3 gap-5 my-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-        {cardData.map((card) => (
+      {/* Status Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-3 mb-5">
+        {cardData.slice(0, 5).map((card) => (
+          <TypeOfCard
+            key={card.name}
+            name={card.name}
+            leads={card.leads}
+            icon={card.icon}
+            color={card.color}
+          />
+        ))}
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-1">
+        {cardData.slice(5).map((card) => (
           <TypeOfCard
             key={card.name}
             name={card.name}
@@ -508,6 +548,7 @@ const LeadMangement = () => {
         ))}
       </div>
 
+      {/* Filter Bar */}
       <LeadManageRow
         filter={filter}
         setFilter={setFilter}
@@ -517,19 +558,20 @@ const LeadMangement = () => {
         handleExportExcel={handleExportExcel}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-
         priorityFilter={priorityFilter}
         setPriorityFilter={setPriorityFilter}
       />
 
+      {/* Leads Table */}
       <AllLeads
         setSearch={setSearch}
         filtered={sortedLead}
         fetchStatusCount={fetchStatusCount}
       />
 
+      {/* Add Lead Modal */}
       {addLeadModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] flex items-center justify-center">
           <AddLead
             setAddLeadModal={setAddLeadModal}
             addLeadModal={addLeadModal}

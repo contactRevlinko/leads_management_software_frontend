@@ -6,20 +6,23 @@ import LogoutCard from './LogoutCard'
 
 const Setting = () => {
   return (
-
     <div className="w-full">
-      <div className="mb-10">
-        <h1 className="md:text-5xl text-3xl font-medium text-slate-900">Settings</h1>
-        <p className="md:py-3 text-sm md:text-xl py-2 text-gray-600">
+      <div className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Settings</h1>
+        <p className="text-sm text-slate-500 mt-1">
           Manage your account and preferences
         </p>
       </div>
      
-
-      <div className="mt-8 lg:w-1/2 sm:w-full m-auto bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-sm flex flex-col gap-12 lg:gap-16">
-        <ProfileCard/>
-       <SecurityCard/>
-      <LogoutCard/>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8 items-start">
+        <div className="xl:col-span-2 flex flex-col gap-6 lg:gap-8">
+          <ProfileCard/>
+          <SecurityCard/>
+        </div>
+        
+        <div className="xl:col-span-1 flex flex-col gap-6 lg:gap-8">
+          <LogoutCard/>
+        </div>
       </div>
     </div>
   )

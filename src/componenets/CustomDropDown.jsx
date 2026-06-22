@@ -30,8 +30,8 @@ const CustomDropDown = ({ value, options, onChange }) => {
         }
 
         const rect = buttonRef.current.getBoundingClientRect();
-        const dropdownHeight = Math.min(options.length * 40 + 16, 220);
-        const dropdownWidth = Math.max(rect.width, 160);
+        const dropdownHeight = Math.min(options.length * 32 + 12, 200);
+        const dropdownWidth = Math.max(rect.width, 140);
         const spaceBelow = window.innerHeight - rect.bottom;
         const openUpward = spaceBelow < dropdownHeight;
 
@@ -87,15 +87,15 @@ const CustomDropDown = ({ value, options, onChange }) => {
                 type="button"
                 onClick={openDropdown}
                 className={`
-          w-full border border-gray-300 rounded-xl px-3 pr-10 text-left text-sm h-11 relative cursor-pointer
-          ${displayValue ? "bg-indigo-50/50" : "bg-white"}
-          focus:outline-none focus:border-indigo-500 transition-colors
+          w-full border border-slate-200 rounded-lg px-2.5 pr-7 text-left text-xs h-8 relative cursor-pointer
+          ${displayValue ? "bg-slate-50" : "bg-white"}
+          focus:outline-none focus:border-indigo-400 transition-colors
         `}
             >
                 <span className="block truncate pr-2">{displayValue || "Select"}</span>
                 <ChevronDown
-                    size={16}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
+                    size={13}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
                 />
             </button>
 
@@ -106,12 +106,12 @@ const CustomDropDown = ({ value, options, onChange }) => {
                         style={dropdownStyle}
                         className="
               bg-white
-              border border-indigo-100
-              rounded-2xl
-              shadow-xl
-              py-2
+              border border-slate-200
+              rounded-lg
+              shadow-lg
+              py-1
               overflow-y-auto
-              max-h-[220px]
+              max-h-[200px]
             "
                     >
                         {options.map((item, i) => {
@@ -119,7 +119,7 @@ const CustomDropDown = ({ value, options, onChange }) => {
                             return (
                                 <div
                                     key={i}
-                                    className="flex items-center justify-between px-4 py-2 hover:bg-indigo-50 text-sm group"
+                                    className="flex items-center justify-between px-3 py-1.5 hover:bg-indigo-50 text-xs group"
                                 >
                                     <span
                                         onMouseDown={(e) => {

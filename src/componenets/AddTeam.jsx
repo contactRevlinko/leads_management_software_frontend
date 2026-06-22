@@ -103,14 +103,14 @@ const AddTeam = ({ setOpenAddTeam }) => {
   };
 
   return (
-    <div className="lg:w-[32%] md:w-[60%] w-[95%] md:m-auto bg-white border border-slate-200/80 rounded-3xl shadow-2xl relative z-50 p-6 md:p-8">
+    <div className="lg:w-[35%] md:w-[60%] w-[95%] md:m-auto bg-white border border-slate-200/60 rounded-2xl shadow-xl relative z-50 p-6 md:p-8">
       <div>
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-4 mb-6">
           <div className="flex-1">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               Add Team Member
             </h1>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-1.5 text-sm text-slate-500">
               Create a new team member and assign roles for lead management and follow-ups.
             </p>
           </div>
@@ -123,17 +123,19 @@ const AddTeam = ({ setOpenAddTeam }) => {
           </button>
         </div>
 
-        <div className="my-5 text-gray-600 w-full">
-          <p className="text-sm mb-1.5 font-medium">Member Name</p>
+        <div className="mb-5 text-slate-700 w-full">
+          <label className="text-sm mb-1.5 font-semibold block">Member Name</label>
           <div
-            className={` ${form.name ? "bg-indigo-50 " : "bg-white "} flex border border-gray-300 gap-2 p-2.5 rounded-xl items-center`}
+            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-200 ${
+              form.name ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus-within:bg-white border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10"
+            }`}
           >
-            <User size={17} className="text-gray-400" />
+            <User size={18} className={form.name ? "text-indigo-500" : "text-slate-400"} />
             <input
               type="text"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="outline-none w-full text-sm"
+              className="outline-none w-full text-sm bg-transparent"
               name="random_team_name_999"
               autoComplete="off"
               autoCorrect="off"
@@ -144,8 +146,8 @@ const AddTeam = ({ setOpenAddTeam }) => {
         </div>
 
         {/* Role Dropdown — moved to top */}
-        <div className="mb-5 text-gray-600 w-full">
-          <p className="text-sm mb-1 font-medium">Role</p>
+        <div className="mb-5 text-slate-700 w-full">
+          <label className="text-sm mb-1.5 font-semibold block">Role</label>
           <CustomDropDown
             value={form.role}
             onChange={(value) => {
@@ -220,12 +222,14 @@ const AddTeam = ({ setOpenAddTeam }) => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
           {/* Work Phone */}
           <div>
-            <p className="text-sm mb-1 text-gray-600 font-medium">Work phone</p>
+            <label className="text-sm mb-1.5 text-slate-700 font-semibold block">Work phone</label>
             <input
-              className={`${form.phone1 ? "bg-indigo-50" : "bg-white"} outline-none w-full text-sm border border-gray-300 p-2.5 h-11 rounded-xl`}
+              className={`w-full outline-none text-sm px-4 py-2.5 rounded-xl border transition-all duration-200 ${
+                form.phone1 ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus:bg-white border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+              }`}
               type="text"
               name="field_839202"
               placeholder="Enter mobile number"
@@ -252,9 +256,11 @@ const AddTeam = ({ setOpenAddTeam }) => {
 
           {/* Alternate Phone */}
           <div>
-            <p className="text-sm mb-1 text-gray-600 font-medium">Alternate phone</p>
+            <label className="text-sm mb-1.5 text-slate-700 font-semibold block">Alternate phone</label>
             <input
-              className={`${form.phone2 ? "bg-indigo-50" : "bg-white"} outline-none w-full text-sm border border-gray-300 p-2.5 h-11 rounded-xl`}
+              className={`w-full outline-none text-sm px-4 py-2.5 rounded-xl border transition-all duration-200 ${
+                form.phone2 ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus:bg-white border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+              }`}
               type="text"
               name="field_839202"
               placeholder="Enter mobile number"
@@ -281,7 +287,7 @@ const AddTeam = ({ setOpenAddTeam }) => {
 
           {/* Work Email */}
           <div>
-            <p className="text-sm mb-1 text-gray-600 font-medium">Work Email</p>
+            <label className="text-sm mb-1.5 text-slate-700 font-semibold block">Work Email</label>
             <input
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -292,16 +298,20 @@ const AddTeam = ({ setOpenAddTeam }) => {
               autoCorrect="off"
               spellCheck="false"
               placeholder="username@gmail.com"
-              className={`${form.email ? "bg-indigo-50" : "bg-white"} outline-none w-full text-sm border border-gray-300 p-2.5 h-11 rounded-xl`}
+              className={`w-full outline-none text-sm px-4 py-2.5 rounded-xl border transition-all duration-200 ${
+                form.email ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus:bg-white border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+              }`}
             />
           </div>
 
           {/* Password */}
           <div className="relative">
-            <p className="text-sm mb-1 text-gray-600 font-medium">Password</p>
+            <label className="text-sm mb-1.5 text-slate-700 font-semibold block">Password</label>
             <input
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className={`${form.password ? "bg-indigo-50" : "bg-white"} outline-none w-full text-sm border border-gray-300 p-2.5 pr-10 h-11 rounded-xl`}
+              className={`w-full outline-none text-sm px-4 py-2.5 pr-10 rounded-xl border transition-all duration-200 ${
+                form.password ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50/50 hover:bg-slate-50 focus:bg-white border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+              }`}
               autoComplete="new-password"
               name="team_secret_839204"
               placeholder="Password"
@@ -310,13 +320,13 @@ const AddTeam = ({ setOpenAddTeam }) => {
             />
             {showPassword ? (
               <Eye
-                className="absolute right-3 top-[38px] text-gray-500 cursor-pointer"
+                className="absolute right-3 top-[34px] text-slate-400 hover:text-indigo-600 cursor-pointer transition-colors"
                 size={18}
                 onClick={() => setShowPassword(!showPassword)}
               />
             ) : (
               <EyeOff
-                className="absolute right-3 top-[38px] text-gray-500 cursor-pointer"
+                className="absolute right-3 top-[34px] text-slate-400 hover:text-indigo-600 cursor-pointer transition-colors"
                 size={18}
                 onClick={() => setShowPassword(!showPassword)}
               />
@@ -327,9 +337,9 @@ const AddTeam = ({ setOpenAddTeam }) => {
 
         <button
           onClick={handleSaveTeam}
-          className="w-full mt-6 py-3 px-4 bg-indigo-600 text-white font-medium rounded-xl shadow-md transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg active:scale-[0.98] cursor-pointer"
+          className="w-full mt-8 py-3 px-4 bg-indigo-600 text-white font-medium rounded-xl shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md active:scale-[0.98] cursor-pointer"
         >
-          Save Team
+          Save Team Member
         </button>
       </div>
     </div>

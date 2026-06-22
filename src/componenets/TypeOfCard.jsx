@@ -1,23 +1,22 @@
 import React from "react";
-import { TrendingUp } from "lucide-react";
-
-
-
 
 const TypeOfCard = ({ name, leads, icon: Icon, color }) => {
   return (
-    <div className="flex items-center gap-4 w-full p-5 bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300">
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${color.bg}`}>
-        <Icon size={22} className={color.text} />
+    <div className="group relative flex items-center gap-3.5 w-full px-4 py-3.5 bg-white rounded-xl border border-slate-200/60 hover:border-slate-300/80 hover:shadow-sm transition-all duration-200 cursor-default overflow-hidden">
+      {/* Colored accent bar */}
+      <div className={`absolute left-0 top-0 bottom-0 w-[3px] rounded-l-xl ${color.bg.replace('100', '400')}`} />
+      
+      <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color.bg} shrink-0`}>
+        <Icon size={17} className={color.text} strokeWidth={2.2} />
       </div>
 
-      <div>
-        <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
-          {name}
-        </p>
-        <h2 className="text-2xl font-bold text-slate-900 mt-1">
+      <div className="min-w-0">
+        <h2 className="text-xl font-bold text-slate-900 leading-none tabular-nums">
           {leads}
         </h2>
+        <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mt-1 truncate">
+          {name}
+        </p>
       </div>
     </div>
   );

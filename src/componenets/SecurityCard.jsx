@@ -65,60 +65,60 @@ const SecurityCard = () => {
   };
 
   return (
-    <div className="w-full bg-white rounded-3xl border border-slate-200/80 shadow-sm p-5 md:p-6 lg:p-8 hover:shadow-md transition-all duration-300">
-      <div className="flex items-start gap-4 md:gap-5">
-        <div className="min-w-12 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-orange-50 flex items-center justify-center">
-          <LockKeyhole className="w-6 h-6 md:w-7 md:h-7 text-orange-500" />
+    <div className="w-full bg-white rounded-2xl border border-slate-200/60 shadow-sm p-6 md:p-8 hover:shadow-md transition-all duration-300">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+          <LockKeyhole className="w-6 h-6 text-orange-500" />
         </div>
 
         <div>
-          <h3 className="text-lg md:text-xl font-semibold text-gray-800">
+          <h3 className="text-lg font-bold text-slate-800">
             Change Password
           </h3>
-          <p className="text-sm md:text-base text-gray-500 mt-1">
+          <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mt-0.5">
             Update your account password
           </p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-5 md:gap-8 mt-8 md:mt-10">
+      <div className="flex flex-col gap-5">
         <div className="w-full">
-          <h1 className="font-medium mb-1 text-gray-600 text-sm">
+          <h1 className="font-semibold mb-1.5 block text-slate-700 text-sm">
             Current Password
           </h1>
           <input
             value={form.currentPassword}
             onChange={handleChange}
             name="currentPassword"
-            className="outline-none border border-gray-300 text-sm    rounded-xl px-2 py-2 w-full"
+            className="w-full bg-slate-50/50 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
             type="password"
             placeholder="Enter Current Password"
           />
         </div>
 
         <div className="w-full">
-          <h1 className="font-medium mb-1 text-gray-600 text-sm">
+          <h1 className="font-semibold mb-1.5 block text-slate-700 text-sm">
             New Password
           </h1>
           <input
             value={form.newPassword}
             onChange={handleChange}
             name="newPassword"
-            className="outline-none border border-gray-300 text-sm    rounded-xl px-2 py-2 w-full"
+            className="w-full bg-slate-50/50 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
             type="password"
             placeholder="Enter New Password"
           />
         </div>
 
         <div className="w-full">
-          <h1 className="font-medium mb-1 text-gray-600 text-sm">
+          <h1 className="font-semibold mb-1.5 block text-slate-700 text-sm">
             Confirm Password
           </h1>
           <input
             value={form.confirmPassword}
             onChange={handleChange}
             name="confirmPassword"
-            className="outline-none border border-gray-300 text-sm    rounded-xl px-2 py-2 w-full"
+            className="w-full bg-slate-50/50 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
             type="password"
             placeholder="Enter Confirm Password"
           />
@@ -127,7 +127,7 @@ const SecurityCard = () => {
 
       <button
         onClick={changePassword}
-        className="text-white bg-orange-500 flex items-center py-2.5 px-4 w-full rounded-lg mt-7 md:mt-8 text-base md:text-lg gap-3 justify-center hover:bg-orange-600"
+        className="mt-8 w-full sm:w-auto px-6 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2"
       >
         <LockKeyhole className="w-5 h-5" />
         Update Password

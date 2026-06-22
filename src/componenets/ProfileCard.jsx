@@ -1,5 +1,5 @@
 import { UserCircle, Save } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomDropDown from "./CustomDropDown";
 import toast from "react-hot-toast";
 import { validateEmail, validatePassword } from "../utils/validation";
@@ -32,6 +32,23 @@ const ProfileCard = () => {
         email: "",
         businessType: "",
     });
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            try {
+                const user = JSON.parse(storedUser);
+                setForm({
+                    name: user.name || "",
+                    phone: user.phone || "",
+                    email: user.email || "",
+                    businessType: user.businessType || "",
+                });
+            } catch (e) {
+                console.error("Error parsing user from localStorage", e);
+            }
+        }
+    }, []);
 
     const handleChange = (e) => {
         setForm({
@@ -76,20 +93,20 @@ const ProfileCard = () => {
     };
 
     return (
-        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-5 md:p-6 lg:p-8 hover:shadow-md transition-all duration-300">
+        <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-6 md:p-8 hover:shadow-md transition-all duration-300">
 
             {/* Header */}
-            <div className="flex items-center gap-3 lg:gap-4 mb-5 lg:mb-8">
-                <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-indigo-100 flex items-center justify-center">
-                    <UserCircle className="w-6 h-6 lg:w-8 lg:h-8 text-indigo-600" />
+            <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
+                    <UserCircle className="w-6 h-6 text-indigo-600" />
                 </div>
 
                 <div>
-                    <h3 className="text-lg lg:text-xl font-semibold text-gray-800">
+                    <h3 className="text-lg font-bold text-slate-800">
                         Profile Information
                     </h3>
 
-                    <p className="text-xs lg:text-sm text-gray-500">
+                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wide mt-0.5">
                         Update your personal account details
                     </p>
                 </div>
@@ -100,9 +117,9 @@ const ProfileCard = () => {
                 <input type="text" name="fake_user" autoComplete="username" className="hidden" />
                 <input type="password" name="fake_pass" autoComplete="current-password" className="hidden" />
 
-                <div className="flex flex-col gap-4 lg:gap-5">
+                <div className="flex flex-col gap-5">
                     <div>
-                        <label className="font-medium mb-1 block text-gray-600 text-xs lg:text-sm">
+                        <label className="font-semibold mb-1.5 block text-slate-700 text-sm">
                             Full Name
                         </label>
 
@@ -120,12 +137,12 @@ const ProfileCard = () => {
                             autoCorrect="off"
                             spellCheck={false}
                             placeholder="Enter your full name"
-                            className="outline-none border border-gray-300 text-sm    rounded-xl px-2 py-2 w-full"
+                            className="w-full bg-slate-50/50 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
                         />
                     </div>
 
                     <div>
-                        <label className="font-medium mb-1 block text-gray-600 text-xs lg:text-sm">
+                        <label className="font-semibold mb-1.5 block text-slate-700 text-sm">
                             Phone Number
                         </label>
 
@@ -143,11 +160,12 @@ const ProfileCard = () => {
                             maxLength={10}
                             autoComplete="new-password"
                             placeholder="Mobile number"
-                            className="outline-none border border-gray-300 text-sm    rounded-xl px-2 py-2 w-full"                        />
+                            className="w-full bg-slate-50/50 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+                        />
                     </div>
 
                     <div>
-                        <label className="font-medium mb-1 block text-gray-600 text-xs lg:text-sm">
+                        <label className="font-semibold mb-1.5 block text-slate-700 text-sm">
                             Work Email
                         </label>
 
@@ -161,11 +179,12 @@ const ProfileCard = () => {
                             autoCorrect="off"
                             spellCheck={false}
                             placeholder="username123@gmail.com"
-                            className="outline-none border border-gray-300 text-sm    rounded-xl px-2 py-2 w-full"                        />
+                            className="w-full bg-slate-50/50 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+                        />
                     </div>
 
                     <div>
-                        <label className="font-medium mb-1 block text-gray-600 text-xs lg:text-sm">
+                        <label className="font-semibold mb-1.5 block text-slate-700 text-sm">
                             Business Type
                         </label>
 
@@ -185,7 +204,7 @@ const ProfileCard = () => {
                 <button
                     type="button"
                     onClick={updateProfile}
-                    className="mt-6 lg:mt-7 w-full bg-indigo-600 hover:bg-indigo-700 flex justify-center items-center gap-2 lg:gap-3 text-white px-4 py-3 rounded-xl font-medium transition-all duration-200"
+                    className="mt-8 w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2"
                 >
                     <Save size={18} />
                     Update Profile

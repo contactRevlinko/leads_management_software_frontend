@@ -58,7 +58,7 @@ const Pricing = () => {
                 amount: result.order.amount,
                 currency: result.order.currency,
                 name: "Lead Management Software",
-                description: pkg.packageName,
+                description: pkg.packageName.replace(/[^\x20-\x7E]/g, '').trim() || "Package Purchase",
                 order_id: result.order.id,
 
                 prefill: {
@@ -183,15 +183,19 @@ const Pricing = () => {
                                 </div>
 
                                 <div className="flex-1 mt-6 space-y-3">
-                                    {pkg.description?.split(",").map((item, index) => (
-                                        <div key={index} className="flex gap-3 text-sm text-gray-600">
-                                            <CheckCircle
-                                                size={18}
-                                                className="text-green-500 shrink-0 mt-0.5"
-                                            />
-                                            <span>{item.trim()}</span>
-                                        </div>
-                                    ))}
+                                    {pkg.description?.split(/[,\n]+/).map((item, index) => {
+                                        const trimmed = item.trim();
+                                        if (!trimmed) return null;
+                                        return (
+                                            <div key={index} className="flex gap-3 text-sm text-gray-600">
+                                                <CheckCircle
+                                                    size={18}
+                                                    className="text-green-500 shrink-0 mt-0.5"
+                                                />
+                                                <span>{trimmed}</span>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
 
                                 <button
